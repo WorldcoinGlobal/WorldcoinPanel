@@ -1,0 +1,13 @@
+#ifndef HXDEFINITIONS_H
+#define HXDEFINITIONS_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(WFDEFINITIONS_LIBRARY)
+#  define WFDEFINITIONS_EXPORT Q_DECL_EXPORT
+#else
+#  define WFDEFINITIONS_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // HXDEFINITIONS_H
+
