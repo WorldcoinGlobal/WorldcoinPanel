@@ -26,7 +26,7 @@ const int cDefaultPrecision(10);
 const int cDefaultMaxTries(3000);
 const int cConnectorRequestQueue(20);
 const int cMessageIDMaxLenght(8);
-const int cDefaultMinConfForBalance(1);
+const int cDefaultMinConfForBalance(0);
 const int cDefaultUpdatesCheckPeriod(6);
 
 const qreal cInchConv = 2.54;
@@ -122,7 +122,9 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
       EBoolType = 12,
       ETimeType = 13,
       EPercentType = 14,
-      ESecretType = 15
+      ESecretType = 15,
+      EAddressType = 16,
+      EHashType = 17
     };
     enum eMessageType {
       ESuccessMessage = 1,

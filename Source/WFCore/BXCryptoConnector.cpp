@@ -323,7 +323,7 @@ void BXCryptoConnector::tSendReply() {
     }
     if(lMessageCounter == 2) lMessageCounter = 0;
   }
-  else {
+  else { 
     QJsonValue lResult(lResponse.toObject().value(cDefaultRcpResult));
     int lLogType = pReply->property("yLogType").toInt();
     if(lParse) {

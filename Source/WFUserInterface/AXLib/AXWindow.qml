@@ -293,8 +293,8 @@ GXWindow {
       target: mCXStatus
       onSDaemonStatusChanged: {
         if((mCXStatus.mDaemonStatus == CXDefinitions.EServiceReady) && boFullPanel && boFirstTime) {
-          WABalance.mPollingTime = inWapptomPollingTime; WABalance.mStartingOffset = 100; WABalance.mActive = true; WABalance.mPrecision = 8; WABalance.mParams = "\"*\" " + fDaemonSetting(fDefaultDaemon(), "BalanceMinConfirmations")
-          WABalanceWithoutConf.mPollingTime = inWapptomPollingTime; WABalanceWithoutConf.mStartingOffset = 200; WABalanceWithoutConf.mActive = true; WABalanceWithoutConf.mPrecision = 8; WABalanceWithoutConf.mParams = "\"*\""
+          WABalance.mPollingTime = inWapptomPollingTime; WABalance.mStartingOffset = 100; WABalance.mActive = true; WABalance.mPrecision = 8;// WABalance.mParams = "\"*\" " + fDaemonSetting(fDefaultDaemon(), "BalanceMinConfirmations")
+          WABalanceWithoutConf.mPollingTime = inWapptomPollingTime; WABalanceWithoutConf.mStartingOffset = 200; WABalanceWithoutConf.mActive = true; WABalanceWithoutConf.mPrecision = 8; //WABalanceWithoutConf.mParams = "\"*\""
           WABestBlockHash.mPollingTime = inWapptomPollingTime * 2; WABestBlockHash.mStartingOffset = 300; WABestBlockHash.mActive = true;
           WABlockCount.mPollingTime = inWapptomPollingTime; WABlockCount.mStartingOffset = 400; WABlockCount.mActive = true;
           WAConnectionCount.mPollingTime = inWapptomPollingTime * 3; WAConnectionCount.mStartingOffset = 500; WAConnectionCount.mActive = true;

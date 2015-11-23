@@ -14,7 +14,8 @@ class WapptomBalanceWithoutConf : public BXWapptom {
     ~WapptomBalanceWithoutConf();
 
     QString fName() const { return QString("WABalanceWithoutConf"); }
-    QString fInput() const { return QString("%1 %2 0").arg(mInput).arg(mParams); }
+//    QString fInput() const { return QString("%1 %2 0").arg(mInput).arg(mParams); }
+    QString fInput() const { return QString("%1 %2").arg(mInput).arg(mParams); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomWallet; }
 

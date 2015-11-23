@@ -293,19 +293,21 @@ AXComponent {
           fRawCallRequested(srCoin, "listreceivedbyaddress 1 1", 0)
         }
         else {
-          for(var i = 0; i < lList[0].length; i++) {
-            var vaList = lList[0][i]
-            var vaAddress = vaList[0]
-            var vaAmount = vaList[1]
-            if(vaList.length === 3) {
-              var vaAccount = vaList[2]
-              if(vaAccount === "") vaAccount = qsTr("-- Default")
-              lmAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
-              vaAddressSubtotal += parseFloat(vaAmount)
-            }
-            else {
-              if(vaAmount > 0) lmChangeAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": "" })
-              vaChangeSubtotal += parseFloat(vaAmount)
+          for(var h = 0; h < lList.length; h++) {
+            for(var i = 0; i < lList[h].length; i++) {
+              var vaList = lList[h][i]
+              var vaAddress = vaList[0]
+              var vaAmount = vaList[1]
+              if(vaList.length === 3) {
+                var vaAccount = vaList[2]
+                if(vaAccount === "") vaAccount = qsTr("-- Default")
+                lmAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
+                vaAddressSubtotal += parseFloat(vaAmount)
+              }
+              else {
+                if(vaAmount > 0) lmChangeAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": "" })
+                vaChangeSubtotal += parseFloat(vaAmount)
+              }
             }
           }
         }

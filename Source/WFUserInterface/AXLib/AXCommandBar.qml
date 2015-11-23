@@ -75,7 +75,7 @@ Rectangle {
         label: Text {
           anchors.fill: parent
           color: coOkButtonTextColor
-          text: qsTr("Ok")
+          text: qsTr("Apply")
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
           font.family: srFontFamily

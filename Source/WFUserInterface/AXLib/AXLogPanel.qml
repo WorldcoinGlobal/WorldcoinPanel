@@ -3,6 +3,7 @@ import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
 import ACMeasures.Lib 1.0
 import WFDefinitions.Lib 1.0
+
 Rectangle {
   id: rcRoot
 

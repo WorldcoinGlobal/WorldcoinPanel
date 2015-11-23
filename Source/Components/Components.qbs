@@ -41,6 +41,12 @@ Product {
     files: [ "Main/ComponentTransferCrypto/*" ]
   }
   Group {
+    name: "ComponentTransactionList"
+    qbs.install: true
+    qbs.installDir: "Components/Main/ComponentTransactionList"
+    files: [ "Main/ComponentTransactionList/*" ]
+  }
+  Group {
     name: "ComponentUpdater"
     qbs.install: true
     qbs.installDir: "Components/Main/ComponentUpdater"

@@ -138,13 +138,15 @@ Item {
   property real reTableCurrencyWidth: 4
   property real reTableBinWidth: 3
   property real reTableDateWidth: 2.3
-  property real reTableImageWidth: 3
+  property real reTableImageWidth: 2
   property real reTableSoundWidth: 3
   property real reTableVideoWidth: 3
   property real reTableBoolWidth: 3
   property real reTableTimeWidth: 2.3
   property real reTablePercentWidth: 3
   property real reTableSecretWidth: 3
+  property real reTableAddressWidth: 7
+  property real reTableHashWidth: 9
 
   property color coHorizontalHeaderColor: "LightSteelBlue"
   property color coHorizontalHeaderTextColor: "Black"
@@ -202,6 +204,8 @@ Item {
   property color coComponentDetailTotalTextColor: "White"
   property color coComponentInputNeutralColor: "LightYellow"
   property color coComponentInputTextColor: "Black"
+  property color coComponentParameterBackgroundColor: "Gray"
+  property color coComponentParameterTextColor: "White"
   property string srComponentFont: srFontFamily
   property real reComponentHorizontalHeaderRowHeight: 0.5
   property real reComponentRowHeight: 0.4

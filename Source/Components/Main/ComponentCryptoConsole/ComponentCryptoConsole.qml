@@ -12,7 +12,7 @@ AXComponent {
   coDefaultFocus: tfCommand
 
   property string srLastCommand
-  property real reColumnWidth: 2.5
+  property real reColumnWidth: 3
   property real reViewHeight
   property real reViewWidth
 

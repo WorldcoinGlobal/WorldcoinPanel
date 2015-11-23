@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import ACMeasures.Lib 1.0
 import SStyleSheet.Lib 1.0
+import QtQuick.Controls 1.3
 
 Rectangle {
   id: rcRoot
@@ -30,13 +31,15 @@ Rectangle {
     sourceSize.height: mCXDefinitions.ESizeTiny
     sourceSize.width: mCXDefinitions.ESizeTiny
   }
-  Text {
+  TextEdit {
     id: xtTitle
     anchors.top: parent.top
     anchors.left: imType.right
     anchors.leftMargin: Math.round(ACMeasures.fuToDots(reLeftMargin) * mCXDefinitions.mZoomFactor)
     anchors.bottom: parent.bottom
     anchors.right: parent.right
+    selectByMouse: true
+    readOnly: true
     font.pixelSize: parent.height * reTextRelativeSize // SStyleSheet.reCellHeight * reTextRelativeSize
     verticalAlignment: Text.AlignVCenter
   }
