@@ -219,6 +219,12 @@ AXComponent {
       }
     }
   }
+  Connections {
+    target: cComponentWalletsSummary
+    onSrBalanceChanged: {
+      fuActivate()
+    }
+  }
   function fuActivate() { fRawCallRequested(srCoin, "listtransactions \"*\" " + tfTransactionsDisplayed.srValue, 0) }
   function fuSetup() { tfTransactionsDisplayed.fuLoad() }
 }
