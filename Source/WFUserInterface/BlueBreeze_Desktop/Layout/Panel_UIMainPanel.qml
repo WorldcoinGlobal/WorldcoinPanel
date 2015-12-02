@@ -6,7 +6,7 @@ import QtQuick.Controls.Styles 1.3
 import "../../AXLib"
 import "../"
 
-AXWindow {
+AXPanel {
   id: panel
 
   title: "Worldcoin Business Center"
@@ -53,6 +53,5 @@ AXWindow {
   urLogPanel: "./Panel_UILogPanel.qml"
   urWorkspace: "./Panel_UIWorkspace.qml"
  // urResizeHandlerImage: "../Images/StatusBar_IMResizeHandler.png"
-  boFullPanel: true
 }
 

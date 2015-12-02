@@ -31,4 +31,4 @@ class WFCORE_EXPORT GXWindow : public QQuickWindow
     void sScaleDown();
 };
 
-#endif // AXWINDOW_H
+#endif // GXWINDOW_H

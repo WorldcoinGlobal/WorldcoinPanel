@@ -15,7 +15,6 @@ AXWindow {
   reHeightCm: 13
   reZoomDelta: SStyleSheet.reZoomDelta
   urBackgroundImage: "../Images/SplashScreen_IMSplashScreen.png"
-  boFullPanel: false
 
   property int inTimeoutInterval: 5000
   signal siTimeout
