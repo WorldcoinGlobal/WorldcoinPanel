@@ -260,10 +260,14 @@ GXWindow {
       }
     }
     Connections {
+      target: loInfoBar.item
+      onSiComponentActivation: { loModulePanel.item.fuActivateComponent(srComponentName) }
+    }
+    Connections {
       target: loTitleBar.item
       onSiCloseButtonClicked: { maRoot.propagateComposedEvents = false; maRoot.z = 10000; maRoot.enabled = false;  loTitleBar.item.boMouseEnabled = false; wiRoot.siCloseRequested(); }
       onSiMinimizeButtonClicked: { wiRoot.showMinimized() }
-      onSiMaximizeButtonClicked: { fuShowMaximized() }
+      onSiMaximizeButtonClicked: { fuShowMaximized() }      
       onSiWindowMoved: {
         wiRoot.x = wiRoot.x + poDelta.x
         wiRoot.y = wiRoot.y + poDelta.y

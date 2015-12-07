@@ -36,6 +36,7 @@ Rectangle {
   property bool boTiltFlag
   property bool boServiceClosing
   property int vaUpdatePriority
+  signal siComponentActivation(string srComponentName)
 
   clip: true
   Timer {
@@ -63,41 +64,21 @@ Rectangle {
     font.family: srFontFamily
     font.pixelSize: parent.height * 0.3
   }
-  Image {
-    id: imDaemon
-    fillMode: Image.Stretch
+  AXToolButton {
+    id: tbDaemon
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.right: parent.right
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    width: height
-    sourceSize.height: mCXDefinitions.ESizeMedium
-    sourceSize.width: mCXDefinitions.ESizeMedium
-    /*HueSaturation {
-      id: hsPressedEffect
-      anchors.fill: parent
-      source: imDaemon
-      hue: 0
-      saturation: 0
-      lightness: 0
-    }*/
-    MouseArea {
-      anchors.fill: parent
-      hoverEnabled: true
-  //    onEntered: { hsPressedEffect.lightness = hsPressedEffect.lightness + 0.15; }
-  //    onExited: { hsPressedEffect.lightness = hsPressedEffect.lightness - 0.15; }
-  //    onPressed: { hsPressedEffect.lightness = hsPressedEffect.lightness + 0.3; }
-  //    onReleased: { hsPressedEffect.lightness = hsPressedEffect.lightness - 0.3; }
-    }
   }
   Rectangle {
     id: rcSync
     clip: true
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: imDaemon.left
+    anchors.right: tbDaemon.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
@@ -114,7 +95,15 @@ Rectangle {
         else return 0;
       }
       color: "transparent"
-      Image {
+      AXToolButton {
+        id: tbSynced
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        width: rcSync.width
+        urIcon: urIconSyncOn
+      }
+   /*   Image {
         id: imSynced
         fillMode: Image.Stretch
         anchors.top: parent.top
@@ -125,7 +114,7 @@ Rectangle {
         sourceSize.height: mCXDefinitions.ESizeMedium
         sourceSize.width: mCXDefinitions.ESizeMedium
 
-      }
+      }*/
     }
     Rectangle {
       id: rcSyncInProgress
@@ -135,132 +124,72 @@ Rectangle {
       anchors.right: parent.right
       width: rcSync.width - rcSyncFinished.width
       color: "transparent"
-      Image {
-        id: imSyncInProgress
-        fillMode: Image.Stretch
+      AXToolButton {
+        id: tbSyncInProgress
         anchors.top: parent.top
-        anchors.right: parent.right
+        anchors.left: parent.left
         anchors.bottom: parent.bottom
         width: rcSync.width
-        source: urIconSyncOff
-        sourceSize.height: mCXDefinitions.ESizeMedium
-        sourceSize.width: mCXDefinitions.ESizeMedium
-
+        urIcon: urIconSyncOff
       }
     }
-    Image {
-      id: imSyncFinished
-      fillMode: Image.Stretch
+    AXToolButton {
+      id: tbSyncFinished
       anchors.fill: parent
-      source: urIconSyncFinished
-      sourceSize.height: mCXDefinitions.ESizeMedium
-      sourceSize.width: mCXDefinitions.ESizeMedium
+      urIcon: urIconSyncFinished
       visible: (Number(WNTotalBlockCount.mDisplayValue) <= Number(WABlockCount.mDisplayValue)) && (Number(WNTotalBlockCount.mDisplayValue) > 0) ? true : false
     }
   }
-  Image {
-    id: imLock
-    fillMode: Image.Stretch
+  AXToolButton {
+    id: tbLock
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.right: rcSync.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    width: height
-    sourceSize.height: mCXDefinitions.ESizeMedium
-    sourceSize.width: mCXDefinitions.ESizeMedium
-    /*HueSaturation {
-      id: hsLockPressesEffect
-      anchors.fill: parent
-      source: imLock
-      hue: 0
-      saturation: 0
-      lightness: 0
-    }*/
-    MouseArea {
-      anchors.fill: parent
-      hoverEnabled: true
-    //  onEntered: { hsLockPressesEffect.lightness = hsLockPressesEffect.lightness + 0.15; }
-    //  onExited: { hsLockPressesEffect.lightness = hsLockPressesEffect.lightness - 0.15; }
-    //  onPressed: { hsLockPressesEffect.lightness = hsLockPressesEffect.lightness + 0.3; }
-    //  onReleased: { hsLockPressesEffect.lightness = hsLockPressesEffect.lightness - 0.3; }
-    }
   }
-  Image {
-    id: imConnections
-    fillMode: Image.Stretch
+  AXToolButton {
+    id: tbConnections
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: imLock.left
+    anchors.right: tbLock.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    width: height
-    source: urIconConnectionsOff
-    sourceSize.height: mCXDefinitions.ESizeMedium
-    sourceSize.width: mCXDefinitions.ESizeMedium
-
+    urIcon: urIconConnectionsOff
   }
-  Image {
-    id: imServices
-    fillMode: Image.Stretch
+  AXToolButton {
+    id: tbServices
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: imConnections.left
+    anchors.right: tbConnections.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    width: height
-    source: urIconServicesOff
-    sourceSize.height: mCXDefinitions.ESizeMedium
-    sourceSize.width: mCXDefinitions.ESizeMedium
+    urIcon: urIconServicesOff
   }
-  Image {
-    id: imUpdates
-    fillMode: Image.Stretch
+  AXToolButton {
+    id: tbUpdates
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: imServices.left
+    anchors.right: tbServices.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    width: height
-    source: urIconUpdatesOff
-    sourceSize.height: mCXDefinitions.ESizeMedium
-    sourceSize.width: mCXDefinitions.ESizeMedium
-    /*HueSaturation {
-      id: hsUpdatesPressedEffect
-      anchors.fill: parent
-      source: imUpdates
-      hue: 0
-      saturation: 0
-      lightness: 0
-    }*/
-    MouseArea {
-      anchors.fill: parent
-      hoverEnabled: true
-     // onEntered: { hsUpdatesPressedEffect.lightness = hsUpdatesPressedEffect.lightness + 0.15; }
-     // onExited: { hsUpdatesPressedEffect.lightness = hsUpdatesPressedEffect.lightness - 0.15; }
-     // onPressed: { hsUpdatesPressedEffect.lightness = hsUpdatesPressedEffect.lightness + 0.3; }
-     // onReleased: { hsUpdatesPressedEffect.lightness = hsUpdatesPressedEffect.lightness - 0.3; }
-    }
+    urIcon: urIconUpdatesOff
+    onSiClicked: { siComponentActivation("ComponentUpdater"); }
   }
-  Image {
-    id: imIcon
-    fillMode: Image.Stretch
+  AXToolButton {
+    id: tbIcon
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: imUpdates.left
+    anchors.right: tbUpdates.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    width: height
-    source: urIconDefault
-    sourceSize.height: mCXDefinitions.ESizeMedium
-    sourceSize.width: mCXDefinitions.ESizeMedium
+    urIcon: urIconDefault
   }
-
   Rectangle {
     id: rcBottomBorder
     anchors.bottom: parent.bottom
@@ -282,31 +211,32 @@ Rectangle {
       }
     }
   }
+
   Connections {
     target: mCXPulzarConnector
     onSConnectionStatusChanged: {
-      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceError) imServices.source = urIconServicesError
-      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceReady) imServices.source = urIconServicesReady
-      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceStopped) imServices.source = urIconServicesOff
-      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceProcessing) imServices.source = urIconServicesProcessing
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceError) tbServices.urIcon = urIconServicesError
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceReady) tbServices.urIcon = urIconServicesReady
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceStopped) tbServices.urIcon = urIconServicesOff
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceProcessing) tbServices.urIcon = urIconServicesProcessing
     }
   }
   Connections {
     target: mCXStatus
     onSDaemonStatusChanged: {
       if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceStopped) {
-        imDaemon.source = urIconDaemonOff
+        tbDaemon.urIcon = urIconDaemonOff
    //     btDaemon.tooltip = qsTr("Worldcoin daemon is stopped.")
       }
       if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceReady) {
-        imDaemon.source = urIconDaemonReady
+        tbDaemon.urIcon = urIconDaemonReady
         if(boServiceClosing) mCXStatus.mDaemonStatus = CXDefinitions.EServiceClosing
       }
       if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceProcessing) {
-        imDaemon.source = urIconDaemonProcessing
+        tbDaemon.urIcon = urIconDaemonProcessing
       }
       if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceError) {
-        imDaemon.source = urIconDaemonError
+        tbDaemon.urIcon = urIconDaemonError
       }
     }
   }
@@ -327,18 +257,19 @@ Rectangle {
       }
       else {
         tmTiltTimer.stop()
-        imUpdates.source = urIconUpdatesNoUpdates
+    //    imUpdates.source = urIconUpdatesNoUpdates
+          tbUpdates.urIcon = urIconUpdatesNoUpdates
       }
     }
   }
   Connections {
     target: WAEncrypted
-    onMValueChanged: { imLock.source = WAEncrypted.mValue === "1" ? urIconLockOn : urIconLockOff }
+    onMValueChanged: { tbLock.urIcon = WAEncrypted.mValue === "1" ? urIconLockOn : urIconLockOff }
   }
   Component.onCompleted: {
     fuScale();
-    imDaemon.source = urIconDaemonOff
-    imLock.source = urIconLockOff
+    tbDaemon.urIcon = urIconDaemonOff
+    tbLock.urIcon = urIconLockOff
     boServiceClosing = false
   }
 
@@ -346,12 +277,12 @@ Rectangle {
     rcView.height = lvNewReleases.height + lvCurrentRelease.height + lvPreviousReleases.height
   }
   function fuChangeUpdateIcon() {
-    if(vaUpdatePriority == CXDefinitions.EUpgradeLow && boTiltFlag) { boTiltFlag = !boTiltFlag; imUpdates.source = urIconUpdatesLowPriority; return }
-    if(vaUpdatePriority == CXDefinitions.EUpgradeMedium && boTiltFlag) { boTiltFlag = !boTiltFlag; imUpdates.source = urIconUpdatesMediumPriority; return }
-    if(vaUpdatePriority == CXDefinitions.EUpgradeHigh && boTiltFlag) { boTiltFlag = !boTiltFlag; imUpdates.source = urIconUpdatesHighPriority; return }
-    if(vaUpdatePriority == CXDefinitions.EUpgradeCritical && boTiltFlag) { boTiltFlag = !boTiltFlag; imUpdates.source = urIconUpdatesCriticalPriority; return }
+    if(vaUpdatePriority == CXDefinitions.EUpgradeLow && boTiltFlag) { boTiltFlag = !boTiltFlag; tbUpdates.urIcon = urIconUpdatesLowPriority; return }
+    if(vaUpdatePriority == CXDefinitions.EUpgradeMedium && boTiltFlag) { boTiltFlag = !boTiltFlag; tbUpdates.urIcon = urIconUpdatesMediumPriority; return }
+    if(vaUpdatePriority == CXDefinitions.EUpgradeHigh && boTiltFlag) { boTiltFlag = !boTiltFlag; tbUpdates.urIcon = urIconUpdatesHighPriority; return }
+    if(vaUpdatePriority == CXDefinitions.EUpgradeCritical && boTiltFlag) { boTiltFlag = !boTiltFlag; tbUpdates.urIcon = urIconUpdatesCriticalPriority; return }
     boTiltFlag = !boTiltFlag;
-    imUpdates.source = urIconUpdatesOff;
+    tbUpdates.urIcon = urIconUpdatesOff;
   }
   function fuScale() { height = ACMeasures.fuToDots(reDefaultHeight) * mCXDefinitions.mZoomFactor; }
 }

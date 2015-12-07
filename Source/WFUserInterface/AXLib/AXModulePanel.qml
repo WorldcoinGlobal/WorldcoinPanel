@@ -67,6 +67,9 @@ Rectangle {
       verticalAlignment: Text.AlignVCenter
     }
   }
+  CXModulePanel {
+    id: cmModulePanel
+  }
   Rectangle {
     id: rcModulePanel
     anchors.top: rcTitle.bottom
@@ -181,7 +184,7 @@ Rectangle {
           onClicked: {
             lvModulePanel.currentIndex = index
             if((EComponentTypeRole != CXDefinitions.EArea) && (EComponentTypeRole != CXDefinitions.EModule)) {
-              var vaDependencies = cmModulePanel.fComponentDependencies(EEditRole)
+     /*         var vaDependencies = cmModulePanel.fComponentDependencies(EEditRole)
               for (var i = 0; i < vaDependencies.length; i++) {
                 var vaName = vaDependencies[i]
                 var vaLabel = cmModulePanel.fComponentLabel(vaName)
@@ -189,7 +192,8 @@ Rectangle {
                 var vaType = cmModulePanel.fComponentType(vaName)
                 rcRoot.siComponentSelected(vaName, vaLabel, vaCategory, vaType, 0)
               }
-              rcRoot.siComponentSelected(EEditRole, EDisplayRole, EComponentCategoryRole, EComponentTypeRole, 1)
+              rcRoot.siComponentSelected(EEditRole, EDisplayRole, EComponentCategoryRole, EComponentTypeRole, 1)*/
+              fuActivateComponent(EEditRole)
             }
           }
         }
@@ -199,11 +203,10 @@ Rectangle {
       id: lvModulePanel
       anchors.fill: parent
       highlightRangeMode: ListView.NoHighlightRange
-      model: CXModulePanel { id: cmModulePanel }
+      model: cmModulePanel
       delegate: coComponentBackground
       Component.onCompleted: { cmModulePanel.tLoadData(); }
     }
-
   }
   Rectangle {
     id: rcRightBorder
@@ -228,5 +231,21 @@ Rectangle {
   }
   Component.onCompleted: { fuScale() }
   function fuScale() { width = ACMeasures.fuToDots(reDefaultWidth) * mCXDefinitions.mZoomFactor; }
+  function fuActivateComponent(srComponentName) {
+    var vaIndex = cmModulePanel.fComponentRow(srComponentName)
+    if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceReady && (vaIndex >= 0)) {
+      lvModulePanel.currentIndex = vaIndex
+      var vaDependencies = cmModulePanel.fComponentDependencies(srComponentName)
+      for (var i = 0; i < vaDependencies.length; i++) {
+        var vaName = vaDependencies[i]
+        var vaLabel = cmModulePanel.fComponentLabel(vaName)
+        var vaCategory = cmModulePanel.fComponentCategory(vaName)
+        var vaType = cmModulePanel.fComponentType(vaName)
+        rcRoot.siComponentSelected(vaName, vaLabel, vaCategory, vaType, 0)
+      }
+      rcRoot.siComponentSelected(srComponentName, cmModulePanel.fComponentLabel(srComponentName), cmModulePanel.fComponentCategory(srComponentName), cmModulePanel.fComponentType(srComponentName), 1)
+  console.log(srComponentName + " -- " + cmModulePanel.fComponentRow(srComponentName))
+    }
+  }
 }
 

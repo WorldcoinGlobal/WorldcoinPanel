@@ -14,6 +14,8 @@ class WFOBJECTS_EXPORT CXModuleProxy : public QSortFilterProxyModel
     CXModuleProxy(QObject* pParent = 0);
     ~CXModuleProxy();
 
+    Q_INVOKABLE int fComponentRow(const QString& lComponent);
+
   protected:
     bool lessThan(const QModelIndex& lLeft, const QModelIndex& lRight) const Q_DECL_OVERRIDE;
 };

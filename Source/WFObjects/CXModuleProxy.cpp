@@ -1,5 +1,6 @@
 #include "CXModuleProxy.h"
 
+#include <QModelIndexList>
 #include <QObject>
 #include <QVariant>
 #include <CXDefinitions.h>
@@ -59,4 +60,9 @@ bool CXModuleProxy::lessThan(const QModelIndex& lLeft, const QModelIndex& lRight
   return false;
 }
 
+int CXModuleProxy::fComponentRow(const QString& lComponent) {
+  QModelIndexList lList(match(index(0,0), CXDefinitions::EEditRole, lComponent));
+  if(lList.size()) return lList.at(0).row();
+  return -1;
+}
 

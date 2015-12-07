@@ -22,7 +22,7 @@ class WFOBJECTS_EXPORT CXModulePanel : public CXModuleProxy
     Q_INVOKABLE QStringList fComponentDependencies(const QString& lComponent);
     Q_INVOKABLE QString fComponentCategory(const QString& lComponent);
     Q_INVOKABLE QString fComponentLabel(const QString& lComponent);
-    Q_INVOKABLE QString fComponentType(const QString& lComponent);
+    Q_INVOKABLE QString fComponentType(const QString& lComponent);    
 
   public slots:
     void tLoadData();
