@@ -23,6 +23,7 @@ class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnecto
   public:
     virtual ~BXCryptoConnector();
 
+    bool fIsEnabled() { return mEnabled; }
     virtual bool fCheckParameters();
     virtual int fKey() const = 0;
     virtual void fSetup();
@@ -36,6 +37,7 @@ class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnecto
     virtual const QString fTestConnectionCommand() const = 0;
 
   protected:
+    bool mEnabled;
     int mStatus;
     CXRcpClient* rRpc;
     QJsonRpcServiceReply* rRpcReply;

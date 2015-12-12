@@ -91,7 +91,7 @@ void CXComponentManager::fRegisterComponent(const QString& lComponentName, QObje
   else {
     mComponents.insert(lComponentName, pComponent);
     mComponentContent.insert(lComponentName, pComponentContent);
-    BXGuiApplication::instance()->fRegisterComponent(pComponentContent);
+    BXGuiApplication::fInstance()->fRegisterComponent(pComponentContent);
     connect(pComponentContent, &GXComponent::sRawCallRequested, this, &CXComponentManager::sRawCallRequested);
   }
 }

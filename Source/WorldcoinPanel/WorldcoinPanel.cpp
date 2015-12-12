@@ -19,7 +19,6 @@ int main(int lArgc, char** pArgv) {
     return 0;
 
   GXGuiApplication lApp(lArgc, pArgv);
-  lApp.tInit();
   int lRetCode = lApp.exec();
   return lRetCode;
 }

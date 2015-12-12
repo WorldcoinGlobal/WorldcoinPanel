@@ -183,18 +183,7 @@ Rectangle {
           anchors.fill: parent
           onClicked: {
             lvModulePanel.currentIndex = index
-            if((EComponentTypeRole != CXDefinitions.EArea) && (EComponentTypeRole != CXDefinitions.EModule)) {
-     /*         var vaDependencies = cmModulePanel.fComponentDependencies(EEditRole)
-              for (var i = 0; i < vaDependencies.length; i++) {
-                var vaName = vaDependencies[i]
-                var vaLabel = cmModulePanel.fComponentLabel(vaName)
-                var vaCategory = cmModulePanel.fComponentCategory(vaName)
-                var vaType = cmModulePanel.fComponentType(vaName)
-                rcRoot.siComponentSelected(vaName, vaLabel, vaCategory, vaType, 0)
-              }
-              rcRoot.siComponentSelected(EEditRole, EDisplayRole, EComponentCategoryRole, EComponentTypeRole, 1)*/
-              fuActivateComponent(EEditRole)
-            }
+            if((EComponentTypeRole != CXDefinitions.EArea) && (EComponentTypeRole != CXDefinitions.EModule)) fuActivateComponent(EEditRole)
           }
         }
       }
@@ -244,7 +233,6 @@ Rectangle {
         rcRoot.siComponentSelected(vaName, vaLabel, vaCategory, vaType, 0)
       }
       rcRoot.siComponentSelected(srComponentName, cmModulePanel.fComponentLabel(srComponentName), cmModulePanel.fComponentCategory(srComponentName), cmModulePanel.fComponentType(srComponentName), 1)
-  console.log(srComponentName + " -- " + cmModulePanel.fComponentRow(srComponentName))
     }
   }
 }

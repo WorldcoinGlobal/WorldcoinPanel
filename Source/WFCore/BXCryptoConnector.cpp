@@ -215,6 +215,7 @@ void BXCryptoConnector::tLoadSettings() {
   mRpcPort = lSettings.value("RpcPort").toString();
   mPidFileName = lSettings.value("PidFile").toString();
   mLockFileName = lSettings.value("LockFile").toString();
+  mEnabled = lSettings.value("Enabled", false).toBool();
   lSettings.endGroup();
 
   fLoadCommandDefinitions(cCommandDefinitions);

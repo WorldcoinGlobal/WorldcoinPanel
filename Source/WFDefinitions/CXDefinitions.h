@@ -189,13 +189,14 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
       ESizeExtraLarge = 4096
     };
 
-    static int fCurrentOS();
+    Q_INVOKABLE static int fCurrentOS();
     Q_INVOKABLE static QString fCurrentDate() { return QDate::currentDate().toString(cDefaultDateFormat); }
     Q_INVOKABLE static QString fAppDir() { return qApp->applicationDirPath(); }
     Q_INVOKABLE static QString fBackupDir() { return qApp->applicationDirPath() + "/" + cDefaultBackupDirectory; }
     Q_INVOKABLE static QString fCanonicalPath(const QString& lDir, bool lReturnStandard = false);
     Q_INVOKABLE static QString fCompressVersion(const QString& lVersion);
     Q_INVOKABLE static QString fExtendVersion(const QString& lVersion);
+    Q_INVOKABLE static QString fDefaultDaemon() { return cDefaultDaemon; }
 
 
     bool fSaveLog() const { return mSaveLog; }

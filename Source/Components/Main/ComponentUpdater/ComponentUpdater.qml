@@ -171,7 +171,6 @@ AXComponent {
       color: SStyleSheet.coComponentDetailTotalTextColor
       font.bold: true
       wrapMode: Text.WordWrap
-  //    font.italic: true
       font.pixelSize: parent.height * 0.3
       font.family: SStyleSheet.srComponentFont
     }
@@ -249,9 +248,9 @@ AXComponent {
   }
   function fuSetup() { mStatus = false; boWaitingForBackup = false }
   function fuAccept() {
-    if(cComponentBackupSettings.boBackupOnUpdate) {
+    if(ComponentBackupSettings.boBackupOnUpdate) {
       boWaitingForBackup = true;
-      cComponentBackupWallet.fuAccept()
+      ComponentBackupWallet.fuAccept()
     }
     else mCXStatus.tExecuteWizard();
   }
@@ -295,7 +294,7 @@ AXComponent {
     }
   }
   Connections {
-    target: cComponentBackupWallet
+    target: ComponentBackupWallet
     onSiBackupCompleted: {
       if(boWaitingForBackup) mCXStatus.tExecuteWizard();
       boWaitingForBackup = false

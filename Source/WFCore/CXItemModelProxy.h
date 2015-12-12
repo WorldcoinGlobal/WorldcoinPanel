@@ -13,7 +13,7 @@ class WFCORE_EXPORT CXItemModelProxy : public QSortFilterProxyModel
 
   public:
     CXItemModelProxy(QObject* pParent = 0);
-    ~CXItemModelProxy();
+    virtual ~CXItemModelProxy();
 
     QVariant data(const QModelIndex& lIndex, int lRole = Qt::DisplayRole) const Q_DECL_OVERRIDE;
     Q_INVOKABLE QVariant fHorizontalHeaderDataType(int lColumn) const;

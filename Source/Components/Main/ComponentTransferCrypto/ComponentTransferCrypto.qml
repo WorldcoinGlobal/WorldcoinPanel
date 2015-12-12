@@ -117,7 +117,7 @@ AXComponent {
       anchors.fill: parent
       horizontalAlignment: "AlignHCenter"
       verticalAlignment: "AlignVCenter"
-      text: qsTr("Balance: " + cComponentWalletsSummary.srBalance)
+      text: qsTr("Balance: " + ComponentWalletsSummary.srBalance)
       color: SStyleSheet.coComponentDetailSubtotalTextColor
       font.bold: false
       font.italic: true
@@ -168,7 +168,7 @@ AXComponent {
   }
   FXTextField {
     id: tfPassphrase
-    enabled: cComponentWalletsSummary.srEncrypted === "True" ? 1 : 0
+    enabled: ComponentWalletsSummary.srEncrypted === "True" ? 1 : 0
     anchors.top: rcDecryptTitle.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.left: parent.left
@@ -199,7 +199,7 @@ AXComponent {
     anchors.right: parent.right
     anchors.bottom: parent.bottom
     color: "Black"
-    opacity: cComponentWalletsSummary.srEncrypted === "True" ? 0 : 0.3
+    opacity: ComponentWalletsSummary.srEncrypted === "True" ? 0 : 0.3
     Behavior on opacity {
       NumberAnimation {
         duration: 1000
@@ -234,14 +234,14 @@ AXComponent {
         frTxID.srText = qsTr("Last Tx:" + lMessage)
         tfAddress.srValue = tfAddress.srDefaultValue
         tfAmount.srValue = tfAmount.srDefaultValue
-        if(cComponentBackupSettings.boBackupOnSending) cComponentBackupWallet.fuAccept()        
+        if(ComponentBackupSettings.boBackupOnSending) ComponentBackupWallet.fuAccept()        
       }
       tfAmount.srValue = "0"
       sComponentProcessing(0)
     }
   }
   function fuAccept() {
-    if(cComponentWalletsSummary.srEncrypted === "True") fRawCallRequested(srCoin, "walletpassphrase " + tfPassphrase.srValue + " " + " 2", 0, CXDefinitions.ELogNone)
+    if(ComponentWalletsSummary.srEncrypted === "True") fRawCallRequested(srCoin, "walletpassphrase " + tfPassphrase.srValue + " " + " 2", 0, CXDefinitions.ELogNone)
     sComponentProcessing(1)
     tmSend.running = true
     rcDisabled.opacity = 0.3    

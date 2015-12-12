@@ -220,7 +220,7 @@ AXComponent {
     }
   }
   Connections {
-    target: cComponentWalletsSummary
+    target: ComponentWalletsSummary
     onSrBalanceChanged: {
       fuActivate()
     }

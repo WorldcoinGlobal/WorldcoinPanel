@@ -294,7 +294,7 @@ GXSubWindow {
       newY = coRoot.y + coRoot.height - newH
     }
     coRoot.reHeightCm = ACMeasures.fuToCentimeters(newH)
-    tSetGeometry(coRoot.x, newY, coRoot.width, newH)
+    fSetGeometry(coRoot.x, newY, coRoot.width, newH)
     coRoot.y = newY
     fuResizeWorkspace()
   }
@@ -306,7 +306,7 @@ GXSubWindow {
     }
     if(newY >= coRoot.parent.height) { /*newH = (coRoot.parent.height - coRoot.y )*/ coRoot.parent.height = newY}
     coRoot.reHeightCm = ACMeasures.fuToCentimeters(newH)
-    tSetGeometry(coRoot.x, coRoot.y, coRoot.width, newH)
+    fSetGeometry(coRoot.x, coRoot.y, coRoot.width, newH)
     fuResizeWorkspace()
   }
   function fuMoveLeftBorder(newX) {
@@ -318,7 +318,7 @@ GXSubWindow {
       newW = coRoot.width
       newX = coRoot.x
     }
-    tSetGeometry(newX, coRoot.y, newW, coRoot.height)
+    fSetGeometry(newX, coRoot.y, newW, coRoot.height)
     coRoot.reWidthCm = ACMeasures.fuToCentimeters(newW)
     fuResizeWorkspace()
   }
@@ -331,7 +331,7 @@ GXSubWindow {
     }
     if(newX >= coRoot.parent.width) { coRoot.parent.width = newX }
     coRoot.reWidthCm = ACMeasures.fuToCentimeters(newW)
-    tSetGeometry(coRoot.x, coRoot.y, newW, coRoot.height)
+    fSetGeometry(coRoot.x, coRoot.y, newW, coRoot.height)
     fuResizeWorkspace()
   }
   function fuCloseSubWindow() {

@@ -28,7 +28,7 @@ class WFCORE_EXPORT CXItemModel : public QStandardItemModel {
     void fSetHorizontalHeaders(const QList<CXItemModelHeader*>& lHorizontalHeaders) { mHorizontalHeaders = lHorizontalHeaders; emit sHorizontalHeadersChanged(); }
 
   public slots:
-    virtual void tLoadData() { }
+    virtual void fLoadData() { }
 
   private:
     QList<CXItemModelHeader*> mHorizontalHeaders;

@@ -40,7 +40,7 @@ class WFOBJECTS_EXPORT GXGuiApplication : public BXGuiApplication
     bool fPendingRequests(bool lLocalOnly = false);
 
   public slots:
-    void tInit();
+    void fInit();
 
   protected:
     bool fStartDaemons();
@@ -49,22 +49,23 @@ class WFOBJECTS_EXPORT GXGuiApplication : public BXGuiApplication
     void fRegisterComponent(GXComponent* pComponent);
     void fRegisterObjects();
     void fSaveMessage(const CXMessage& lMessage);
-    bool eventFilter(QObject* pObj, QEvent* pEvent);
+
+    bool eventFilter(QObject* pObj, QEvent* pEvent); // Otherwise components created accept key events
 
   protected slots:
-    bool tLoadConnectors(const QString& lDirName);
-    bool tLoadWapptoms(const QString& lDirName);
-    void tCheckUpdates();
-    void tOnClose();    
-    void tLogMessage(int lCode, const QStringList& lParameters, const QString& lCustomText, int lLogType = CXDefinitions::ELogAll);
-    void tLogMessage(int lCode, const QString& lParameter = QString(), const QString& lCustomText = QString());
-    void tUpdateStatusText(int lCode, const QStringList& lParameters = QStringList());
-    void tUpdateDaemonStatus(const QString& lConnectorName, int lDaemonStatus);
-    void tRequesUpdateWapptomValue(const QString& lWapptomName);
-    void tUpdateValue(bool lSuccess, quint64 lRequestID, const QString& lValue);
-    void tUpdateValueJson(bool lSuccess, quint64 lRequestID, const QJsonValue& lValue);
-    void tRequestRawCall(const QString& lConnector, const QString& lRawRequest, const QString& lComponentName, bool lParse = true, int lLogType = CXDefinitions::ELogAll);
-    void tProcessNetworkRequest();
+    bool fLoadConnectors(const QString& lDirName);
+    bool fLoadWapptoms(const QString& lDirName);
+    void fCheckUpdates();
+    void fOnClose();
+    void fLogMessage(int lCode, const QStringList& lParameters, const QString& lCustomText, int lLogType = CXDefinitions::ELogAll);
+    void fLogMessage(int lCode, const QString& lParameter = QString(), const QString& lCustomText = QString());
+    void fProcessNetworkRequest();
+    void fRequestRawCall(const QString& lConnector, const QString& lRawRequest, const QString& lComponentName, bool lParse = true, int lLogType = CXDefinitions::ELogAll);
+    void fRequestUpdateWapptomValue(const QString& lWapptomName);
+    void fUpdateDaemonStatus(const QString& lConnectorName, int lDaemonStatus);
+    void fUpdateStatusText(int lCode, const QStringList& lParameters = QStringList());
+    void fUpdateValue(bool lSuccess, quint64 lRequestID, const QString& lValue);
+    void fUpdateValueJson(bool lSuccess, quint64 lRequestID, const QJsonValue& lValue);
 
   private:
     quint64 mRequestID;

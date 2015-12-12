@@ -296,7 +296,7 @@ GXWindow {
       target: mCXStatus
       onSDaemonStatusChanged: {
         if((mCXStatus.mDaemonStatus == CXDefinitions.EServiceReady) && boFirstTime) {
-          WABalance.mPollingTime = inWapptomPollingTime; WABalance.mStartingOffset = 100; WABalance.mActive = true; WABalance.mPrecision = 8;// WABalance.mParams = "\"*\" " + fDaemonSetting(fDefaultDaemon(), "BalanceMinConfirmations")
+          WABalance.mPollingTime = inWapptomPollingTime; WABalance.mStartingOffset = 100; WABalance.mActive = true; WABalance.mPrecision = 8;// WABalance.mParams = "\"*\" " + fDaemonSetting(mCXDefinitions.fDefaultDaemon(), "BalanceMinConfirmations")
           WABalanceWithoutConf.mPollingTime = inWapptomPollingTime; WABalanceWithoutConf.mStartingOffset = 200; WABalanceWithoutConf.mActive = true; WABalanceWithoutConf.mPrecision = 8; //WABalanceWithoutConf.mParams = "\"*\""
           WABestBlockHash.mPollingTime = inWapptomPollingTime * 2; WABestBlockHash.mStartingOffset = 300; WABestBlockHash.mActive = true;
           WABlockCount.mPollingTime = inWapptomPollingTime; WABlockCount.mStartingOffset = 400; WABlockCount.mActive = true;
@@ -406,11 +406,11 @@ GXWindow {
       onPositionChanged: { parent.fuResizeTop() }
     }
     function fuResizeTop() {
-      var newY = fMousePosition().y
+      var newY = fMouseGlobalPosition().y
       var newH = wiRoot.y - newY  + wiRoot.height
         //if(newY > wiRoot.y) loWorkspace.item.fuMoveBottomBorder()
       if(newH >= ACMeasures.fuToDots(reMinimumHeightCm)) {
-        tSetGeometry(wiRoot.x, newY, wiRoot.width, newH)
+        fSetGeometry(wiRoot.x, newY, wiRoot.width, newH)
         reHeightCm = ACMeasures.fuToCentimeters(newH)
         mCXDefinitions.mHeight = ACMeasures.fuToCentimeters(newH)
         mCXDefinitions.mY = newY
@@ -434,7 +434,7 @@ GXWindow {
       onPositionChanged: { parent.fuResizeBottom() }
     }
     function fuResizeBottom() {
-      var newY = fMousePosition().y
+      var newY = fMouseGlobalPosition().y
       var newH = newY - wiRoot.y
       if(newH >= ACMeasures.fuToDots(reMinimumHeightCm)) {
         wiRoot.height = newH
@@ -459,7 +459,7 @@ GXWindow {
       onPositionChanged: { parent.fuResizeRight() }
     }
     function fuResizeRight() {
-      var newX = fMousePosition().x
+      var newX = fMouseGlobalPosition().x
       var newW = newX - wiRoot.x
       if(newW >= ACMeasures.fuToDots(reMinimumWidthCm)) {
         wiRoot.width = newW
@@ -484,7 +484,7 @@ GXWindow {
       onPositionChanged: { parent.fuResizeLeft() }
     }
     function fuResizeLeft() {
-      var newX = fMousePosition().x
+      var newX = fMouseGlobalPosition().x
       var newW = wiRoot.x - newX  + wiRoot.width
       if(newW >= ACMeasures.fuToDots(reMinimumWidthCm)) {
         wiRoot.x = newX
@@ -508,6 +508,8 @@ GXWindow {
       if(lKeyCode == Qt.Key_Escape && boIsMaximized) {
         fuShowMaximized()
       }
+      if ((lKeyCode == Qt.Key_Plus) && (lModifiers & Qt.ControlModifier)) if(mCXDefinitions.mZoomFactor <= reMaximumZoom) fuScaleMainWindow(0.03, 1)
+      if ((lKeyCode == Qt.Key_Minus) && (lModifiers & Qt.ControlModifier)) if(mCXDefinitions.mZoomFactor >= reMinimumZoom) fuScaleMainWindow(0.03, 0)
     }
     onSKeyReleased: {
       if(lKeyCode == Qt.Key_Control) {
@@ -517,8 +519,6 @@ GXWindow {
         maWorkspace.width = 0
       }
     }
-    onSScaleUp: { if(mCXDefinitions.mZoomFactor <= reMaximumZoom) fuScaleMainWindow(0.03, 1) }
-    onSScaleDown: { if(mCXDefinitions.mZoomFactor >= reMinimumZoom) fuScaleMainWindow(0.03, 0) }
   }
   function fuScaleMainWindow(reZoomDelta, boExpanding) {
     var vaCurrentWidth = wiRoot.width
@@ -528,8 +528,6 @@ GXWindow {
     var vaZoomFactor = 0
     if(boExpanding) vaZoomFactor = 1 / (1 - reZoomDelta)
     else vaZoomFactor = (1 - reZoomDelta)
- //   wiRoot.height =  ACMeasures.fuToDots(wiRoot.reHeightCm) * vaZoomFactor // / reOriginalZoom
- //   wiRoot.width =  ACMeasures.fuToDots(wiRoot.reWidthCm) * vaZoomFactor // / reOriginalZoom
 
     if((wiRoot.x < 0) || (wiRoot.y < 0)/* || ((wiRoot.x + wiRoot.width) > Screen.width) || ((wiRoot.y + wiRoot.height) > Screen.height)*/
       || ((wiRoot.height < ACMeasures.fuToDots(reMinimumHeightCm)) && !boExpanding) || ((wiRoot.width < ACMeasures.fuToDots(reMinimumWidthCm)) && !boExpanding)) {

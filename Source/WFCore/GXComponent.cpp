@@ -29,7 +29,7 @@ QString GXComponent::fSetting(const QString& lParameter) const {
 }
 
 QString GXComponent::fImageFile(const QString& lImageName) const {
-  return BXGuiApplication::instance()->fImageFile(lImageName);
+  return BXGuiApplication::fInstance()->fImageFile(lImageName);
 }
 
 void GXComponent::fQuitApplication() {

@@ -11,7 +11,3 @@ GXWindow::GXWindow(QWindow* lParent )
 QString GXWindow::fDaemonSetting(const QString& lDaemon, const QString& lParameter) const {
   return BXGuiApplication::fDaemonSetting(lDaemon, lParameter);
 }
-
-QString GXWindow::fDefaultDaemon() const {
-  return BXGuiApplication::fDefaultDaemon();
-}

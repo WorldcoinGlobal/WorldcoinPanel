@@ -14,7 +14,7 @@ AXComponent {
   property real vaAddressSubtotal
   property real vaChangeSubtotal
   property bool boUseReceiveByAddress // listaddressgrouping doesn't work for new wallets
-  property real reTotal: cComponentWalletsSummary.srBalance
+  property real reTotal: ComponentWalletsSummary.srBalance
 
   Component {
     id: coAddressHeader

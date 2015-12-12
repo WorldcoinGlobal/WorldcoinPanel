@@ -28,7 +28,7 @@ AXComponent {
       anchors.fill: parent
       horizontalAlignment: "AlignHCenter"
       verticalAlignment: "AlignVCenter"
-      text: cComponentWalletsSummary.srEncrypted === "True" ? qsTr("Change Passphrase") : qsTr("New Passphrase")
+      text: ComponentWalletsSummary.srEncrypted === "True" ? qsTr("Change Passphrase") : qsTr("New Passphrase")
       color: SStyleSheet.coComponentHorizontalHeaderTextColor
       font.bold: true
       font.italic: true
@@ -46,7 +46,7 @@ AXComponent {
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
     boSaveSetting: false
     echoMode:TextInput.Password
-    reHeightCm: cComponentWalletsSummary.srEncrypted === "True" ? SStyleSheet.reComponentRowHeight : 0
+    reHeightCm: ComponentWalletsSummary.srEncrypted === "True" ? SStyleSheet.reComponentRowHeight : 0
     srLabelText:  qsTr("Old Passphrase:")
     srFontFamily: SStyleSheet.srFontFamily
     srDefaultValue: ""
@@ -70,7 +70,7 @@ AXComponent {
     boSaveSetting: false
     echoMode:TextInput.Password
     reHeightCm: SStyleSheet.reComponentRowHeight
-    srLabelText: cComponentWalletsSummary.srEncrypted === "True" ? qsTr("New Passphrase:") : qsTr("Passphrase:")
+    srLabelText: ComponentWalletsSummary.srEncrypted === "True" ? qsTr("New Passphrase:") : qsTr("Passphrase:")
     srFontFamily: SStyleSheet.srFontFamily
     srDefaultValue: ""
     stStyle: SXTextField {
@@ -137,7 +137,7 @@ AXComponent {
       verticalAlignment: "AlignVCenter"
       text: {
         if(mStatus) return qsTr("After encryption WBC will close!")
-        if(cComponentWalletsSummary.srEncrypted === "True") return qsTr("Wallet is encrypted!")
+        if(ComponentWalletsSummary.srEncrypted === "True") return qsTr("Wallet is encrypted!")
         if(tfPassphrase.srValue == "") return qsTr("Password can't be empty!")
         return qsTr("Passwords don't match!")
       }
@@ -162,7 +162,7 @@ AXComponent {
     anchors.right: parent.right
     anchors.bottom: parent.bottom
     color: "Black"
-    opacity: cComponentWalletsSummary.srEncrypted === "True" ? 0.3 : 0
+    opacity: ComponentWalletsSummary.srEncrypted === "True" ? 0.3 : 0
     Behavior on opacity {
       NumberAnimation {
         duration: 1000
@@ -192,14 +192,14 @@ AXComponent {
   }
   Component.onCompleted: {
     mStatus = Qt.binding(function() {
-                if((cComponentWalletsSummary.srEncrypted === "False") && (tfPassphrase.srValue != "") && (tfPassphrase.srValue === tfRepeatPassphrase.srValue)) return true
-                if((cComponentWalletsSummary.srEncrypted === "True") && (tfOldPassphrase.srValue != "") && (tfPassphrase.srValue != "") && (tfPassphrase.srValue === tfRepeatPassphrase.srValue)) return true
+                if((ComponentWalletsSummary.srEncrypted === "False") && (tfPassphrase.srValue != "") && (tfPassphrase.srValue === tfRepeatPassphrase.srValue)) return true
+                if((ComponentWalletsSummary.srEncrypted === "True") && (tfOldPassphrase.srValue != "") && (tfPassphrase.srValue != "") && (tfPassphrase.srValue === tfRepeatPassphrase.srValue)) return true
                 return false
               })
   }
 
   function fuAccept() {
-    if(cComponentWalletsSummary.srEncrypted === "False")
+    if(ComponentWalletsSummary.srEncrypted === "False")
       fRawCallRequested(srCoin, "encryptwallet " + tfPassphrase.srValue, 0, CXDefinitions.ELogPanel)
     else
       fRawCallRequested(srCoin, "walletpassphrasechange " + tfOldPassphrase.srValue  + " " + tfPassphrase.srValue, 0, CXDefinitions.ELogPanel)

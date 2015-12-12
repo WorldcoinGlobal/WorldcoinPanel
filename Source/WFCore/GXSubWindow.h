@@ -17,12 +17,12 @@ class WFCORE_EXPORT GXSubWindow : public QQuickItem
 
     Q_INVOKABLE int fIsActive() const { return mActive; }
     Q_INVOKABLE void fProcessEvents() { qApp->processEvents(); }
-    Q_INVOKABLE QPoint fMousePosition() const { return QCursor::pos(); }
+    Q_INVOKABLE QPoint fMouseGlobalPosition() const { return QCursor::pos(); }
 
   public slots:
     void tSetActive(bool lActive) { mActive = lActive; emit sIsActiveChanged(); }
     void tScale() { emit sScaleRequested(); }
-    void tSetGeometry(double x, double y, double lWidth, double lHeight) {
+    void fSetGeometry(double x, double y, double lWidth, double lHeight) {
       setX(x); setY(y);
       setWidth(lWidth); setHeight(lHeight);
     }

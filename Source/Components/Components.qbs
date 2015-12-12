@@ -29,6 +29,12 @@ Product {
     files: [ "Main/ComponentCryptoConsole/*" ]
   }
   Group {
+    name: "ComponentDaemonSettings"
+    qbs.install: true
+    qbs.installDir: "Components/Main/ComponentDaemonSettings"
+    files: [ "Main/ComponentDaemonSettings/*" ]
+  }
+  Group {
     name: "ComponentEncryptWallet"
     qbs.install: true
     qbs.installDir: "Components/Main/ComponentEncryptWallet"

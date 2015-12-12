@@ -9,7 +9,7 @@ AXComponent {
   id: rcRoot
   reHeightCm: 8
   reWidthCm: 13
-  property string srBaseBackupName: cComponentBackupSettings.srBaseName
+  property string srBaseBackupName: ComponentBackupSettings.srBaseName
   property string srBaseBackupExtension: "dat"
   property string srCurrentFolder: moFolderModel.folder
   signal siBackupCompleted
@@ -181,7 +181,7 @@ AXComponent {
 
         FolderListModel {
           id: moFolderModel
-          folder: mCXDefinitions.fCanonicalPath(cComponentBackupSettings.srBackupDirectory, false)
+          folder: mCXDefinitions.fCanonicalPath(ComponentBackupSettings.srBackupDirectory, false)
           nameFilters: ["*.dat"]
           showDirs : true
           showDirsFirst : true
@@ -225,8 +225,8 @@ AXComponent {
     lvFiles.currentIndex = -1;
   }
   function fuAccept() {
-    var vaBackupName = mCXDefinitions.fCanonicalPath(moFolderModel.folder, true) + "/" + cComponentBackupSettings.srBaseName + "_" + cComponentBackupSettings.srCoin + "_" + mCXDefinitions.fCurrentDate() + ".dat"
-    fRawCallRequested(cComponentBackupSettings.srCoin, "backupwallet " + vaBackupName)
+    var vaBackupName = mCXDefinitions.fCanonicalPath(moFolderModel.folder, true) + "/" + ComponentBackupSettings.srBaseName + "_" + ComponentBackupSettings.srCoin + "_" + mCXDefinitions.fCurrentDate() + ".dat"
+    fRawCallRequested(ComponentBackupSettings.srCoin, "backupwallet " + vaBackupName)
   }
   function fuActivate() { }
   function fuSetup() { }
