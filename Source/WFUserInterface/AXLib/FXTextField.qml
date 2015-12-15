@@ -17,6 +17,8 @@ Item {
   property string srDefaultValue
   property alias srValue: tfText.text
   property string srSetting
+  property string srConnector
+  property bool boUseDaemonConf: false
   signal siAccepted
 
   width: ACMeasures.fuToDots(reWidthCm)
@@ -46,17 +48,17 @@ Item {
     onAccepted: { itRoot.siAccepted() }
   }
   function fuSave() {
-    parent.tSetSetting(srSetting, tfText.text)
+    parent.fSetSetting(srSetting, tfText.text, boUseDaemonConf, srConnector)
   }
   function fuLoad() {
     tfText.text = srDefaultValue
-
-    if(boSaveSetting && parent.fSetting(srSetting) === '') {
-      parent.tSetSetting(srSetting, srDefaultValue)
+//console.log(boSaveSetting, srDefaultValue, parent.fSetting(srSetting, boUseDaemonConf, srConnector))
+    if(boSaveSetting && parent.fSetting(srSetting, boUseDaemonConf, srConnector) === '') {
+      parent.fSetSetting(srSetting, srDefaultValue, boUseDaemonConf, srConnector)
       tfText.text = srDefaultValue
     }
-    if(boSaveSetting && parent.fSetting(srSetting) !== '') {
-      tfText.text = parent.fSetting(srSetting)
+    if(boSaveSetting && parent.fSetting(srSetting, boUseDaemonConf, srConnector) !== '') {
+      tfText.text = parent.fSetting(srSetting, boUseDaemonConf, srConnector)
     }
   }
 }

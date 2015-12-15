@@ -120,10 +120,10 @@ Rectangle {
   }
   function fuScaleComponents() { mCXComponentManager.fScaleComponents() }
   function fuAdjustWorkspaceSize() {
-    console.log(svScrollView.width,rcWorkspace.width,svScrollView.height,svScrollView.height)
+    //console.log(svScrollView.width,rcWorkspace.width,svScrollView.height,svScrollView.height)
     if(svScrollView.width > rcWorkspace.width)  rcWorkspace.width = svScrollView.width
     if(svScrollView.height > rcWorkspace.height)  rcWorkspace.height = svScrollView.height
-    console.log(svScrollView.width,rcWorkspace.width,svScrollView.height,svScrollView.height)
+  //  console.log(svScrollView.width,rcWorkspace.width,svScrollView.height,svScrollView.height)
   }
   Connections {
     target: svScrollView

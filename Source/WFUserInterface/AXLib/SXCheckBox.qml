@@ -7,6 +7,7 @@ CheckBoxStyle {
   property color coInactiveBorderFocus
   property color coBackgroundColor
   property color coActiveColor
+  property color coInactiveColor
   property color coTextColor
   property string srFontFamily
   property real reHeightCm
@@ -22,7 +23,7 @@ CheckBoxStyle {
     border.width: 1
     Rectangle {
       visible: control.checked
-      color: coActiveColor
+      color: control.enabled ? coActiveColor : coInactiveColor
       border.color: coActiveColor
       radius: reCheckBoxRadius
       anchors.margins: ACMeasures.fuToDots(reHeightCm) * 0.2

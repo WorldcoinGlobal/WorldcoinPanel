@@ -133,7 +133,7 @@ Rectangle {
       Rectangle {
         color: coCellColor
         height: ACMeasures.fuToDots(reCellHeight) * mCXDefinitions.mZoomFactor
-        //Component.onCompleted: { if(lvLogPanel && lvLogPanel.rowCount > 0) { lvLogPanel.positionViewAtRow(lvLogPanel.rowCount - 1, ListView.Visible); console.log("aedede: " + lvLogPanel.rowCount - 1); } }
+        //Component.onCompleted: { if(lvLogPanel && lvLogPanel.rowCount > 0) { lvLogPanel.positionViewAtRow(lvLogPanel.rowCount - 1, ListView.Visible) } }
       }
     }
     Component {

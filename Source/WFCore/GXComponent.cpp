@@ -1,3 +1,4 @@
+#include <QCoreApplication>
 #include <QCursor>
 #include <QJsonArray>
 #include <QJsonValue>
@@ -24,8 +25,16 @@ void GXComponent::fRawCallRequested(const QString& lConnector, const QString& lR
     emit sRawCallRequested(lConnector, lRawRequest, mName, lParse, lLogType);
 }
 
-QString GXComponent::fSetting(const QString& lParameter) const {
-  return BXGuiApplication::fComponentSetting(fName(), lParameter);
+QString GXComponent::fSetting(const QString& lSetting, bool lUseDaemonConf, const QString& lConnector) const {
+  QString lConnectorName = lConnector;
+  if(lUseDaemonConf) {
+    if(lConnector.simplified().isEmpty()) lConnectorName = cDefaultDaemon;
+    QSettings lSettings(qApp->applicationDirPath() + "/" + cDaemonsConf, QSettings::IniFormat);
+    lSettings.beginGroup(lConnectorName);
+    QString lValue = lSettings.value(lSetting).toString();
+    return lValue;
+  }
+  return BXGuiApplication::fComponentSetting(fName(), lSetting);
 }
 
 QString GXComponent::fImageFile(const QString& lImageName) const {
@@ -36,9 +45,19 @@ void GXComponent::fQuitApplication() {
   BXGuiApplication::quit();
 }
 
-void GXComponent::tSetSetting(const QString& lSetting, const QString& lValue) {
-  QSettings lSettings(cComponentsConfig, QSettings::IniFormat);
-  lSettings.beginGroup(fName());
-  lSettings.setValue(lSetting, lValue);
-  lSettings.endGroup();
+void GXComponent::fSetSetting(const QString& lSetting, const QString& lValue, bool lUseDaemonConf, const QString& lConnector) {
+  QString lConnectorName = lConnector;
+  if(lUseDaemonConf) {
+    if(lConnector.simplified().isEmpty()) lConnectorName = cDefaultDaemon;
+    QSettings lSettings(qApp->applicationDirPath() + "/" + cDaemonsConf, QSettings::IniFormat);
+    lSettings.beginGroup(lConnectorName);
+    lSettings.setValue(lSetting, lValue);
+    lSettings.endGroup();
+  }
+  else {
+    QSettings lSettings(qApp->applicationDirPath() + "/" + cComponentsConfig, QSettings::IniFormat);
+    lSettings.beginGroup(fName());
+    lSettings.setValue(lSetting, lValue);
+    lSettings.endGroup();
+  }
 }

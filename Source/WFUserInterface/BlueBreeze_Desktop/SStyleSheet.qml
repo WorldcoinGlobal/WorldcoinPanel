@@ -242,6 +242,7 @@ Item {
   property color coCheckBoxInactiveBorderFocus: "Gray"
   property color coCheckBoxBackgroundColor: "White"
   property color coCheckBoxActiveColor: "SteelBlue"
+  property color coCheckBoxInactiveColor: "Gray"
   property color coCheckBoxTextColor: "Black"
   property real reCheckBoxHeight: 0.3
   property real reCheckBoxWidth: 0.3

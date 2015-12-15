@@ -20,7 +20,7 @@ class WFCORE_EXPORT GXComponent : public QQuickItem
     Q_INVOKABLE int fType() const { return mType; }
     Q_INVOKABLE QString fName() const { return mName; }
     Q_INVOKABLE void fSetName(const QString& lName ) { mName = lName; emit sNameChanged(); }
-    Q_INVOKABLE QString fSetting(const QString& lParameter) const;
+    Q_INVOKABLE QString fSetting(const QString& lSetting, bool lUseDaemonConf, const QString& lConnector) const;
     Q_INVOKABLE QString fImageFile(const QString& lImageName) const;
     Q_INVOKABLE int fMinConf() const { return cDefaultMinConfForBalance; }
     Q_INVOKABLE bool fStatus() const { return mStatus; }
@@ -34,7 +34,7 @@ class WFCORE_EXPORT GXComponent : public QQuickItem
 
   public slots:
     void tSetType(int lType) { mType = lType; }
-    void tSetSetting(const QString& lSetting, const QString& lValue);
+    void fSetSetting(const QString& lSetting, const QString& lValue, bool lUseDaemonConf, const QString& lConnector);
     void tSetStatus(bool lStatus) { mStatus = lStatus; emit sStatusChanged(); }
 
   signals:

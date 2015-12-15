@@ -9,22 +9,24 @@ CheckBox {
   property real reWidthCm
   property string srDefaultValue
   property string srSetting
+  property string srConnector
+  property bool boUseDaemonConf: false
   property bool boValue
   height: ACMeasures.fuToDots(reHeightCm)
   width: ACMeasures.fuToDots(reWidthCm)
   function fuSave() {
     if(cbRoot.checked) {
-      parent.tSetSetting(srSetting, "1")
+      parent.fSetSetting(srSetting, "1", boUseDaemonConf, srConnector)
       boValue = true
     }
     else {
-      parent.tSetSetting(srSetting, "0")
+      parent.fSetSetting(srSetting, "0", boUseDaemonConf, srConnector)
       boValue = false
     }
   }
   function fuLoad() {
-    if(parent.fSetting(srSetting) === '') {
-      parent.tSetSetting(srSetting, srDefaultValue)
+    if(parent.fSetting(srSetting, boUseDaemonConf, srConnector) === '') {
+      parent.fSetSetting(srSetting, srDefaultValue, boUseDaemonConf, srConnector)
       if(srDefaultValue === "0")  {
         cbRoot.checked = false
         boValue = false
@@ -35,7 +37,7 @@ CheckBox {
       }
     }
     else {
-      if(parent.fSetting(srSetting) === "0")  {
+      if(parent.fSetting(srSetting, boUseDaemonConf, srConnector) === "0")  {
         cbRoot.checked = false
         boValue = false
       }
