@@ -15,6 +15,7 @@ AXComponent {
   property real vaChangeSubtotal
   property bool boUseReceiveByAddress // listaddressgrouping doesn't work for new wallets
   property real reTotal: ComponentWalletsSummary.srBalance
+  property string srNewAddress: ComponentAddress.srNewAddress
 
   Component {
     id: coAddressHeader
@@ -270,10 +271,11 @@ AXComponent {
   ListModel { id: lmChangeAddressModel }
 
   onReTotalChanged: { fuActivate() }
+  onSrNewAddressChanged: { fuActivate() }
   function fuActivate() {
     boUseReceiveByAddress = 0
     fRawCallRequested(srCoin, "listaddressgroupings", 0)
-  }
+  }  
   function fuSetup() { }
   Connections {
     target: rcRoot

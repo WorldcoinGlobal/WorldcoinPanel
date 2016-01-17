@@ -21,14 +21,14 @@ class IXCryptoConnector
     virtual const QString fTestConnectionCommand() const = 0;
 
   public slots:    
-    virtual bool tEndService() = 0;
-    virtual bool tExecute(int lRequestType, quint64 lRequestID, const QString& lInput, const QString& lOutput, bool lResponseStateIsAnswer = false, bool lParse = true, int lLogType = CXDefinitions::ELogAll) = 0;
-    virtual bool tRestart() = 0;
-    virtual bool tStart() = 0;
-    virtual bool tStop() = 0;
-    virtual void tLoadSettings() = 0;
-    virtual void tSaveSettings() = 0;
-    virtual void tSendReply() = 0;
+    virtual bool fEndService() = 0;
+    virtual bool fExecute(int lRequestType, quint64 lRequestID, const QString& lInput, const QString& lOutput, bool lResponseStateIsAnswer = false, bool lParse = true, int lLogType = CXDefinitions::ELogAll) = 0;
+    virtual bool fRestart() = 0;
+    virtual bool fStart() = 0;
+    virtual bool fStop() = 0;
+    virtual void fLoadSettings() = 0;
+    virtual void fSaveSettings() = 0;
+    virtual void fSendReply() = 0;
 };
 
 Q_DECLARE_INTERFACE(IXCryptoConnector, "com.arxen.Pulzar.IXCryptoConnector/1.0.0")

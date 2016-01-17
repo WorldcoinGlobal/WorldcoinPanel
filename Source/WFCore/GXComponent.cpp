@@ -1,8 +1,10 @@
 #include <QCoreApplication>
 #include <QCursor>
 #include <QJsonArray>
+#include <QJsonObject>
 #include <QJsonValue>
 #include <QSettings>
+#include <QVariantMap>
 #include <CXDefinitions.h>
 
 #include "GXComponent.h"
@@ -15,8 +17,24 @@ GXComponent::GXComponent(QQuickItem* lParent )
 }
 
 QVariantList GXComponent::fJsonToList(const QJsonValue& lJsonValue) const {
-  QJsonArray lJsonArray(lJsonValue.toArray());
-  QVariantList lList(lJsonArray.toVariantList());
+  QVariantList lList;
+  if(lJsonValue.isArray()) {
+    QJsonArray lJsonArray(lJsonValue.toArray());
+    lList = lJsonArray.toVariantList();
+  }
+  if(lJsonValue.isObject()) {
+    QJsonObject lJsonObject(lJsonValue.toObject());
+    QVariantMap lMap(lJsonObject.toVariantMap());
+    QMapIterator<QString, QVariant> i(lMap);
+    while (i.hasNext()) {
+      i.next();
+      lList.append(QString("%1|%2").arg(i.key()).arg(i.value().toString()));
+    }
+  }
+  if(lJsonValue.isString()) {
+    QString lString(lJsonValue.toString());
+    lList.append(lString);
+  }
   return lList;
 }
 

@@ -79,7 +79,7 @@ QString CXDefinitions::fExtendVersion(const QString& lVersion)
   return lValues.join(".");
 }
 
-void CXDefinitions::tSaveSettings(){
+void CXDefinitions::fSaveSettings(){
   QSettings lSettings(cDefaultConfig, QSettings::IniFormat);
   lSettings.beginGroup("UI");
   lSettings.setValue("AnimationDuration", mAnimationDuration);

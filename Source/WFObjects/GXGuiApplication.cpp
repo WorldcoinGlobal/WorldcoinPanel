@@ -182,7 +182,7 @@ bool GXGuiApplication::fStartDaemons() {
   QMapIterator<QString, QSharedPointer<BXCryptoConnector> > i(mConnectors);
   while (i.hasNext()) {
     i.next();
-    if((i.value()->fName() == cDefaultDaemon) && (!i.value()->tStart())) return false;
+    if((i.value()->fName() == cDefaultDaemon) && (!i.value()->fStart())) return false;
     if(i.value()->fIsEnabled() &&  i.value()->fName() != cDefaultDaemon) fLogMessage(3200024);
   }
   return true;
@@ -209,7 +209,7 @@ bool GXGuiApplication::fLoadConnectors(const QString& lDirName) {
       connect(lConnector.data(), &BXCryptoConnector::sStatusChanged, this, &GXGuiApplication::fUpdateDaemonStatus);
       connect(lConnector.data(), &BXCryptoConnector::sReply, this, &GXGuiApplication::fUpdateValue);
       connect(lConnector.data(), &BXCryptoConnector::sReplyJson, this, &GXGuiApplication::fUpdateValueJson);
-      lConnector->tLoadSettings();
+      lConnector->fLoadSettings();
       lConnector->fSetup();
     }
     else {
@@ -317,7 +317,7 @@ void GXGuiApplication::fRequestRawCall(const QString& lConnector, const QString&
   else {
     lCurrentRequest.lStatus = CXDefinitions::ERequestProcessing;
     mPendingRequests.insert(mRequestID, lCurrentRequest);
-    mConnectors.value(lConnector)->tExecute(CXDefinitions::ERawCall, mRequestID, lCurrentRequest.lInput, lCurrentRequest.lOutput, false, lParse, lLogType);
+    mConnectors.value(lConnector)->fExecute(CXDefinitions::ERawCall, mRequestID, lCurrentRequest.lInput, lCurrentRequest.lOutput, false, lParse, lLogType);
   }
 }
 
@@ -361,7 +361,7 @@ void GXGuiApplication::fRequestUpdateWapptomValue(const QString &lWapptomName) {
     else {
       lCurrentRequest.lStatus = CXDefinitions::ERequestProcessing;
       mPendingRequests.insert(mRequestID, lCurrentRequest);
-      mConnectors.value(lConnector)->tExecute(CXDefinitions::EWapptom, mRequestID, pWapptom->fInput(), pWapptom->fOutput(), pWapptom->fResponseStateIsAnswer(), true);
+      mConnectors.value(lConnector)->fExecute(CXDefinitions::EWapptom, mRequestID, pWapptom->fInput(), pWapptom->fOutput(), pWapptom->fResponseStateIsAnswer(), true);
     }
   }
   if(pWapptom->fType() == CXDefinitions::EWapptomNetwork) {
@@ -431,7 +431,7 @@ void GXGuiApplication::fUpdateValue(bool lSuccess, quint64 lRequestID, const QSt
     i.next();
     if(i.value().lStatus == CXDefinitions::ERequestQueued) {
       mPendingRequests[i.key()].lStatus = CXDefinitions::ERequestProcessing;
-      mConnectors.value(i.value().lConnector)->tExecute(i.value().lType, i.key(), i.value().lInput, i.value().lOutput, i.value().lResponseStateIsAnswer, i.value().lParse, i.value().lLogType);
+      mConnectors.value(i.value().lConnector)->fExecute(i.value().lType, i.key(), i.value().lInput, i.value().lOutput, i.value().lResponseStateIsAnswer, i.value().lParse, i.value().lLogType);
       break;
     }
   }
@@ -453,7 +453,7 @@ void GXGuiApplication::fUpdateValueJson(bool lSuccess, quint64 lRequestID, const
     i.next();
     if(i.value().lStatus == CXDefinitions::ERequestQueued) {
       mPendingRequests[i.key()].lStatus = CXDefinitions::ERequestProcessing;
-      mConnectors.value(i.value().lConnector)->tExecute(i.value().lType, i.key(), i.value().lInput, i.value().lOutput, i.value().lResponseStateIsAnswer, i.value().lParse, i.value().lLogType);
+      mConnectors.value(i.value().lConnector)->fExecute(i.value().lType, i.key(), i.value().lInput, i.value().lOutput, i.value().lResponseStateIsAnswer, i.value().lParse, i.value().lLogType);
       break;
     }
   }
@@ -477,12 +477,12 @@ void GXGuiApplication::fUpdateStatusText(int lCode, const QStringList& lParamete
 
 void GXGuiApplication::fOnClose() {
   fUpdateStatusText(2200009);
-  mDefinitions.tSaveSettings();
+  mDefinitions.fSaveSettings();
 
   QMapIterator<QString, QSharedPointer<BXCryptoConnector> > i(mConnectors);
   while (i.hasNext()) {
     i.next();
-    i.value()->tEndService();
+    i.value()->fEndService();
   }
   QDir lLogDir(cDefaultLogDirectory);
   if(!lLogDir.exists()) {

@@ -286,7 +286,7 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     }
 
   public slots:
-    void tSaveSettings();
+    void fSaveSettings();
 
   signals:
     void sAnimationDurationChanged();

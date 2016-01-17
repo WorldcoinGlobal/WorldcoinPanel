@@ -1,5 +1,5 @@
-#ifndef PXCRYPTOCONNECTOR_H
-#define PXCRYPTOCONNECTOR_H
+#ifndef BXCRYPTOCONNECTOR_H
+#define BXCRYPTOCONNECTOR_H
 
 #include <QList>
 #include <QMap>
@@ -62,18 +62,18 @@ class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnecto
     QMap<QString, QList<int> > mCommandDefinitions;
 
   public slots:
-    virtual bool tEndService();
-    virtual bool tExecute(int lRequestType, quint64 lRequestID, const QString& lInput, const QString& lOutput, bool lResponseStateIsAnswer = false, bool lParse = true, int lLogType = CXDefinitions::ELogAll);
-    virtual bool tRestart();
-    virtual bool tStart();
-    virtual bool tStop();
-    virtual void tLoadSettings();
-    virtual void tSaveSettings() { }
-    virtual void tSendReply();
+    virtual bool fEndService();
+    virtual bool fExecute(int lRequestType, quint64 lRequestID, const QString& lInput, const QString& lOutput, bool lResponseStateIsAnswer = false, bool lParse = true, int lLogType = CXDefinitions::ELogAll);
+    virtual bool fRestart();
+    virtual bool fStart();
+    virtual bool fStop();
+    virtual void fLoadSettings();
+    virtual void fSaveSettings() { }
 
-  public slots:
-    virtual void tTryConnection();
-    virtual void tEvaluateConnection();
+  protected slots:
+    virtual void fSendReply();
+    virtual void fTryConnection();
+    virtual void fEvaluateConnection();
 
   signals:
     void sLogMessageRequest(int lCode, const QStringList& lParameters, const QString& lCustomText, int lLogType);
@@ -83,4 +83,4 @@ class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnecto
     void sProcessingFinished();
 };
 
-#endif // PXCRYPTOCONNECTOR_H
+#endif // BXCRYPTOCONNECTOR_H

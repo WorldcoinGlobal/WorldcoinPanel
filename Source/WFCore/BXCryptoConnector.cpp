@@ -92,7 +92,6 @@ bool BXCryptoConnector::fCreateDataDir(const QString& lDataDirName) {
 }
 
 bool BXCryptoConnector::fKillDaemon(const QString& lDataDirName) {
-//  tStop();
   QProcess lKill;
   if(CXDefinitions::fCurrentOS() == CXDefinitions::ELinuxOS) lKill.start("pkill", QStringList() << "-9" << mBinaryName);
   if(CXDefinitions::fCurrentOS() == CXDefinitions::EWindowsOS) lKill.start("taskkill", QStringList() << "/F" << "/IM" << mBinaryName);
@@ -100,7 +99,6 @@ bool BXCryptoConnector::fKillDaemon(const QString& lDataDirName) {
   QEventLoop lDaemonLoop;
   QTimer::singleShot(cKillDaemonWaitTime, &lDaemonLoop, &QEventLoop::quit);
   lDaemonLoop.exec();
- // tStop(); // Otherwise ports are still open
 
   QFile fLock(QString("%1/%2").arg(lDataDirName).arg(mLockFileName));
   if(fLock.exists() && !fLock.remove()) {
@@ -168,13 +166,13 @@ QStringList BXCryptoConnector::fParse(const QString& lInput) const {
   return(lParsedInput);
 }
 
-bool BXCryptoConnector::tEndService() {
-  return tStop();
+bool BXCryptoConnector::fEndService() {
+  return fStop();
 }
 
-bool BXCryptoConnector::tRestart() {
-  if(tStop()) {
-    if(tStart()) return true;
+bool BXCryptoConnector::fRestart() {
+  if(fStop()) {
+    if(fStart()) return true;
     else return false;
   }
   return false;
@@ -189,7 +187,7 @@ void BXCryptoConnector::fSetup() {
     fSetStatus(CXDefinitions::EServiceError);
   }
   rRpcReply = nullptr;
-  connect(&mTimer, &QTimer::timeout, this, &BXCryptoConnector::tTryConnection);
+  connect(&mTimer, &QTimer::timeout, this, &BXCryptoConnector::fTryConnection);
 }
 
 void BXCryptoConnector::fSetStatus(int lStatus) {
@@ -204,7 +202,7 @@ void BXCryptoConnector::fSetStatus(int lStatus) {
   }
 }
 
-void BXCryptoConnector::tLoadSettings() {
+void BXCryptoConnector::fLoadSettings() {
   QSettings lSettings(cDaemonsConf, QSettings::IniFormat);
   lSettings.beginGroup(fName());
   mBinaryName = lSettings.value("BinaryName").toString();
@@ -221,7 +219,7 @@ void BXCryptoConnector::tLoadSettings() {
   fLoadCommandDefinitions(cCommandDefinitions);
 }
 
-bool BXCryptoConnector::tExecute(int lRequestType, quint64 lRequestID, const QString& lInput, const QString &lOutput, bool lResponseStateIsAnswer, bool lParse, int lLogType) {
+bool BXCryptoConnector::fExecute(int lRequestType, quint64 lRequestID, const QString& lInput, const QString &lOutput, bool lResponseStateIsAnswer, bool lParse, int lLogType) {
   if(fStatus() == CXDefinitions::EServiceError) return false;
   QString lMethod;
   QStringList lParams(fParse(lInput));
@@ -272,12 +270,12 @@ bool BXCryptoConnector::tExecute(int lRequestType, quint64 lRequestID, const QSt
   rRpcReply->setProperty("yResponseStateIsAnswer", lResponseStateIsAnswer);
   rRpcReply->setProperty("yParse", lParse);
   rRpcReply->setProperty("yLogType", lLogType);
-  connect(rRpcReply, &QJsonRpcServiceReply::finished, this, &BXCryptoConnector::tSendReply);
+  connect(rRpcReply, &QJsonRpcServiceReply::finished, this, &BXCryptoConnector::fSendReply);
 
   return true;
 }
 
-void BXCryptoConnector::tSendReply() {
+void BXCryptoConnector::fSendReply() {
   bool lSuccess = false;
   QJsonRpcServiceReply* pReply = qobject_cast<QJsonRpcServiceReply*> (sender());
   QJsonRpcMessage lResponse = pReply->response();
@@ -416,7 +414,7 @@ QString BXCryptoConnector::fParseResponse(const QJsonValue& lResult, const QStri
   return lObjResponse;
 }
 
-bool BXCryptoConnector::tStop() {    
+bool BXCryptoConnector::fStop() {
   QProcess lDaemon;
   fSetStatus(CXDefinitions::EServiceStopped);
   QFile lDaemonFile(QString("%1/%2/%3").arg(qApp->applicationDirPath()).arg(cDaemonsDir).arg(mBinaryName));
@@ -435,7 +433,7 @@ bool BXCryptoConnector::tStop() {
   return true;
 }
 
-bool BXCryptoConnector::tStart() {
+bool BXCryptoConnector::fStart() {
   if(CXDefinitions::fCurrentOS() == CXDefinitions::EWindowsOS) mBinaryName = mBinaryName + ".exe";
   //if(CXDefinitions::fCurrentOS() == CXDefinitions::ELinuxOS) mBinaryName = mBinaryName + ".exe";
 
@@ -469,7 +467,7 @@ bool BXCryptoConnector::tStart() {
   return true;
 }
 
-void BXCryptoConnector::tEvaluateConnection() {
+void BXCryptoConnector::fEvaluateConnection() {
   QJsonRpcMessage lResponse = qobject_cast<QJsonRpcServiceReply*> (sender())->response();
   if(lResponse.type() == QJsonRpcMessage::Error || lResponse.type() == QJsonRpcMessage::Invalid) {
     if(lResponse.errorCode() == QJsonRpc::InternalError) {  // The signal is emitted twice when connection is refused
@@ -493,9 +491,9 @@ void BXCryptoConnector::tEvaluateConnection() {
   }
 }
 
-void BXCryptoConnector::tTryConnection() {
+void BXCryptoConnector::fTryConnection() {
   if(fStatus() != CXDefinitions::EServiceProcessing) return;
   QJsonRpcMessage message = QJsonRpcMessage::createRequest(fTestConnectionCommand());
   rRpcTestConnectonReply = rRpc->sendMessage(message);
-  connect(rRpcTestConnectonReply, &QJsonRpcServiceReply::finished, this, &BXCryptoConnector::tEvaluateConnection);
+  connect(rRpcTestConnectonReply, &QJsonRpcServiceReply::finished, this, &BXCryptoConnector::fEvaluateConnection);
 }

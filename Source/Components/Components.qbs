@@ -23,6 +23,12 @@ Product {
     files: [ "Main/ComponentBackupWallet/*" ]
   }
   Group {
+    name: "ComponentAddress"
+    qbs.install: true
+    qbs.installDir: "Components/Main/ComponentAddress"
+    files: [ "Main/ComponentAddress/*" ]
+  }
+  Group {
     name: "ComponentCryptoConsole"
     qbs.install: true
     qbs.installDir: "Components/Main/ComponentCryptoConsole"
