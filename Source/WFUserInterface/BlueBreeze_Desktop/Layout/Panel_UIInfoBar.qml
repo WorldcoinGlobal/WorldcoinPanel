@@ -23,6 +23,8 @@ AXInfoBar {
   urIconLockOff: "../Images/InfoBar_IMLockOff.svg"
   urIconLockOn: "../Images/InfoBar_IMLockOn.svg"
   urIconConnectionsOff: "../Images/InfoBar_IMConnectionsOff.svg"
+  urIconConnectionsMax: "../Images/InfoBar_IMConnectionsMax.png"
+  urIconConnectionsProcessing: "../Images/InfoBar_IMConnectionsProcessing.png"
   urIconServicesOff: "../Images/InfoBar_IMServicesOff.svg"
   urIconServicesReady: "../Images/InfoBar_IMServicesReady.svg"
   urIconServicesProcessing: "../Images/InfoBar_IMServicesProcessing.png"

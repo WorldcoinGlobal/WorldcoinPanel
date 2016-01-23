@@ -28,6 +28,10 @@ AXPanel {
   coCriticalBackgroundColor: SStyleSheet.coMainCriticalBackgroundColor
   coCriticalTextColor: SStyleSheet.coMainCriticalTextColor
 
+  reToolTipRadius: SStyleSheet.reToolTipRadius
+  coToolTipBackgroundColor: SStyleSheet.coToolTipBackgroundColor
+  coToolTipTextColor: SStyleSheet.coToolTipTextColor
+
   reWidthCm: {
     var vaWidth
     if(mCXDefinitions.mWidth < 0) vaWidth = ACMeasures.reAvailableWidth * 0.8

@@ -245,8 +245,11 @@ Item {
   property color coCheckBoxInactiveColor: "Gray"
   property color coCheckBoxTextColor: "Black"
   property color coComboBoxTextColor: "Black"
+  property color coToolTipBackgroundColor: "LightYellow"
+  property color coToolTipTextColor: "DarkGray"
   property real reCheckBoxHeight: 0.3
   property real reCheckBoxWidth: 0.3
   property real reCheckBoxRadius: 0.07
   property real reTextFieldRadius: 0.1
+  property real reToolTipRadius: 0.2
 }

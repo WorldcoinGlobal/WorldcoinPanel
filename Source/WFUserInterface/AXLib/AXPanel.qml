@@ -1,6 +1,6 @@
-import QtQuick 2.4
+import QtQuick 2.5
 import QtGraphicalEffects 1.0
-import QtQuick.Controls 1.3
+import QtQuick.Controls 1.4
 import QtQuick.Window 2.2
 import ACMeasures.Lib 1.0
 import WFCore.Lib 1.0
@@ -25,6 +25,8 @@ GXWindow {
   property color coInfoTextColor
   property color coCriticalBackgroundColor
   property color coCriticalTextColor
+  property color coToolTipBackgroundColor
+  property color coToolTipTextColor
   property int inAnimationDuration: mCXDefinitions.mAnimationDuration
   property int inWapptomPollingTime: 2000
   property real reBorderWidth
@@ -54,6 +56,7 @@ GXWindow {
   property real rePreviousWidth
   property real reMinimumZoom
   property real reMaximumZoom
+  property real reToolTipRadius
 
   signal siCloseRequested
   signal siLogMessageRequest(int inCode, string srParam, string srCustomText)
@@ -495,6 +498,114 @@ GXWindow {
         boIsMaximized = false
       }
     }
+  }
+  FXToolTip {
+    id: ttDaemon
+    width: ACMeasures.fuToDots(5)
+    target: loInfoBar.item.vaDaemonButton
+    text: {
+      var vaText = qsTr("Backend Status (Daemon):\n")
+      if(loInfoBar.item.vaDaemonButton.vaStatus === CXDefinitions.EServiceStopped) vaText += "Stopped."
+      if(loInfoBar.item.vaDaemonButton.vaStatus === CXDefinitions.EServiceReady) vaText += "Ready!"
+      if(loInfoBar.item.vaDaemonButton.vaStatus === CXDefinitions.EServiceProcessing) vaText += "Processing..."
+      if(loInfoBar.item.vaDaemonButton.vaStatus === CXDefinitions.EServiceError) vaText += "Error!"
+      return vaText
+    }
+    backgroundColor: coToolTipBackgroundColor
+    textColor: coToolTipTextColor
+    radius: ACMeasures.fuToDots(reToolTipRadius)
+    font: srFontFamily
+  }
+  FXToolTip {
+    id: ttIcon
+    width: ACMeasures.fuToDots(5.5)
+    target: loInfoBar.item.vaIconButton
+    text: qsTr("Not implemented yet!\nTemporal placeholder.")
+    backgroundColor: coToolTipBackgroundColor
+    textColor: coToolTipTextColor
+    radius: ACMeasures.fuToDots(reToolTipRadius)
+    font: srFontFamily
+  }
+  FXToolTip {
+    id: ttUpdates
+    width: ACMeasures.fuToDots(5.5)
+    target: loInfoBar.item.vaUpdatesButton
+    text: {
+      var vaText = qsTr("Updater Status:\n")
+      if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeLow) return vaText + qsTr("Low priority update available!")
+      if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeMedium) return vaText + qsTr("Medium priority update available!")
+      if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeHigh) return vaText + qsTr("High priority update available!")
+      if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeCritical) return vaText + qsTr("CRITICAL priority update available!")
+      return vaText + qsTr("No updates available")
+    }
+    backgroundColor: coToolTipBackgroundColor
+    textColor: coToolTipTextColor
+    radius: ACMeasures.fuToDots(reToolTipRadius)
+    font: srFontFamily
+  }
+  FXToolTip {
+    id: ttServices
+    width: ACMeasures.fuToDots(4)
+    target: loInfoBar.item.vaServicesButton
+    text: {
+      var vaText = qsTr("Cloud services:\n")
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceError) return vaText + qsTr("Connection Error!")
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceReady) return vaText + qsTr("Connection succesfull!")
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceStopped) return vaText + qsTr("Disconnected.")
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceProcessing) return vaText + qsTr("Attempting connection ...")
+      return vaText + qsTr("No information available.")
+    }
+    backgroundColor: coToolTipBackgroundColor
+    textColor: coToolTipTextColor
+    radius: ACMeasures.fuToDots(reToolTipRadius)
+    font: srFontFamily
+  }
+  FXToolTip {
+    id: ttLock
+    width: ACMeasures.fuToDots(4.5)
+    target: loInfoBar.item.vaLockButton
+    text: {
+      var vaText = qsTr("Encryption Status:\n")
+      if(WAEncrypted.mValue === "1") return vaText + qsTr("Wallet Encrypted!")
+      return vaText + qsTr("Wallet not encrypted!\nPlease encrypt your wallet for enhanced security.")
+    }
+    backgroundColor: coToolTipBackgroundColor
+    textColor: coToolTipTextColor
+    radius: ACMeasures.fuToDots(reToolTipRadius)
+    font: srFontFamily
+  }
+  FXToolTip {
+    id: ttSync
+    width: ACMeasures.fuToDots(4)
+    target: loInfoBar.item.vaSyncButton
+    text: {
+      var vaText = qsTr("Sync Status:\n")
+      if(Number(WNTotalBlockCount.mDisplayValue) > 0) {
+        var vaPercent = Number(WABlockCount.mDisplayValue) / Number(WNTotalBlockCount.mDisplayValue) * 100
+        if(vaPercent > 100) vaPercent = 100
+        return vaText + qsTr(vaPercent.toString() + "%")
+      }
+      return vaText + qsTr("Information unavailable.")
+    }
+    backgroundColor: coToolTipBackgroundColor
+    textColor: coToolTipTextColor
+    radius: ACMeasures.fuToDots(reToolTipRadius)
+    font: srFontFamily
+  }
+  FXToolTip {
+    id: ttConnections
+    width: ACMeasures.fuToDots(4)
+    target: loInfoBar.item.vaConnectionsButton
+    text: {
+      var vaText = qsTr("Node connections:\n")
+      if(Number(WAConnectionCount.mValue) <= 0) return vaText + qsTr("No peers available.\nSearching for more...")
+      if((Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8)) return vaText + WAConnectionCount.mDisplayValue + qsTr(" peers available.\nSearching for more...")
+      if(Number(WAConnectionCount.mValue) >= 8) return vaText + WAConnectionCount.mDisplayValue + qsTr(" peers available.\nNo more needed.")
+    }
+    backgroundColor: coToolTipBackgroundColor
+    textColor: coToolTipTextColor
+    radius: ACMeasures.fuToDots(reToolTipRadius)
+    font: srFontFamily
   }
   Connections {
     target: wiRoot

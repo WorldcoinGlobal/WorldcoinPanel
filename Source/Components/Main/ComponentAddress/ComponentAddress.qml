@@ -8,7 +8,7 @@ import WFDefinitions.Lib 1.0
 
 AXComponent {
   id: rcRoot
-  reHeightCm: 4
+  reHeightCm: 4.5
   reWidthCm: 12
 
   readonly property string srCoin: "WDC"
@@ -20,10 +20,29 @@ AXComponent {
     anchors.fill: parent
     color: SStyleSheet.coComponentDetailBackgroundColor
   }
+  Rectangle {
+    id: rcAddressInfo
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: ACMeasures.fuToDots(SStyleSheet.reComponentHorizontalHeaderRowHeight)
+    color: SStyleSheet.coComponentInformationBackgroundColor
+    Text {
+      anchors.fill: parent
+      horizontalAlignment: "AlignHCenter"
+      verticalAlignment: "AlignVCenter"
+      text: qsTr("The addres generated won't be displayed until it receives some funds!")
+      color: SStyleSheet.coComponentDetailTotalTextColor
+      font.bold: true
+  //    wrapMode: Text.WordWrap
+      font.pixelSize: parent.height * 0.6
+      font.family: SStyleSheet.srComponentFont
+    }
+  }
   AXFrame {
     id: frValueTitle
     color: SStyleSheet.coComponentHorizontalHeaderColor
-    anchors.top: parent.top
+    anchors.top: rcAddressInfo.bottom
     anchors.left: parent.left
     anchors.right: parent.right
     reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight

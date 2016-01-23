@@ -20,6 +20,8 @@ Rectangle {
   property url urIconLockOff
   property url urIconLockOn
   property url urIconConnectionsOff
+  property url urIconConnectionsMax
+  property url urIconConnectionsProcessing
   property url urIconServicesOff
   property url urIconServicesReady
   property url urIconServicesProcessing
@@ -36,6 +38,15 @@ Rectangle {
   property bool boTiltFlag
   property bool boServiceClosing
   property int vaUpdatePriority
+  readonly property var vaDaemonButton: tbDaemon
+  readonly property var vaIconButton: tbIcon
+  readonly property var vaUpdatesButton: tbUpdates
+  readonly property var vaServicesButton: tbServices
+  readonly property var vaConnectionsButton: tbConnections
+  readonly property var vaLockButton: tbLock
+  readonly property var vaSyncButton: rcSync
+
+
   signal siComponentActivation(string srComponentName)
 
   clip: true
@@ -44,7 +55,7 @@ Rectangle {
     interval: 500;
     running: false;
     repeat: true
-    onTriggered: { fuChangeUpdateIcon() }
+    onTriggered: { fuChangeUpdateStatus() }
   }
   Text {
     id: txVersion
@@ -66,6 +77,7 @@ Rectangle {
   }
   AXToolButton {
     id: tbDaemon
+    property var vaStatus
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.right: parent.right
@@ -171,6 +183,7 @@ Rectangle {
   }
   AXToolButton {
     id: tbUpdates
+    property var vaStatus
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.right: tbServices.left
@@ -211,7 +224,6 @@ Rectangle {
       }
     }
   }
-
   Connections {
     target: mCXPulzarConnector
     onSConnectionStatusChanged: {
@@ -226,17 +238,20 @@ Rectangle {
     onSDaemonStatusChanged: {
       if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceStopped) {
         tbDaemon.urIcon = urIconDaemonOff
-   //     btDaemon.tooltip = qsTr("Worldcoin daemon is stopped.")
+        tbDaemon.vaStatus = CXDefinitions.EServiceStopped
       }
       if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceReady) {
         tbDaemon.urIcon = urIconDaemonReady
+        tbDaemon.vaStatus = CXDefinitions.EServiceReady
         if(boServiceClosing) mCXStatus.mDaemonStatus = CXDefinitions.EServiceClosing
       }
       if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceProcessing) {
         tbDaemon.urIcon = urIconDaemonProcessing
+        tbDaemon.vaStatus = CXDefinitions.EServiceProcessing
       }
       if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceError) {
         tbDaemon.urIcon = urIconDaemonError
+        tbDaemon.vaStatus = CXDefinitions.EServiceError
       }
     }
   }
@@ -266,9 +281,19 @@ Rectangle {
     target: WAEncrypted
     onMValueChanged: { tbLock.urIcon = WAEncrypted.mValue === "1" ? urIconLockOn : urIconLockOff }
   }
+  Connections {
+    target: WAConnectionCount
+    onMValueChanged: {
+    console.log(WAConnectionCount.mValue, (Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8), Number(WAConnectionCount.mValue) <= 0)
+      if(Number(WAConnectionCount.mValue) <= 0)  tbConnections.urIcon = urIconConnectionsOff
+      if((Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8))  tbConnections.urIcon = urIconConnectionsProcessing
+      if(Number(WAConnectionCount.mValue) >= 8)  tbConnections.urIcon = urIconConnectionsMax
+    }
+  }
   Component.onCompleted: {
     fuScale();
     tbDaemon.urIcon = urIconDaemonOff
+    tbDaemon.vaStatus = CXDefinitions.EServiceStopped
     tbLock.urIcon = urIconLockOff
     boServiceClosing = false
   }
@@ -276,7 +301,7 @@ Rectangle {
   function fuResizeView() {
     rcView.height = lvNewReleases.height + lvCurrentRelease.height + lvPreviousReleases.height
   }
-  function fuChangeUpdateIcon() {
+  function fuChangeUpdateStatus() {
     if(vaUpdatePriority == CXDefinitions.EUpgradeLow && boTiltFlag) { boTiltFlag = !boTiltFlag; tbUpdates.urIcon = urIconUpdatesLowPriority; return }
     if(vaUpdatePriority == CXDefinitions.EUpgradeMedium && boTiltFlag) { boTiltFlag = !boTiltFlag; tbUpdates.urIcon = urIconUpdatesMediumPriority; return }
     if(vaUpdatePriority == CXDefinitions.EUpgradeHigh && boTiltFlag) { boTiltFlag = !boTiltFlag; tbUpdates.urIcon = urIconUpdatesHighPriority; return }
