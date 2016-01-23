@@ -34,6 +34,7 @@ Item {
     root.visible = flag
     fuCalculateFixedXY(0,0)
   }
+  function onClick() { root.target.fuClicked() }
 
   Component.onCompleted: {
     var itemParent = root.target;
@@ -41,16 +42,19 @@ Item {
         MouseArea {
           signal mouserHover(int x, int y);
           signal showChanged(bool flag);
-          anchors.fill:parent;
+          signal siClicked()
+          anchors.fill: parent;
+          propagateComposedEvents: true;
           hoverEnabled: true;
           onPositionChanged: {mouserHover(mouseX, mouseY)}
           onEntered: {showChanged(true)}
           onExited:{showChanged(false)}
-          onClicked:{parent.focus = true}
+          onClicked:{parent.focus = true; siClicked()}
         }',
         itemParent, "mouseItem");
   //  newObject.mouserHover.connect(onMouseHover);
     newObject.showChanged.connect(onVisibleStatus);
+    newObject.siClicked.connect(onClick);
   }
 
   Item {
@@ -80,7 +84,7 @@ Item {
     }
   ]
   transitions: Transition {
-    NumberAnimation { property: "opacity"; duration: 800}
+    NumberAnimation { target: content; property: "opacity"; duration: 800}
   }
   DropShadow {
     id: toolTipShadow
@@ -96,5 +100,5 @@ Item {
     source: toolTipContainer
   }
 
-  Behavior on visible { NumberAnimation { duration: 1000 }}
+//  Behavior on visible { NumberAnimation { duration: 1000 }}
 }

@@ -2,6 +2,7 @@ import QtQuick 2.4
 import "../../../WFUserInterface/AXLib"
 import SStyleSheet.Lib 1.0
 import ACMeasures.Lib 1.0
+import WFDefinitions.Lib 1.0
 
 AXComponent {
   readonly property string srBalance: WABalance.mDisplayValue
@@ -122,19 +123,22 @@ AXComponent {
 
   Grid {
     id: grGrid
+    objectName: "Grid"
     anchors.top: rcConceptTitle.bottom
     anchors.left: parent.left
     anchors.right: parent.right
     columns: 2
-    rows: 9
+    rows: 10
     spacing: -1
     flow: Grid.TopToBottom
 
     Loader {
+      objectName: "Peers"
       sourceComponent: coConcept
       onLoaded: { item.srText = qsTr("# of Connections") }
     }
-    Loader {
+    Loader { 
+      objectName: "Sync"
       sourceComponent: coConcept
       onLoaded: { item.srText = qsTr("Block Count / Total Blocks *") }
     }
@@ -147,6 +151,7 @@ AXComponent {
       onLoaded: { item.srText = qsTr("# Hashes per Second") }
     }
     Loader {
+      objectName: "Encrypted"
       sourceComponent: coConcept
       onLoaded: { item.srText = qsTr("Encrypted ?") }
     }
@@ -166,7 +171,11 @@ AXComponent {
       sourceComponent: coConcept
       onLoaded: { item.srText = qsTr("Best Block Hash") }
     }
-
+    Loader {
+      objectName: "PulzarStatus"
+      sourceComponent: coConcept
+      onLoaded: { item.srText = qsTr("Cloud Services (Pulzar)") }
+    }
     Loader {
       sourceComponent: coValue
       onLoaded: {
@@ -211,6 +220,15 @@ AXComponent {
     Loader {
       sourceComponent: coValue
       onLoaded: { item.srText = Qt.binding(function() { return srBestBlockHash }) }
+    }
+    Loader {
+      sourceComponent: coValue
+      onLoaded: { item.srText = Qt.binding(function() {
+        if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceError) return qsTr("Error")
+        if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceReady) return qsTr("Ready!")
+        if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceStopped) return qsTr("Stopped")
+        if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceProcessing) return qsTr("Processing...")
+      }) }
     }
   }
   AXFrame {

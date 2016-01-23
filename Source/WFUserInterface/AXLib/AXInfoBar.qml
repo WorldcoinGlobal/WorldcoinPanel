@@ -38,16 +38,16 @@ Rectangle {
   property bool boTiltFlag
   property bool boServiceClosing
   property int vaUpdatePriority
-  readonly property var vaDaemonButton: tbDaemon
-  readonly property var vaIconButton: tbIcon
-  readonly property var vaUpdatesButton: tbUpdates
-  readonly property var vaServicesButton: tbServices
-  readonly property var vaConnectionsButton: tbConnections
-  readonly property var vaLockButton: tbLock
-  readonly property var vaSyncButton: rcSync
-
+  readonly property alias vaDaemonButton: tbDaemon
+  readonly property alias vaIconButton: tbIcon
+  readonly property alias vaUpdatesButton: tbUpdates
+  readonly property alias vaServicesButton: tbServices
+  readonly property alias vaConnectionsButton: tbConnections
+  readonly property alias vaLockButton: tbLock
+  readonly property alias vaSyncButton: rcSync
 
   signal siComponentActivation(string srComponentName)
+  signal siHighlightComponentObject(string srComponentName, string srObjectName)
 
   clip: true
   Timer {
@@ -84,6 +84,10 @@ Rectangle {
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    function fuClicked() {
+      siComponentActivation("ComponentDaemonSettings")
+      siHighlightComponentObject("ComponentDaemonSettings", "DaemonSettingsInfo")
+    }
   }
   Rectangle {
     id: rcSync
@@ -151,6 +155,10 @@ Rectangle {
       urIcon: urIconSyncFinished
       visible: (Number(WNTotalBlockCount.mDisplayValue) <= Number(WABlockCount.mDisplayValue)) && (Number(WNTotalBlockCount.mDisplayValue) > 0) ? true : false
     }
+    function fuClicked() {
+      siComponentActivation("ComponentWalletsSummary")
+      siHighlightComponentObject("ComponentWalletsSummary", "Grid.Sync")
+    }
   }
   AXToolButton {
     id: tbLock
@@ -160,6 +168,10 @@ Rectangle {
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    function fuClicked() {
+      siComponentActivation("ComponentWalletsSummary")
+      siHighlightComponentObject("ComponentWalletsSummary", "Grid.Encrypted")
+    }
   }
   AXToolButton {
     id: tbConnections
@@ -170,6 +182,10 @@ Rectangle {
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     urIcon: urIconConnectionsOff
+    function fuClicked() {
+      siComponentActivation("ComponentWalletsSummary")
+      siHighlightComponentObject("ComponentWalletsSummary", "Grid.Peers")
+    }
   }
   AXToolButton {
     id: tbServices
@@ -180,6 +196,10 @@ Rectangle {
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     urIcon: urIconServicesOff
+    function fuClicked() {
+      siComponentActivation("ComponentWalletsSummary")
+      siHighlightComponentObject("ComponentWalletsSummary", "Grid.PulzarStatus")
+    }
   }
   AXToolButton {
     id: tbUpdates
@@ -191,7 +211,11 @@ Rectangle {
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     urIcon: urIconUpdatesOff
-    onSiClicked: { siComponentActivation("ComponentUpdater"); }
+   // onSiClicked: { fuClicked() }
+    function fuClicked() {
+      siComponentActivation("ComponentUpdater")
+      siHighlightComponentObject("ComponentUpdater", "UpgradeInfo")
+    }
   }
   AXToolButton {
     id: tbIcon
@@ -202,6 +226,7 @@ Rectangle {
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     urIcon: urIconDefault
+    function fuClicked() { }
   }
   Rectangle {
     id: rcBottomBorder
@@ -284,7 +309,6 @@ Rectangle {
   Connections {
     target: WAConnectionCount
     onMValueChanged: {
-    console.log(WAConnectionCount.mValue, (Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8), Number(WAConnectionCount.mValue) <= 0)
       if(Number(WAConnectionCount.mValue) <= 0)  tbConnections.urIcon = urIconConnectionsOff
       if((Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8))  tbConnections.urIcon = urIconConnectionsProcessing
       if(Number(WAConnectionCount.mValue) >= 8)  tbConnections.urIcon = urIconConnectionsMax

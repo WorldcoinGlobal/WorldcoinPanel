@@ -14,7 +14,7 @@ AXComponent {
   property bool boWaitingForBackup
 
   Component {
-    id: coCategory
+    id: coCategory   
     AXFrame {     
       id: frRoot
       color: SStyleSheet.coComponentHorizontalHeaderColor
@@ -158,6 +158,7 @@ AXComponent {
   }
   Rectangle {
     id: rcUpgradeInfo
+    objectName: "UpgradeInfo"
     anchors.top: parent.top
     anchors.left: parent.left
     anchors.right: parent.right

@@ -124,6 +124,7 @@ Item {
   property color coWorkspacePanelBackgroudColor: "#c7d4e3"
   property color coWorkspaceTabTextColor: "White"
   property color coWorkspaceBorderColor: "SteelBlue"
+  property color coWorkspaceHighlightingColor: "LightYellow"
   property real reWorkspaceTabHeight: 0.5
   property real reWorkspaceTabRadius: 0.5
   property real reWorkspaceTabWidth: 3

@@ -10,6 +10,7 @@ Rectangle {
   property color coPanelBackgroudColor
   property color coTabTextColor
   property color coBorderColor
+  property color coHighlightingColor
   property real reTabHeight
   property real reTabRadius
   property real reTabWidth
@@ -53,15 +54,6 @@ Rectangle {
       border.width: 1
     }
   }
-/*  Rectangle {
-    id: rcLine
-    anchors.bottom: rcTab.bottom
-    anchors.bottomMargin: rcTab.height / 2
-    anchors.left: parent.left
-    anchors.right: parent.right
-    height: 2
-    color: coBorderColor
-  }*/
   function fuActivateComponent(srComponentName, srComponentLabel, inComponentCategory, inComponentType, boShow) {
     if(mCXComponentManager.fIsComponentLoaded(srComponentName)) {
       var coStoredComponent = mCXComponentManager.fComponent(srComponentName)
@@ -114,6 +106,57 @@ Rectangle {
           coLoadedWindow.tScale()
           coLoadedComponent.sComponentActivated();
           coLoadedComponent.fuActivate()
+        }
+      }
+    }
+  }
+  function fuHighlightObject(srComponentName, srObjectName) {
+    if(mCXComponentManager.fIsComponentLoaded(srComponentName)) {
+      var vaComps = srObjectName.split(".")
+      var childList = mCXComponentManager.fComponentContent(srComponentName).children
+      for(var i = 0; i < childList.length; i++) {
+        if(vaComps[0] === childList[i].objectName) {
+          var vaParent = childList[i]
+          if(vaComps.length === 2) {
+            var vaGrandChildList = vaParent.children
+            for(var j = 0; j < vaGrandChildList.length; j++) {
+              if(vaComps[1] === vaGrandChildList[j].objectName) {
+                vaParent = vaGrandChildList[j]
+                break;
+              }
+            }
+          }
+          var vaNewObject = Qt.createQmlObject('import QtQuick 2.5;
+              Rectangle {
+                property real reShowingDelay: 500
+                property real reHidingDelay: 1000
+                id: rcHighlight
+                color: coHighlightingColor
+                opacity: 0
+                anchors.fill: rcHighlight.parent
+                states: [
+                  State { // when: rcHighlight.visible
+                    name: "stShowing"
+                    PropertyChanges { target: rcHighlight; opacity: 0.8 }
+                    onCompleted: { /*tmHideTimer.start()*/ state = "stHiding" }
+                  },
+                  State { //when: !rcHighlight.visible
+                    name: "stHiding"
+                    PropertyChanges { target: rcHighlight; opacity: 0.0 }
+                    onCompleted: { rcHighlight.destroy() }
+                  }
+                ]
+                transitions: [ Transition {
+                  to: "stShowing"
+                  NumberAnimation { target: rcHighlight; property: "opacity"; duration: reShowingDelay }
+                }, Transition {
+                  to: "stHiding"
+                  NumberAnimation { target: rcHighlight; property: "opacity"; duration: reHidingDelay }
+                } ]
+                Component.onCompleted: { state = "stShowing" }
+              }',
+              vaParent, "");
+          break;
         }
       }
     }

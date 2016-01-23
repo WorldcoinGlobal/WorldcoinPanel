@@ -8,6 +8,7 @@ AXWorkspace {
   coPanelBackgroudColor: SStyleSheet.coWorkspacePanelBackgroudColor
   coTabTextColor: SStyleSheet.coWorkspaceTabTextColor
   coBorderColor: SStyleSheet.coWorkspaceBorderColor
+  coHighlightingColor: SStyleSheet.coWorkspaceHighlightingColor
   reTabHeight: SStyleSheet.reWorkspaceTabHeight
   reTabRadius: SStyleSheet.reWorkspaceTabRadius
   reTabWidth: SStyleSheet.reWorkspaceTabWidth

@@ -265,6 +265,7 @@ GXWindow {
     Connections {
       target: loInfoBar.item
       onSiComponentActivation: { loModulePanel.item.fuActivateComponent(srComponentName) }
+      onSiHighlightComponentObject: { loWorkspace.item.fuHighlightObject(srComponentName, srObjectName) }
     }
     Connections {
       target: loTitleBar.item
