@@ -264,6 +264,7 @@ GXWindow {
     }
     Connections {
       target: loInfoBar.item
+      onSiOpenUrl: { if(fuStartsWith(srUrl,"http://")) fOpenUrl(srUrl) }
       onSiComponentActivation: { loModulePanel.item.fuActivateComponent(srComponentName) }
       onSiHighlightComponentObject: { loWorkspace.item.fuHighlightObject(srComponentName, srObjectName) }
     }
@@ -310,6 +311,7 @@ GXWindow {
           WAEncrypted.mPollingTime = 0; WAEncrypted.mSingleShot = true; WAEncrypted.mStartingOffset = 0; WAEncrypted.mActive = true;
           WNTotalBlockCount.mPollingTime = inWapptomPollingTime * 4; WNTotalBlockCount.mStartingOffset = 0; WNTotalBlockCount.mActive = true; WNTotalBlockCount.mInput = "https://www.wdcexplorer.com/q/getblockcount"; WNTotalBlockCount.mSource = "www.wdcexplorer.com"
           WNExchangeRate.mPollingTime = inWapptomPollingTime * 4; WNExchangeRate.mStartingOffset = 0; WNExchangeRate.mPrecision = 8; WNExchangeRate.mActive = true; WNExchangeRate.mInput = "https://www.cryptodiggers.eu/api/api.php?a=get_exch_rate&currency_crypto=7&currency=2&public=1"; WNExchangeRate.mSource = "www.cryptodiggers.eu"
+          WNPopularity.mPollingTime = inWapptomPollingTime; WNPopularity.mSingleShot = true; WNPopularity.mStartingOffset = 0; WNPopularity.mActive = true; WNPopularity.mInput = "http://cryptocoin.cc/table.php?cryptocoin=worldcoin"; WNPopularity.mSource = "http://www.cryptocoin.cc"
         }
       }
     }
@@ -505,7 +507,7 @@ GXWindow {
     width: ACMeasures.fuToDots(5)
     target: loInfoBar.item.vaDaemonButton
     text: {
-      var vaText = qsTr("Backend Status (Daemon):\n")
+      var vaText = qsTr("-- Backend Status (Daemon):\n")
       if(loInfoBar.item.vaDaemonButton.vaStatus === CXDefinitions.EServiceStopped) vaText += "Stopped."
       if(loInfoBar.item.vaDaemonButton.vaStatus === CXDefinitions.EServiceReady) vaText += "Ready!"
       if(loInfoBar.item.vaDaemonButton.vaStatus === CXDefinitions.EServiceProcessing) vaText += "Processing..."
@@ -532,7 +534,7 @@ GXWindow {
     width: ACMeasures.fuToDots(5.5)
     target: loInfoBar.item.vaUpdatesButton
     text: {
-      var vaText = qsTr("Updater Status:\n")
+      var vaText = qsTr("-- Updater Status:\n")
       if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeLow) return vaText + qsTr("Low priority update available!")
       if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeMedium) return vaText + qsTr("Medium priority update available!")
       if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeHigh) return vaText + qsTr("High priority update available!")
@@ -549,7 +551,7 @@ GXWindow {
     width: ACMeasures.fuToDots(4)
     target: loInfoBar.item.vaServicesButton
     text: {
-      var vaText = qsTr("Cloud services:\n")
+      var vaText = qsTr("-- Cloud services: \n")
       if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceError) return vaText + qsTr("Connection Error!")
       if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceReady) return vaText + qsTr("Connection succesfull!")
       if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceStopped) return vaText + qsTr("Disconnected.")
@@ -566,7 +568,7 @@ GXWindow {
     width: ACMeasures.fuToDots(4.5)
     target: loInfoBar.item.vaLockButton
     text: {
-      var vaText = qsTr("Encryption Status:\n")
+      var vaText = qsTr("-- Encryption Status:\n")
       if(WAEncrypted.mValue === "1") return vaText + qsTr("Wallet Encrypted!")
       return vaText + qsTr("Wallet not encrypted!\nPlease encrypt your wallet for enhanced security.")
     }
@@ -580,7 +582,7 @@ GXWindow {
     width: ACMeasures.fuToDots(4)
     target: loInfoBar.item.vaSyncButton
     text: {
-      var vaText = qsTr("Sync Status:\n")
+      var vaText = qsTr("-- Sync Status:\n")
       if(Number(WNTotalBlockCount.mDisplayValue) > 0) {
         var vaPercent = Number(WABlockCount.mDisplayValue) / Number(WNTotalBlockCount.mDisplayValue) * 100
         if(vaPercent > 100) vaPercent = 100
@@ -598,10 +600,24 @@ GXWindow {
     width: ACMeasures.fuToDots(4)
     target: loInfoBar.item.vaConnectionsButton
     text: {
-      var vaText = qsTr("Node connections:\n")
+      var vaText = qsTr("-- Node connections:\n")
       if(Number(WAConnectionCount.mValue) <= 0) return vaText + qsTr("No peers available.\nSearching for more...")
       if((Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8)) return vaText + WAConnectionCount.mDisplayValue + qsTr(" peers available.\nSearching for more...")
       if(Number(WAConnectionCount.mValue) >= 8) return vaText + WAConnectionCount.mDisplayValue + qsTr(" peers available.\nNo more needed.")
+    }
+    backgroundColor: coToolTipBackgroundColor
+    textColor: coToolTipTextColor
+    radius: ACMeasures.fuToDots(reToolTipRadius)
+    font: srFontFamily
+  }
+  FXToolTip {
+    id: ttPopularity
+    width: ACMeasures.fuToDots(8)
+    target: loInfoBar.item.vaPopularity
+    text: {
+      var vaText = qsTr("-- Popularity: (" + WNPopularity.mSource + ")\n")
+      if(Number(WNPopularity.mValue) == 0) return vaText + qsTr("No info available")
+      return vaText + WNPopularity.mDisplayValue
     }
     backgroundColor: coToolTipBackgroundColor
     textColor: coToolTipTextColor
@@ -733,6 +749,9 @@ GXWindow {
     mCXDefinitions.mHeight = ACMeasures.fuToCentimeters(wiRoot.height)
     reWidthCm = ACMeasures.fuToCentimeters(wiRoot.width)
     reHeightCm = ACMeasures.fuToCentimeters(wiRoot.height)
+  }
+  function fuStartsWith(srString, srPrefix) {
+    return srString.slice(0, srPrefix.length) == srPrefix;
   }
 }
 

@@ -7,6 +7,8 @@ Rectangle {
   id: rcRoot
   property alias coBottomBorderColor: rcBottomBorder.color
   property color coTextColor
+  property color coSeparatorColor
+  property real reSeparatorWidth
   property real reSpacing
   property real reHeightCm
   property real reBorderWidth
@@ -34,6 +36,8 @@ Rectangle {
   property url urIconUpdatesCriticalPriority
   property url urIconSyncOn
   property url urIconSyncFinished
+  property url urIconPopularityOff
+  property url urIconPopularityOn
   property point poClickPos
   property bool boTiltFlag
   property bool boServiceClosing
@@ -45,7 +49,9 @@ Rectangle {
   readonly property alias vaConnectionsButton: tbConnections
   readonly property alias vaLockButton: tbLock
   readonly property alias vaSyncButton: rcSync
+  readonly property alias vaPopularity: rcPopularity
 
+  signal siOpenUrl(string srUrl)
   signal siComponentActivation(string srComponentName)
   signal siHighlightComponentObject(string srComponentName, string srObjectName)
 
@@ -229,7 +235,50 @@ Rectangle {
     function fuClicked() { }
   }
   Rectangle {
-    id: rcBottomBorder
+    id: rcPopularity
+    z: 1
+    color: "Transparent"
+    anchors.top: parent.top
+    anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    anchors.right: rcSeparator2.left
+    anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    anchors.bottom: rcRoot.bottom
+   // anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    width: height
+    AXToolButton {
+      id: tbPopularity
+      anchors.fill: parent
+      anchors.bottomMargin: parent.height * 0.30
+      urIcon: urIconPopularityOff
+    }
+    Text {
+      //clip: true
+      anchors.top: tbPopularity.bottom
+//        anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+      anchors.right: parent.right
+      anchors.left: parent.left
+      anchors.bottom: parent.bottom
+      horizontalAlignment: Text.AlignHCenter
+      verticalAlignment: Text.AlignBottom
+      color: coTextColor
+      fontSizeMode: Text.Fit
+      font.pixelSize: height * 1.2
+      text: {
+        if(Number(WNPopularity.mValue) == 0) return "--"
+        return WNPopularity.mValue
+      }
+    }
+    MouseArea {
+      anchors.fill: parent
+      hoverEnabled: true
+      onClicked: { parent.fuClicked() }
+    }
+    function fuClicked() {
+      siOpenUrl(WNPopularity.mSource)
+    }
+  }
+  Rectangle {
+    id: rcBottomBorder    
     anchors.bottom: parent.bottom
     anchors.right: parent.right
     anchors.left: parent.left
@@ -248,6 +297,26 @@ Rectangle {
         reDefaultHeight = ACMeasures.fuToCentimeters(rcRoot.height)
       }
     }
+  }
+  Rectangle {
+    z: 2
+    id: rcSeparator1
+    anchors.top: parent.top
+    anchors.left: txVersion.right
+    anchors.leftMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    anchors.bottom: rcRoot.bottom
+    width: ACMeasures.fuToDots(reSeparatorWidth) * mCXDefinitions.mZoomFactor
+    color: coSeparatorColor
+  }
+  Rectangle {
+    z: 2
+    id: rcSeparator2
+    anchors.top: parent.top
+    anchors.right: tbIcon.left
+    anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    anchors.bottom: rcRoot.bottom
+    width: ACMeasures.fuToDots(reSeparatorWidth) * mCXDefinitions.mZoomFactor
+    color: coSeparatorColor
   }
   Connections {
     target: mCXPulzarConnector
@@ -312,6 +381,13 @@ Rectangle {
       if(Number(WAConnectionCount.mValue) <= 0)  tbConnections.urIcon = urIconConnectionsOff
       if((Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8))  tbConnections.urIcon = urIconConnectionsProcessing
       if(Number(WAConnectionCount.mValue) >= 8)  tbConnections.urIcon = urIconConnectionsMax
+    }
+  }
+  Connections {
+    target: WNPopularity
+    onMValueChanged: {
+      if(Number(WNPopularity.mValue) == 0)  tbPopularity.urIcon = urIconPopularityOff
+      else tbPopularity.urIcon = urIconPopularityOn
     }
   }
   Component.onCompleted: {

@@ -5,6 +5,7 @@
 #include <QDate>
 #include <QDir>
 #include <QObject>
+#include <QUrl>
 #include "HXDefinitions.h"
 
 const QString cDefaultConfig("WorldcoinBC.cfg");
@@ -197,7 +198,6 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     Q_INVOKABLE static QString fCompressVersion(const QString& lVersion);
     Q_INVOKABLE static QString fExtendVersion(const QString& lVersion);
     Q_INVOKABLE static QString fDefaultDaemon() { return cDefaultDaemon; }
-
 
     bool fSaveLog() const { return mSaveLog; }
     int fPanelMaxLines() const { return mPanelMaxLines; }    

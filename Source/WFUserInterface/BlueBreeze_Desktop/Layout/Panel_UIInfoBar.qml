@@ -11,6 +11,8 @@ AXInfoBar {
   reBorderWidth: SStyleSheet.reInfoBarBorderWidth
   coBottomBorderColor: SStyleSheet.coInfoBarBottomBorderColor
   coTextColor: SStyleSheet.coInfoBarTextColor
+  coSeparatorColor: SStyleSheet.coInfoBarSeparatorColor
+  reSeparatorWidth: SStyleSheet.reInfoBarSeparatorWidth
 
   urIconDefault: "../Images/InfoBar_IMDefaultAvatar.svg"
   urIconDaemonOff: "../Images/InfoBar_IMDaemonOff.svg"
@@ -35,5 +37,7 @@ AXInfoBar {
   urIconUpdatesMediumPriority: "../Images/InfoBar_IMUpdatesMediumPriority.svg"
   urIconUpdatesHighPriority: "../Images/InfoBar_IMUpdatesHighPriority.svg"
   urIconUpdatesCriticalPriority: "../Images/InfoBar_IMUpdatesCriticalPriority.svg"
+  urIconPopularityOff: "../Images/InfoBar_IMPopularityOff.png"
+  urIconPopularityOn: "../Images/InfoBar_IMPopularityOn.png"
 }
 

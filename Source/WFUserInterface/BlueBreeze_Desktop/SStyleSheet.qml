@@ -88,9 +88,11 @@ Item {
 /***** Info Bar *****/
   property color coInfoBarBackgroudColor: "LightSteelBlue"
   property color coInfoBarBottomBorderColor: "LightSteelBlue"
+  property color coInfoBarSeparatorColor: "SteelBlue"
   property color coInfoBarTextColor: "White"
   property real reInfoBarSpacing: 0.2
   property real reInfoBarHeight: 1
+  property real reInfoBarSeparatorWidth: 0.05
   property real reInfoBarBorderWidth: reModulePanelBorderWidth
 
 /***** Search Panel *****/

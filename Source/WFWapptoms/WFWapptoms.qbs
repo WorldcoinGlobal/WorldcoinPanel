@@ -11,6 +11,7 @@ Project {
     "WapptomTotalBlockCount/WapptomTotalBlockCount.qbs",
     "WapptomBalanceWithoutConf/WapptomBalanceWithoutConf.qbs",
     "WapptomEncrypted/WapptomEncrypted.qbs",
-    "WapptomExchangeRate/WapptomExchangeRate.qbs"
+    "WapptomExchangeRate/WapptomExchangeRate.qbs",
+    "WapptomPopularity/WapptomPopularity.qbs"
   ]
 }
