@@ -137,8 +137,9 @@ AXComponent {
     textRole: "miAccount"
     validator: RegExpValidator { regExp: /^[a-zA-Z0-9áéíóúÑñ_.-]+$/ }
     style: ComboBoxStyle {
+      padding.top: 14
       font.family: SStyleSheet.srComponentFont
-      font.pixelSize: cbAccount.height * 0.7
+      font.pointSize: 8
     }
     model: lmAccountModel
   }
