@@ -12,6 +12,7 @@ AXComponent {
 
   readonly property string srCoin: "WDC"
   property real reColumnWidth: 7
+  property string srAmountToTransfer
 
   Rectangle {
     anchors.fill: parent
@@ -222,9 +223,9 @@ AXComponent {
 
   Timer {
     id: tmSend
-    interval: 200;
+    interval: 400;
     repeat: false
-    onTriggered: fRawCallRequested(srCoin, "sendtoaddress " + tfAddress.srValue + " " + tfAmount.srValue, 1)
+    onTriggered: fRawCallRequested(srCoin, "sendtoaddress " + tfAddress.srValue + " " + srAmountToTransfer, 1)
   }
   Connections {
     target: rcRoot
@@ -241,6 +242,7 @@ AXComponent {
     }
   }
   function fuAccept() {
+    srAmountToTransfer = tfAmount.srValue
     if(ComponentWalletsSummary.srEncrypted === "True") fRawCallRequested(srCoin, "walletpassphrase " + tfPassphrase.srValue + " " + " 2", 0, CXDefinitions.ELogNone)
     sComponentProcessing(1)
     tmSend.running = true
