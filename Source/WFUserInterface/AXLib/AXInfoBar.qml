@@ -48,7 +48,7 @@ Rectangle {
   readonly property alias vaServicesButton: tbServices
   readonly property alias vaConnectionsButton: tbConnections
   readonly property alias vaLockButton: tbLock
-  readonly property alias vaSyncButton: rcSync
+  readonly property alias vaSyncButton: tbSync
   readonly property alias vaPopularity: rcPopularity
 
   signal siOpenUrl(string srUrl)
@@ -95,72 +95,14 @@ Rectangle {
       siHighlightComponentObject("ComponentDaemonSettings", "DaemonSettingsInfo")
     }
   }
-  Rectangle {
-    id: rcSync
-    clip: true
+  AXToolButton {
+    id: tbSync
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.right: tbDaemon.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    width: height
-    color: parent.color
-    Rectangle {
-      id: rcSyncFinished
-      clip: true
-      anchors.top: parent.top
-      anchors.bottom: parent.bottom
-      anchors.left: parent.left
-      width: {
-        if(Number(WNTotalBlockCount.mDisplayValue) > 0) return  (rcSync.width * Number(WABlockCount.mDisplayValue) / Number(WNTotalBlockCount.mDisplayValue));
-        else return 0;
-      }
-      color: "transparent"
-      AXToolButton {
-        id: tbSynced
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        width: rcSync.width
-        urIcon: urIconSyncOn
-      }
-   /*   Image {
-        id: imSynced
-        fillMode: Image.Stretch
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        width: rcSync.width
-        source: urIconSyncOn
-        sourceSize.height: mCXDefinitions.ESizeMedium
-        sourceSize.width: mCXDefinitions.ESizeMedium
-
-      }*/
-    }
-    Rectangle {
-      id: rcSyncInProgress
-      clip: true
-      anchors.top: parent.top
-      anchors.bottom: parent.bottom
-      anchors.right: parent.right
-      width: rcSync.width - rcSyncFinished.width
-      color: "transparent"
-      AXToolButton {
-        id: tbSyncInProgress
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        width: rcSync.width
-        urIcon: urIconSyncOff
-      }
-    }
-    AXToolButton {
-      id: tbSyncFinished
-      anchors.fill: parent
-      urIcon: urIconSyncFinished
-      visible: (Number(WNTotalBlockCount.mDisplayValue) <= Number(WABlockCount.mDisplayValue)) && (Number(WNTotalBlockCount.mDisplayValue) > 0) ? true : false
-    }
     function fuClicked() {
       siComponentActivation("ComponentWalletsSummary")
       siHighlightComponentObject("ComponentWalletsSummary", "Grid.Sync")
@@ -170,7 +112,7 @@ Rectangle {
     id: tbLock
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: rcSync.left
+    anchors.right: tbSync.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
@@ -384,6 +326,14 @@ Rectangle {
     }
   }
   Connections {
+    target: WABlockCount
+    onMValueChanged: {
+      if(Number(WABlockCount.mDisplayValue) === 0) { tbSync.urIcon = urIconSyncOff; return }
+      if(Number(WABlockCount.mDisplayValue) < Number(WNTotalBlockCount.mDisplayValue)) { tbSync.urIcon = urIconSyncOn; return }
+      tbSync.urIcon = urIconSyncFinished; return
+    }
+  }
+  Connections {
     target: WNPopularity
     onMValueChanged: {
       if(Number(WNPopularity.mValue) == 0)  tbPopularity.urIcon = urIconPopularityOff
@@ -395,6 +345,7 @@ Rectangle {
     tbDaemon.urIcon = urIconDaemonOff
     tbDaemon.vaStatus = CXDefinitions.EServiceStopped
     tbLock.urIcon = urIconLockOff
+    tbSync.urIcon = urIconSyncOff
     boServiceClosing = false
   }
 
