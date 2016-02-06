@@ -148,6 +148,48 @@ GXSubWindow {
     }
   }
   Rectangle {
+    id: rcResizeTopLeft
+    anchors.top: loComponentTitleBar.top
+    anchors.bottom: loComponentTitleBar.bottom
+    anchors.left: parent.left
+    width: height
+    color: "transparent" //coComponentLeftBorderColor
+    MouseArea {
+      anchors.fill: parent
+      cursorShape: Qt.SizeFDiagCursor
+      preventStealing: true
+      onPositionChanged: {
+        var curPoint = mapToItem(coRoot.parent,  mouseX, mouseY)
+        var newX = curPoint.x
+        var newY = curPoint.y
+        fuMoveLeftBorder(newX)
+        fuMoveTopBorder(newY)
+      }
+      onPressed: {  mCXComponentManager.fSetActiveComponent(coRoot.objectName) }
+    }
+  }
+  Rectangle {
+    id: rcResizeTopRight
+    anchors.top: loComponentTitleBar.top
+    anchors.bottom: loComponentTitleBar.bottom
+    anchors.right: parent.right
+    width: ACMeasures.fuToDots(loComponentTitleBar.item.reRightMargin) * mCXDefinitions.mZoomFactor
+    color: "transparent" //coComponentLeftBorderColor
+    MouseArea {
+      anchors.fill: parent
+      cursorShape: Qt.SizeBDiagCursor
+      preventStealing: true
+      onPositionChanged: {
+        var curPoint = mapToItem(coRoot.parent,  mouseX, mouseY)
+        var newX = curPoint.x
+        var newY = curPoint.y
+        fuMoveRightBorder(newX)
+        fuMoveTopBorder(newY)
+      }
+      onPressed: {  mCXComponentManager.fSetActiveComponent(coRoot.objectName) }
+    }
+  }
+  Rectangle {
     id: rcResizeLeft
     anchors.top: loComponentStatusBar.top
     anchors.bottom: parent.bottom
