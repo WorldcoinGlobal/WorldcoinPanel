@@ -124,10 +124,7 @@ AXComponent {
       font.italic: true
       font.family: SStyleSheet.srComponentFont
     }
-    MouseArea {
-      anchors.fill: parent
-      onClicked: { tfAmount.srValue = ComponentWalletsSummary.srBalance }
-    }
+    function fuClicked() { tfAmount.srValue = ComponentWalletsSummary.srBalance }
   }
   AXFrame {
     property alias srText: txText.text
@@ -151,7 +148,6 @@ AXComponent {
       font.family: SStyleSheet.srComponentFont
     }
   }
-
   AXFrame {
     id: rcDecryptTitle
     color: SStyleSheet.coComponentHorizontalHeaderColor
@@ -223,6 +219,16 @@ AXComponent {
         easing.type: Easing.Linear
       }
     }
+  }
+  FXToolTip {
+    id: ttBalance
+    width: ACMeasures.fuToDots(6)
+    target: frBalance
+    text: qsTr("Click here in order to select maximum amount of available funds.")
+    backgroundColor: SStyleSheet.coToolTipBackgroundColor
+    textColor: SStyleSheet.coToolTipTextColor
+    radius: ACMeasures.fuToDots(SStyleSheet.reToolTipRadius)
+    font: SStyleSheet.srFontFamily
   }
 
   Timer {
