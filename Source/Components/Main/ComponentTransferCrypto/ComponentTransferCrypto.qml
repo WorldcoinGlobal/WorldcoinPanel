@@ -124,6 +124,10 @@ AXComponent {
       font.italic: true
       font.family: SStyleSheet.srComponentFont
     }
+    MouseArea {
+      anchors.fill: parent
+      onClicked: { tfAmount.srValue = ComponentWalletsSummary.srBalance }
+    }
   }
   AXFrame {
     property alias srText: txText.text
