@@ -89,6 +89,10 @@ Rectangle {
             coLoadedCommandBar.siOkButtonClicked.connect(coLoadedComponent.fuAccept)
             coLoadedComponent.sComponentProcessing.connect(coLoadedCommandBar.fuDisable)
             coLoadedCommandBar.boStatus = Qt.binding(function() { return coLoadedComponent.mStatus })
+            coLoadedCommandBar.boCancelVisible = Qt.binding(function() { return coLoadedComponent.mCancelVisible })
+            coLoadedCommandBar.srCancelText = Qt.binding(function() { return coLoadedComponent.mCancelText })
+            coLoadedCommandBar.boOkVisible = Qt.binding(function() { return coLoadedComponent.mOkVisible })
+            coLoadedCommandBar.srOkText = Qt.binding(function() { return coLoadedComponent.mOkText })
           }
           else
             coLoadedWindow.reCommandBarHeight = 0

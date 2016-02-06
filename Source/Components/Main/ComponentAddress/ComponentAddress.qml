@@ -31,7 +31,7 @@ AXComponent {
       anchors.fill: parent
       horizontalAlignment: "AlignHCenter"
       verticalAlignment: "AlignVCenter"
-      text: qsTr("The addres generated won't be displayed until it receives some funds!")
+      text: qsTr("The addres generated won't be displayed until it receives some funds.")
       color: SStyleSheet.coComponentDetailTotalTextColor
       font.bold: true
   //    wrapMode: Text.WordWrap
@@ -209,5 +209,8 @@ AXComponent {
     teAddressCreated.text = ""
     fRawCallRequested(srCoin, "listaccounts", 0)
   }
-  function fuSetup() { }
+  function fuSetup() {
+    mCancelVisible = false;
+    mOkText = qsTr("Create Address")
+  }
 }

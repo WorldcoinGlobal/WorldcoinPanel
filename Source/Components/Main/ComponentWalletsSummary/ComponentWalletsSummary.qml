@@ -148,12 +148,12 @@ AXComponent {
     }
     Loader {
       sourceComponent: coConcept
-      onLoaded: { item.srText = qsTr("# Hashes per Second") }
+      onLoaded: { item.srText = qsTr("Hashrate") }
     }
     Loader {
       objectName: "Encrypted"
       sourceComponent: coConcept
-      onLoaded: { item.srText = qsTr("Encrypted ?") }
+      onLoaded: { item.srText = qsTr("Wallet Encryption") }
     }
     Loader {
       sourceComponent: coConcept
@@ -197,7 +197,7 @@ AXComponent {
     }
     Loader {
       sourceComponent: coValue
-      onLoaded: { item.srText = Qt.binding(function() { return srNetworkHashPS }) }
+      onLoaded: { item.srText = Qt.binding(function() { return srNetworkHashPS + " h/s"}) }
     }
     Loader {
       id: loEncrypted

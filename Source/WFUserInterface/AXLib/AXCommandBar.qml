@@ -8,6 +8,10 @@ Rectangle {
   clip: true
   property bool boStatus: true
   property alias coBorderColor: rcBorder.color
+  property alias boCancelVisible: btCancel.visible
+  property string srCancelText
+  property alias boOkVisible: btOk.visible
+  property string srOkText
   property color coOkButtonTextColor
   property color coOkButtonBorderColor
   property color coOkButtonReleasedColor
@@ -73,13 +77,14 @@ Rectangle {
           color: control.pressed ? coOkButtonPressedColor : boStatus ? coOkButtonReleasedColor : coOkButtonDisabledColor
         }
         label: Text {
+          id: txOkLabel
           anchors.fill: parent
           color: coOkButtonTextColor
-          text: qsTr("Apply")
+          text: srOkText
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
           font.family: srFontFamily
-          font.pixelSize: btOk.height
+          font.pixelSize: btOk.height * 0.9
         }
       }
       onClicked: { siOkButtonClicked() }
@@ -99,11 +104,11 @@ Rectangle {
         label: Text {
           anchors.fill: parent
           color: coCancelButtonTextColor
-          text: qsTr("Cancel")
+          text: srCancelText
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
           font.family: srFontFamily
-          font.pixelSize: btCancel.height
+          font.pixelSize: btCancel.height * 0.9
         }
       }
       onClicked: { siCancelButtonClicked() }

@@ -236,7 +236,7 @@ Item {
   property real reCommandBarBottomMargin: 0.1
   property real reCommandBarButtonSpace: 0.1
   property real reCommandBarDefaultHeight: 0.6
-  property real reCommandBarButtonWidth: 2.5
+  property real reCommandBarButtonWidth: 3
   property real reCommandBarButtonBorderWidth: 0.05
   property real reCommandBarButtonRadius: 0.5
 

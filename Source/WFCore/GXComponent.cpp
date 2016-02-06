@@ -14,6 +14,10 @@ GXComponent::GXComponent(QQuickItem* lParent )
            : QQuickItem(lParent)  {
   setClip(true);
   mStatus = true;
+  mCancelVisible = true;
+  mOkVisible = true;
+  mCancelText = tr("Cancel");
+  mOkText = tr("Ok");
 }
 
 QVariantList GXComponent::fJsonToList(const QJsonValue& lJsonValue) const {
