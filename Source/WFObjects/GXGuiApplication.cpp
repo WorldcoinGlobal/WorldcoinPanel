@@ -456,8 +456,8 @@ void GXGuiApplication::fUpdateValue(bool lSuccess, quint64 lRequestID, const QSt
       double lPrevious = mWapptoms.value(lRequest.lName)->fPreviousValue().toDouble();
       double lCurrent = mWapptoms.value(lRequest.lName)->fValue().toDouble();
       double lTotal = lCurrent - lPrevious;
-      if(lTotal > 0) rTrayIcon->showMessage(tr("Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lPrevious, 'f', 8)), QSystemTrayIcon::Information);
-      if(lTotal < 0) rTrayIcon->showMessage(tr("Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lPrevious, 'f', 8)), QSystemTrayIcon::Information);
+      if(lTotal > 0) rTrayIcon->showMessage(tr("Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+      if(lTotal < 0) rTrayIcon->showMessage(tr("Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
     }
   }
   if(lRequest.lType == CXDefinitions::ERawCall) mComponentManager.fProcessMessage(lMessageType, lRequestID, lRequest.lInput, lRequest.lName, lValue);
