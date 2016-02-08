@@ -9,6 +9,7 @@
 #include <QQmlEngine>
 #include <QSharedPointer>
 #include <QStringList>
+#include <QSystemTrayIcon>
 #include <QTimer>
 #include <CXDefinitions.h>
 #include <CXMessage.h>
@@ -25,7 +26,6 @@
 
 class GXComponent;
 class QEvent;
-class QSystemTrayIcon;
 class GXWindow;
 class CXItemModel;
 class CXItemModelProxy;
@@ -61,7 +61,7 @@ class WFOBJECTS_EXPORT GXGuiApplication : public BXGuiApplication
     void fLogMessage(int lCode, const QStringList& lParameters, const QString& lCustomText, int lLogType = CXDefinitions::ELogAll);
     void fLogMessage(int lCode, const QString& lParameter = QString(), const QString& lCustomText = QString());
     void fProcessNetworkRequest();
-    void fRaisePanel();
+    void fRaisePanel(QSystemTrayIcon::ActivationReason eReason);
     void fRequestRawCall(const QString& lConnector, const QString& lRawRequest, const QString& lComponentName, bool lParse = true, int lLogType = CXDefinitions::ELogAll);
     void fRequestUpdateWapptomValue(const QString& lWapptomName);
     void fUpdateDaemonStatus(const QString& lConnectorName, int lDaemonStatus);

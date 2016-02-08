@@ -216,7 +216,7 @@ Rectangle {
       onClicked: { parent.fuClicked() }
     }
     function fuClicked() {
-      siOpenUrl(WNPopularity.mSource)
+      siOpenUrl(WNPopularity.mSource + "/table.php?cryptocoin=worldcoin")
     }
   }
   Rectangle {

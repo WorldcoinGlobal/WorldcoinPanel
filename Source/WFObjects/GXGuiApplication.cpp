@@ -1,7 +1,6 @@
 #include <QDate>
 #include <QDir>
 #include <QMenu>
-#include <QSystemTrayIcon>
 #include <QGuiApplication>
 #include <QMetaObject>
 #include <QPluginLoader>
@@ -138,7 +137,7 @@ void GXGuiApplication::fInit() {
     rTrayIcon->setIcon(QIcon(fImageFile("InfoBar_IMDaemonReady.svg")));
     rTrayIcon->setToolTip(tr("WBC Status: Initializing..."));
     rTrayIcon->show();
-    connect(rTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(fRaisePanel()));
+    connect(rTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(fRaisePanel(QSystemTrayIcon::ActivationReason)));
   }
 }
 
@@ -163,11 +162,13 @@ void GXGuiApplication::fInitModels() {
   rLogModel->fSetHorizontalHeaders(lLabels);
 }
 
-void GXGuiApplication::fRaisePanel() {
-  if(rMainWindow->isExposed())
-    rMainWindow->hide();
-  else
-    rMainWindow->showNormal();
+void GXGuiApplication::fRaisePanel(QSystemTrayIcon::ActivationReason eReason) {
+  if(eReason == QSystemTrayIcon::Trigger) {
+    if(rMainWindow->isExposed())
+      rMainWindow->hide();
+    else
+      rMainWindow->showNormal();
+  }
 }
 
 void GXGuiApplication::fRegisterComponent(GXComponent *pComponent) {
