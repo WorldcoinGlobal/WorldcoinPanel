@@ -153,8 +153,8 @@ Rectangle {
       fillMode: Image.Stretch
       anchors.top: parent.top
       anchors.bottom: parent.bottom
-      anchors.topMargin: ACMeasures.fuToDots(reBorderWidth)
-      anchors.bottomMargin: ACMeasures.fuToDots(reBorderWidth)
+      anchors.topMargin: ACMeasures.fuToDots(reBorderWidth) * 2
+      anchors.bottomMargin: ACMeasures.fuToDots(reBorderWidth) * 2
 
       width: height
       source: urZoomIn
@@ -201,10 +201,8 @@ Rectangle {
       fillMode: Image.Stretch
       anchors.top: parent.top
       anchors.bottom: parent.bottom
-      anchors.topMargin: ACMeasures.fuToDots(reBorderWidth)
-      anchors.bottomMargin: ACMeasures.fuToDots(reBorderWidth)
-
-
+      anchors.topMargin: ACMeasures.fuToDots(reBorderWidth) * 2
+      anchors.bottomMargin: ACMeasures.fuToDots(reBorderWidth) * 2
       width: height
       source: urZoomOut
       sourceSize.height: mCXDefinitions.ESizeTiny

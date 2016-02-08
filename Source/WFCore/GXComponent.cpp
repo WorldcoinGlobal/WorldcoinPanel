@@ -64,7 +64,7 @@ QString GXComponent::fImageFile(const QString& lImageName) const {
 }
 
 void GXComponent::fQuitApplication() {
-  BXGuiApplication::quit();
+  BXGuiApplication::fInstance()->fOnClose();
 }
 
 void GXComponent::fSetSetting(const QString& lSetting, const QString& lValue, bool lUseDaemonConf, const QString& lConnector) {
@@ -75,11 +75,10 @@ void GXComponent::fSetSetting(const QString& lSetting, const QString& lValue, bo
     lSettings.beginGroup(lConnectorName);
     lSettings.setValue(lSetting, lValue);
     lSettings.endGroup();
+    return;
   }
-  else {
-    QSettings lSettings(qApp->applicationDirPath() + "/" + cComponentsConfig, QSettings::IniFormat);
-    lSettings.beginGroup(fName());
-    lSettings.setValue(lSetting, lValue);
-    lSettings.endGroup();
-  }
+  QSettings lSettings(qApp->applicationDirPath() + "/" + cComponentsConfig, QSettings::IniFormat);
+  lSettings.beginGroup(fName());
+  lSettings.setValue(lSetting, lValue);
+  lSettings.endGroup();
 }

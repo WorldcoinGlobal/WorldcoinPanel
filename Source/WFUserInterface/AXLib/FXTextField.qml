@@ -19,6 +19,7 @@ Item {
   property string srSetting
   property string srConnector
   property bool boUseDaemonConf: false
+  property bool boUseWalletConf: false
   signal siAccepted
 
   width: ACMeasures.fuToDots(reWidthCm)
@@ -52,7 +53,6 @@ Item {
   }
   function fuLoad() {
     tfText.text = srDefaultValue
-//console.log(boSaveSetting, srDefaultValue, parent.fSetting(srSetting, boUseDaemonConf, srConnector))
     if(boSaveSetting && parent.fSetting(srSetting, boUseDaemonConf, srConnector) === '') {
       parent.fSetSetting(srSetting, srDefaultValue, boUseDaemonConf, srConnector)
       tfText.text = srDefaultValue

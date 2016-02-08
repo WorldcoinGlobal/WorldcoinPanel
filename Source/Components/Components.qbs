@@ -65,6 +65,12 @@ Product {
     files: [ "Main/ComponentUpdater/*" ]
   }
   Group {
+    name: "ComponentWalletsSettings"
+    qbs.install: true
+    qbs.installDir: "Components/Main/ComponentWalletsSettings"
+    files: [ "Main/ComponentWalletsSettings/*" ]
+  }
+  Group {
     name: "ComponentWalletsSummary"
     qbs.install: true
     qbs.installDir: "Components/Main/ComponentWalletsSummary"

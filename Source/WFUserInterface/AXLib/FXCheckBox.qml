@@ -11,9 +11,11 @@ CheckBox {
   property string srSetting
   property string srConnector
   property bool boUseDaemonConf: false
+  property bool boUseWalletConf: false
   property bool boValue
   height: ACMeasures.fuToDots(reHeightCm)
   width: ACMeasures.fuToDots(reWidthCm)
+  checked: boValue
   function fuSave() {
     if(cbRoot.checked) {
       parent.fSetSetting(srSetting, "1", boUseDaemonConf, srConnector)

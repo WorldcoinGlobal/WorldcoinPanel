@@ -24,6 +24,6 @@ Product {
   Depends { name: "WFObjects" }
   Depends { name: "WFCore" }
   Depends { name: "cpp" }
-  Depends { name: "Qt"; submodules: ["core","gui","quick", "websockets"] }
+  Depends { name: "Qt"; submodules: ["core","gui","quick", "websockets","widgets"] }
 }
 

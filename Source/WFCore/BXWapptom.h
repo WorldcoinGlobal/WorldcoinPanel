@@ -20,6 +20,7 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
   Q_PROPERTY(int mStartingOffset READ fStartingOffset WRITE tSetStartingOffset NOTIFY sStartingOffsetChanged)
   Q_PROPERTY(QString mConnector READ fConnector WRITE tSetConnector NOTIFY sConnectorChanged)
   Q_PROPERTY(QString mValue READ fValue WRITE tSetValue NOTIFY sValueChanged)
+  Q_PROPERTY(QString mPreviousValue READ fPreviousValue WRITE tSetPreviousValue NOTIFY sPreviousValueChanged)
   Q_PROPERTY(QString mDisplayValue READ fDisplayValue WRITE tSetDisplayValue NOTIFY sDisplayValueChanged)
   Q_PROPERTY(QString mParams READ fParams WRITE tSetParams NOTIFY sParamsChanged)
   Q_PROPERTY(QString mInput READ fInput WRITE tSetInput NOTIFY sInputChanged)
@@ -34,7 +35,7 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     virtual QString fOutput() const { return mOutput; }
     virtual QString fSource() const { return mSource; }
     virtual void fSetup();
-    virtual int fType() const = 0;
+    virtual int fType() const = 0;    
     bool fSingleShot() const { return mSingleShot; }
     bool fActive() const { return mActive; }
     bool fResponseStateIsAnswer() const { return mResponseStateIsAnswer; }
@@ -42,14 +43,17 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     int fPollingTime() const { return mPollingTime; }
     int fPrecision() const { return mPrecision; }
     int fStatus() const { return mStatus; }    
+    Q_INVOKABLE bool fInitialized() const { return mInitialized; }
     QString fConnector() const { return mConnector; }
     QString fValue() const { return mValue; }
+    QString fPreviousValue() const { return mPreviousValue; }
     QString fParams() const { return mParams; }
     virtual QString fDisplayValue() const { return mDisplayValue; }
 
   protected:
     bool mActive;
     bool mSingleShot;
+    bool mInitialized;
     bool mResponseStateIsAnswer;
     quint32 mActiveComponents;
     int mPollingTime;
@@ -58,6 +62,7 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     int mStartingOffset;
     QString mConnector;
     QString mValue;
+    QString mPreviousValue;
     QString mParams;
     QString mDisplayValue;
     QString mInput;
@@ -72,6 +77,7 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     void sConnectorChanged();
     void sPrecisionChanged();
     void sValueChanged();
+    void sPreviousValueChanged();
     void sParamsChanged();
     void sDisplayValueChanged();
     void sStatusChanged();
@@ -90,7 +96,8 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     virtual void tSetConnector(const QString& lConnector) { mConnector = lConnector; emit sConnectorChanged(); }
     virtual void tSetPrecision(int lPrecision) { mPrecision = lPrecision; emit sPrecisionChanged(); }
     virtual void tSetStartingOffset(const int lStartingOffset) { mStartingOffset = lStartingOffset; emit sStartingOffsetChanged(); }
-    virtual void tSetValue(const QString& lValue) { mValue = lValue; emit sValueChanged(); tSetDisplayValue(mValue); }
+    virtual void tSetValue(const QString& lValue) { tSetPreviousValue(mValue); mValue = lValue; emit sValueChanged(); mInitialized = true; tSetDisplayValue(mValue); }
+    virtual void tSetPreviousValue(const QString& lPreviousValue) { mPreviousValue = lPreviousValue; emit sPreviousValueChanged(); }
     virtual void tSetParams(const QString& lParams) { mParams = lParams; emit sParamsChanged(); }
     virtual void tSetInput(const QString& lInput) { mInput = lInput; emit sInputChanged(); }
     virtual void tSetOutput(const QString& lOutput) { mInput = lOutput; emit sOutputChanged(); }

@@ -1,5 +1,7 @@
 #include <QDate>
 #include <QDir>
+#include <QMenu>
+#include <QSystemTrayIcon>
 #include <QGuiApplication>
 #include <QMetaObject>
 #include <QPluginLoader>
@@ -19,6 +21,7 @@
 
 GXGuiApplication::GXGuiApplication(int& lArgc, char** pArgv)
                 : BXGuiApplication(lArgc, pArgv), mRequestID(0) {
+  rTrayIcon = 0;
   QMetaObject::invokeMethod(this, "fInit", Qt::QueuedConnection);
 }
 
@@ -50,7 +53,7 @@ bool GXGuiApplication::fPendingRequests(bool lLocalOnly) {
 
 void GXGuiApplication::fCheckUpdates() {
   if(mPulzarConnector.fConnectionStatus() == CXDefinitions::EServiceReady) {
-    mPulzarConnector.tCheckUpdates(mDefinitions.fCurrentVersion(), mDefinitions.fRegion(), mDefinitions.fChannel());
+    mPulzarConnector.tCheckUpdates(mDefinitions.fCurrentVersion(), mDefinitions.fRegion(), mDefinitions.fUpdateChannel());
   }
 //-- Copy new version of wizard if available
   QString lWizard = cWizardExec;
@@ -105,9 +108,9 @@ void GXGuiApplication::fInit() {
   connect(&mPulzarConnector, SIGNAL(sLogMessageRequest(int, QString, QString)), this, SLOT(fLogMessage(int,QString,QString)));
   connect(&mPulzarConnector, &CXPulzarConnector::sConnectionStatusChanged, this, &GXGuiApplication::fCheckUpdates);
   connect(rSplashWindow, SIGNAL(siTimeout()), rMainWindow, SLOT(show()));
-  connect(rMainWindow, SIGNAL(closing(QQuickCloseEvent*)), qApp, SLOT(quit()));
-  connect(this, SIGNAL(aboutToQuit()), this, SLOT(fOnClose()));
-  connect(rMainWindow, SIGNAL(siCloseRequested()), this, SLOT(quit()));
+  connect(rMainWindow, SIGNAL(closing(QQuickCloseEvent*)), this, SLOT(fOnClose()));
+ // connect(this, SIGNAL(aboutToQuit()), this, SLOT(fOnClose()));
+  connect(rMainWindow, SIGNAL(siCloseRequested()), this, SLOT(fOnClose()));
   connect(rMainWindow, SIGNAL(siLogMessageRequest(int, QString, QString)), this, SLOT(fLogMessage(int, QString, QString)));
   connect(&mCheckUpdates, &QTimer::timeout, this, &GXGuiApplication::fCheckUpdates);
   rSplashWindow->setVisible(true);
@@ -121,7 +124,22 @@ void GXGuiApplication::fInit() {
   fLogMessage(1200001);
   fLogMessage(2200004);
   mPulzarConnector.tConnect();
-  mCheckUpdates.start(mDefinitions.fUpdatesCheckPeriod() * 3600 * 1000);
+  mCheckUpdates.start(mDefinitions.fUpdateCheckPeriod().toInt() * 3600 * 1000);
+
+  if(QSystemTrayIcon::isSystemTrayAvailable()) {
+    QAction* pQuit = new QAction(QIcon(fImageFile("Panel_IMShutdown.png")), tr("&Quit"), this);
+    pQuit->setShortcuts(QKeySequence::Quit);
+    pQuit->setStatusTip(tr("Shutdown WBC"));
+    connect(pQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+    QMenu* rTrayIconMenu = new QMenu();
+    rTrayIconMenu->addAction(pQuit);
+    rTrayIcon = new QSystemTrayIcon(this);
+    rTrayIcon->setContextMenu(rTrayIconMenu);
+    rTrayIcon->setIcon(QIcon(fImageFile("InfoBar_IMDaemonReady.svg")));
+    rTrayIcon->setToolTip(tr("WBC Status: Initializing..."));
+    rTrayIcon->show();
+    connect(rTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(fRaisePanel()));
+  }
 }
 
 void GXGuiApplication::fCheckMaxLines() {
@@ -143,6 +161,13 @@ void GXGuiApplication::fInitModels() {
 
   lLabels << lCode << lDate << lTime << lMessage;
   rLogModel->fSetHorizontalHeaders(lLabels);
+}
+
+void GXGuiApplication::fRaisePanel() {
+  if(rMainWindow->isExposed())
+    rMainWindow->hide();
+  else
+    rMainWindow->showNormal();
 }
 
 void GXGuiApplication::fRegisterComponent(GXComponent *pComponent) {
@@ -424,7 +449,17 @@ void GXGuiApplication::fUpdateValue(bool lSuccess, quint64 lRequestID, const QSt
   if(lSuccess) lMessageType = CXDefinitions::ESuccessMessage;
   else lMessageType = CXDefinitions::EErrorMessage;
   mPendingRequests.remove(lRequestID);
-  if(lSuccess && lRequest.lType == CXDefinitions::EWapptom) mWapptoms.value(lRequest.lName)->tSetValue(lValue);
+  if(lSuccess && lRequest.lType == CXDefinitions::EWapptom) {
+    bool lInitialized = mWapptoms.value(lRequest.lName)->fInitialized();
+    mWapptoms.value(lRequest.lName)->tSetValue(lValue);
+    if(rTrayIcon && (lRequest.lName == "WABalance") && lInitialized) {
+      double lPrevious = mWapptoms.value(lRequest.lName)->fPreviousValue().toDouble();
+      double lCurrent = mWapptoms.value(lRequest.lName)->fValue().toDouble();
+      double lTotal = lCurrent - lPrevious;
+      if(lTotal > 0) rTrayIcon->showMessage(tr("Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lPrevious, 'f', 8)), QSystemTrayIcon::Information);
+      if(lTotal < 0) rTrayIcon->showMessage(tr("Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lPrevious, 'f', 8)), QSystemTrayIcon::Information);
+    }
+  }
   if(lRequest.lType == CXDefinitions::ERawCall) mComponentManager.fProcessMessage(lMessageType, lRequestID, lRequest.lInput, lRequest.lName, lValue);
   QMapIterator<quint64, SXRequest> i(mPendingRequests);
   while(i.hasNext()) {
@@ -466,6 +501,7 @@ void GXGuiApplication::fUpdateDaemonStatus(const QString& lConnectorName, int lD
     if(lDaemonStatus == CXDefinitions::EServiceProcessing) fUpdateStatusText(2200008, QStringList() << lConnectorName);
     if(lDaemonStatus == CXDefinitions::EServiceReady) fUpdateStatusText(2200001);
     if(lDaemonStatus == CXDefinitions::EServiceError) fUpdateStatusText(3200015, QStringList() << lConnectorName);
+    if(rTrayIcon) rTrayIcon->setToolTip(tr("WBC Status: %1").arg(mStatus.fStatusText()));
   }
 }
 
@@ -475,30 +511,36 @@ void GXGuiApplication::fUpdateStatusText(int lCode, const QStringList& lParamete
 }
 
 
-void GXGuiApplication::fOnClose() {
-  fUpdateStatusText(2200009);
-  mDefinitions.fSaveSettings();
-
-  QMapIterator<QString, QSharedPointer<BXCryptoConnector> > i(mConnectors);
-  while (i.hasNext()) {
-    i.next();
-    i.value()->fEndService();
-  }
-  QDir lLogDir(cDefaultLogDirectory);
-  if(!lLogDir.exists()) {
-    if(!QDir::current().mkdir(cDefaultLogDirectory)) fLogMessage(3200002, QStringList() << cDefaultLogDirectory, QString());
+void GXGuiApplication::fOnClose() {    
+  if(mDefinitions.fMinimizeOnClose().toInt()) {
+    rMainWindow->hide();
   }
   else {
-     QString lBackupName;
-    int lBackupNumber = 1;
-    while(true) {
-      lBackupName = cDefaultLogDirectory + "/" + cDefaultLog.section(".",0,0) + "_" + QDate::currentDate().toString(cDefaultDateFormat) + "." + cDefaultLog.section(".",1,-1) + "." + QString::number(lBackupNumber);
-      QFile lBackupFile(lBackupName);
-      if(lBackupFile.exists()) lBackupNumber++;
-      else break;
+    fUpdateStatusText(2200009);
+    mDefinitions.fSaveSettings();
+
+    QMapIterator<QString, QSharedPointer<BXCryptoConnector> > i(mConnectors);
+    while (i.hasNext()) {
+      i.next();
+      i.value()->fEndService();
     }
-    if(mLogFile.isOpen()) mLogFile.close();
-    if(!QFile::copy(cDefaultLog, lBackupName)) fLogMessage(3200003, QStringList() << cDefaultLogDirectory << lBackupName, QString());
-    if(mLogFile.exists() && !mLogFile.remove()) fLogMessage(3200004, QStringList() << mLogFile.fileName(), QString());
-  }  
+    QDir lLogDir(cDefaultLogDirectory);
+    if(!lLogDir.exists()) {
+      if(!QDir::current().mkdir(cDefaultLogDirectory)) fLogMessage(3200002, QStringList() << cDefaultLogDirectory, QString());
+    }
+    else {
+      QString lBackupName;
+      int lBackupNumber = 1;
+      while(true) {
+        lBackupName = cDefaultLogDirectory + "/" + cDefaultLog.section(".",0,0) + "_" + QDate::currentDate().toString(cDefaultDateFormat) + "." + cDefaultLog.section(".",1,-1) + "." + QString::number(lBackupNumber);
+        QFile lBackupFile(lBackupName);
+        if(lBackupFile.exists()) lBackupNumber++;
+        else break;
+      }
+      if(mLogFile.isOpen()) mLogFile.close();
+      if(!QFile::copy(cDefaultLog, lBackupName)) fLogMessage(3200003, QStringList() << cDefaultLogDirectory << lBackupName, QString());
+      if(mLogFile.exists() && !mLogFile.remove()) fLogMessage(3200004, QStringList() << mLogFile.fileName(), QString());
+    }
+    qApp->quit();
+  }
 }

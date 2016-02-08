@@ -1,7 +1,7 @@
 #ifndef BXGUIAPPLICATION_H
 #define BXGUIAPPLICATION_H
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QNetworkAccessManager>
 #include <QObject>
 #include <CXDefinitions.h>
@@ -10,7 +10,7 @@
 
 class GXComponent;
 
-class WFCORE_EXPORT BXGuiApplication : public QGuiApplication
+class WFCORE_EXPORT BXGuiApplication : public QApplication
 {
   Q_OBJECT
 
@@ -30,6 +30,9 @@ class WFCORE_EXPORT BXGuiApplication : public QGuiApplication
 
   private:
     static BXGuiApplication* rSelf;
+
+  public slots:
+    virtual void fOnClose() = 0;
 };
 
 #endif

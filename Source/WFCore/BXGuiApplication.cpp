@@ -6,7 +6,7 @@
 BXGuiApplication* BXGuiApplication::rSelf = 0;
 
 BXGuiApplication::BXGuiApplication(int& lArgc, char** pArgv)
-                : QGuiApplication(lArgc, pArgv) {
+                : QApplication(lArgc, pArgv) {
   rNetworkAccess = new QNetworkAccessManager(this);
   rSelf = this;
 }

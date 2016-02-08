@@ -66,6 +66,7 @@ class WFCORE_EXPORT GXComponent : public QQuickItem
     void sOkTextChanged();
     void sCancelVisibleChanged();
     void sCancelTextChanged();
+    void sChangeTrayIconTooltip(const QString& lText);
 };
 
 #endif // GXCOMPONENT_H

@@ -15,7 +15,7 @@ class WFCORE_EXPORT CXPulzarConnector : public QObject {
   Q_PROPERTY(int mConnectionStatus READ fConnectionStatus WRITE tSetConnectionStatus NOTIFY sConnectionStatusChanged)
   Q_PROPERTY(QString mConnectionID READ fConnectionID WRITE tSetConnectionID NOTIFY sConnectionIDChanged)
   Q_PROPERTY(QString mUpdatePriority READ fUpdatePriority WRITE tSetUpdatePriority NOTIFY sUpdatePriorityChanged)
-  Q_PROPERTY(QString mUpdateChannel READ fUpdateChannel WRITE tSetUpdateChannel NOTIFY sUpdateChannelChanged)
+//  Q_PROPERTY(QString mUpdateChannel READ fUpdateChannel WRITE tSetUpdateChannel NOTIFY sUpdateChannelChanged)
 
   public:
     explicit CXPulzarConnector(QObject* pParent = 0);
@@ -25,7 +25,7 @@ class WFCORE_EXPORT CXPulzarConnector : public QObject {
     Q_INVOKABLE QVariantMap fVersionLog() { return mVersionLog; }
     Q_INVOKABLE QString fConnectionID() const { return mConnectionID; }
     Q_INVOKABLE QString fUpdatePriority() const { return mUpdatePriority; }
-    Q_INVOKABLE QString fUpdateChannel() const { return mUpdateChannel; }
+//    Q_INVOKABLE QString fUpdateChannel() const { return mUpdateChannel; }
     Q_INVOKABLE QString fLastVersion() const;
 
     int fConnectionStatus() const { return mConnectionStatus; }
@@ -37,7 +37,7 @@ class WFCORE_EXPORT CXPulzarConnector : public QObject {
     void tSetConnectionStatus(int lConnectionStatus);
     void tSetConnectionID(const QString& lConnectionID);
     void tSetUpdatePriority(const QString& lUpdatePriority);
-    void tSetUpdateChannel(const QString& lUpdateChannel);
+  //  void tSetUpdateChannel(const QString& lUpdateChannel);
     void tConnect();
     void tCheckUpdates(const QString& lCurrentVersion, const QString& lRegion, const QString& lChannel);
 
@@ -52,7 +52,7 @@ class WFCORE_EXPORT CXPulzarConnector : public QObject {
     int mConnectionStatus;
     QString mConnectionID;
     QString mUpdatePriority;
-    QString mUpdateChannel;
+   // QString mUpdateChannel;
 
   private:
     QWebSocket mWebSocket;
@@ -69,7 +69,7 @@ class WFCORE_EXPORT CXPulzarConnector : public QObject {
     void sConnectionStatusChanged();
     void sConnectionIDChanged();
     void sUpdatePriorityChanged();
-    void sUpdateChannelChanged();
+  //  void sUpdateChannelChanged();
     void sLogMessageRequest(int lCode, const QString& lParameter = QString(), const QString& lCustomText = QString());
     void sVersionLogChanged();
 };

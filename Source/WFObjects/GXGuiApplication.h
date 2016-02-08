@@ -25,6 +25,7 @@
 
 class GXComponent;
 class QEvent;
+class QSystemTrayIcon;
 class GXWindow;
 class CXItemModel;
 class CXItemModelProxy;
@@ -56,16 +57,17 @@ class WFOBJECTS_EXPORT GXGuiApplication : public BXGuiApplication
     bool fLoadConnectors(const QString& lDirName);
     bool fLoadWapptoms(const QString& lDirName);
     void fCheckUpdates();
-    void fOnClose();
+    void fOnClose();    
     void fLogMessage(int lCode, const QStringList& lParameters, const QString& lCustomText, int lLogType = CXDefinitions::ELogAll);
     void fLogMessage(int lCode, const QString& lParameter = QString(), const QString& lCustomText = QString());
     void fProcessNetworkRequest();
+    void fRaisePanel();
     void fRequestRawCall(const QString& lConnector, const QString& lRawRequest, const QString& lComponentName, bool lParse = true, int lLogType = CXDefinitions::ELogAll);
     void fRequestUpdateWapptomValue(const QString& lWapptomName);
     void fUpdateDaemonStatus(const QString& lConnectorName, int lDaemonStatus);
     void fUpdateStatusText(int lCode, const QStringList& lParameters = QStringList());
     void fUpdateValue(bool lSuccess, quint64 lRequestID, const QString& lValue);
-    void fUpdateValueJson(bool lSuccess, quint64 lRequestID, const QJsonValue& lValue);
+    void fUpdateValueJson(bool lSuccess, quint64 lRequestID, const QJsonValue& lValue);    
 
   private:
     quint64 mRequestID;
@@ -82,6 +84,7 @@ class WFOBJECTS_EXPORT GXGuiApplication : public BXGuiApplication
     QMap<QString, QSharedPointer<BXWapptom> > mWapptoms;
     QMap<quint64, SXRequest> mPendingRequests;
     QTimer mCheckUpdates;
+    QSystemTrayIcon* rTrayIcon;
 };
 
 #endif // GXGUIAPPLICATION_H

@@ -67,6 +67,9 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
   Q_PROPERTY(QString mTheme READ fTheme WRITE fSetTheme NOTIFY sThemeChanged)
   Q_PROPERTY(QString mZoomFactor READ fZoomFactor WRITE fSetZoomFactor NOTIFY sZoomFactorChanged)
   Q_PROPERTY(QString mAnimationDuration READ fAnimationDuration WRITE fSetAnimationDuration NOTIFY sAnimationDurationChanged)
+  Q_PROPERTY(QString mUpdateCheckPeriod READ fUpdateCheckPeriod WRITE fSetUpdateCheckPeriod NOTIFY sUpdateCheckPeriodChanged)
+  Q_PROPERTY(QString mUpdateChannel READ fUpdateChannel WRITE fSetUpdateChannel NOTIFY sUpdateChannelChanged)
+  Q_PROPERTY(QString mMinimizeOnClose READ fMinimizeOnClose WRITE fSetMinimizeOnClose NOTIFY sMinimizeOnCloseChanged)
 
   Q_ENUMS(eComponentType)
   Q_ENUMS(eRole)
@@ -205,14 +208,16 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     double fHeight() const { return mHeight; }
     int fX() const { return mX; }
     int fY() const { return mY; }
-    int fUpdatesCheckPeriod() const { return mUpdatesCheckPeriod; }
+
     QString fAnimationDuration() const { return mAnimationDuration; }
     Q_INVOKABLE QString fCurrentVersion() const { return mCurrentVersion; }
     Q_INVOKABLE QString fCurrentVersionName() const { return mCurrentVersionName; }
     QString fTheme() const { return mTheme; }
     QString fZoomFactor() const { return mZoomFactor; }
     QString fPulzarHost() const { return mPulzarHost; }
-    QString fChannel() const { return mChannel; }
+    QString fUpdateChannel() const { return mUpdateChannel; }
+    QString fUpdateCheckPeriod() const { return mUpdateCheckPeriod; }
+    QString fMinimizeOnClose() const { return mMinimizeOnClose; }
     QString fRegion() const { return mRegion; }
 
 
@@ -284,6 +289,24 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
         emit sZoomFactorChanged();
       }
     }
+    void fSetUpdateChannel(const QString& lUpdateChannel) {
+      if(lUpdateChannel != mUpdateChannel) {
+        mUpdateChannel = lUpdateChannel;
+        emit sUpdateChannelChanged();
+      }
+    }
+    void fSetUpdateCheckPeriod(const QString& lUpdateCheckPeriod) {
+      if(lUpdateCheckPeriod != mUpdateCheckPeriod) {
+        mUpdateCheckPeriod = lUpdateCheckPeriod;
+        emit sUpdateCheckPeriodChanged();
+      }
+    }
+    void fSetMinimizeOnClose(const QString& lMinimizeOnClose) {
+      if(lMinimizeOnClose != mMinimizeOnClose) {
+        mMinimizeOnClose = lMinimizeOnClose;
+        emit sMinimizeOnCloseChanged();
+      }
+    }
 
   public slots:
     void fSaveSettings();
@@ -300,6 +323,9 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     void sHeightChanged();
     void sXChanged();
     void sYChanged();
+    void sUpdateChannelChanged();
+    void sUpdateCheckPeriodChanged();
+    void sMinimizeOnCloseChanged();
 
   private:
     bool mSaveLog;
@@ -309,15 +335,16 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     int mX;
     int mY;
     int mPulzarPort;
-    int mUpdatesCheckPeriod;
     QString mAnimationDuration;
     QString mCurrentVersion;
     QString mCurrentVersionName;
     QString mTheme;
     QString mZoomFactor;
     QString mPulzarHost;
-    QString mChannel;
+    QString mUpdateChannel;
+    QString mUpdateCheckPeriod;
     QString mRegion;
+    QString mMinimizeOnClose;
 };
 
 #endif // CXDefinitions_H

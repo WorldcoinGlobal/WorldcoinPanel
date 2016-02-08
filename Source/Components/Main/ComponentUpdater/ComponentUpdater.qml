@@ -262,7 +262,7 @@ AXComponent {
 
     var vaCurrentVersion = /*"01.00.01"/*/  mCXDefinitions.fExtendVersion(mCXDefinitions.fCurrentVersion())
     var vaUpdatePriority = mCXPulzarConnector.fUpdatePriority()
-    var vaUpdateChannel = mCXPulzarConnector.fUpdateChannel()
+    var vaUpdateChannel = mCXDefinitions.mUpdateChannel
 
     if(vaUpdatePriority == CXDefinitions.EUpgradeLow) vaUpdatePriority = qsTr("Low")
     if(vaUpdatePriority == CXDefinitions.EUpgradeMedium) vaUpdatePriority = qsTr("Medium")

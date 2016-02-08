@@ -14,7 +14,7 @@ AXComponent {
   readonly property string srNetworkHashPS: WANetworkHashPS.mDisplayValue
   readonly property string srExchangeRate: WNExchangeRate.mDisplayValue
   readonly property string srBestBlockHash: WABestBlockHash.mDisplayValue
-
+  property real rePreviousBalance: 0
   property real reColumnWidth: 6.3
 
   id: rcRoot

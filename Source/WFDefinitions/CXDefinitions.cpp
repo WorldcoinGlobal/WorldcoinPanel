@@ -12,6 +12,7 @@ CXDefinitions::CXDefinitions(QObject* pParent) : QObject(pParent) {
   mX = lSettings.value("MainWindowX", -1).toInt();
   mY = lSettings.value("MainWindowY", -1).toInt();
   mAnimationDuration = lSettings.value("AnimationDuration", cAnimationDuration).toString();
+  mMinimizeOnClose = lSettings.value("MinimizeOnClose", "").toString();
   lSettings.endGroup();
   lSettings.beginGroup("Version");
   mCurrentVersion = WORLDCOINPANEL_VERSION; //lSettings.value("CurrentVersion").toString();
@@ -26,8 +27,8 @@ CXDefinitions::CXDefinitions(QObject* pParent) : QObject(pParent) {
   mPulzarPort = lSettings.value("PulzarPort", "0").toInt();
   lSettings.endGroup();
   lSettings.beginGroup("Update");
-  mUpdatesCheckPeriod = lSettings.value("Period", cDefaultUpdatesCheckPeriod).toInt();
-  mChannel = lSettings.value("Channel", cDefaultChannel).toString();
+  mUpdateCheckPeriod = lSettings.value("Period", cDefaultUpdatesCheckPeriod).toString();
+  mUpdateChannel = lSettings.value("Channel", cDefaultChannel).toString();
   mRegion = lSettings.value("Region", cDefaultRegion).toString();
   lSettings.endGroup();
 
@@ -89,6 +90,7 @@ void CXDefinitions::fSaveSettings(){
   lSettings.setValue("MainWindowHeight", mHeight);
   lSettings.setValue("MainWindowX", mX);
   lSettings.setValue("MainWindowY", mY);
+  lSettings.setValue("MinimizeOnClose", mMinimizeOnClose);
   lSettings.endGroup();
   lSettings.beginGroup("Version");
   lSettings.setValue("CurrentVersion", mCurrentVersion);
@@ -99,8 +101,8 @@ void CXDefinitions::fSaveSettings(){
   lSettings.setValue("PanelMaxLines", mPanelMaxLines);
   lSettings.endGroup();
   lSettings.beginGroup("Update");
-  lSettings.setValue("Period", mUpdatesCheckPeriod);
-  lSettings.setValue("Channel", mChannel);
+  lSettings.setValue("Period", mUpdateCheckPeriod);
+  lSettings.setValue("Channel", mUpdateChannel);
   lSettings.setValue("Region", mRegion);
   lSettings.endGroup();
 

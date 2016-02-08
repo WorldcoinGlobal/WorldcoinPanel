@@ -17,6 +17,7 @@ void BXWapptom::fSetup() {
   mStatus = CXDefinitions::EServiceStopped;
   mValue = "0";
   mDisplayValue = "0";
+  mInitialized = false;
   connect(&mPollTimer, &QTimer::timeout, this, &BXWapptom::tRequestUpdateValue);
 }
 

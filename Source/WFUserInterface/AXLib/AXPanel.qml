@@ -270,7 +270,15 @@ GXWindow {
     }
     Connections {
       target: loTitleBar.item
-      onSiCloseButtonClicked: { maRoot.propagateComposedEvents = false; maRoot.z = 10000; maRoot.enabled = false;  loTitleBar.item.boMouseEnabled = false; wiRoot.siCloseRequested(); }
+      onSiCloseButtonClicked: {
+        if(mCXDefinitions.mMinimizeOnClose == "0") {
+          maRoot.propagateComposedEvents = false;
+          maRoot.z = 10000;
+          maRoot.enabled = false;
+          loTitleBar.item.boMouseEnabled = false;
+        }
+        wiRoot.siCloseRequested();
+      }
       onSiMinimizeButtonClicked: { wiRoot.showMinimized() }
       onSiMaximizeButtonClicked: { fuShowMaximized() }      
       onSiWindowMoved: {

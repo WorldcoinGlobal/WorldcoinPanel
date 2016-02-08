@@ -18,6 +18,6 @@ DynamicLibrary {
 
   Depends { name: "WFDefinitions" }
   Depends { name: "cpp" }
-  Depends { name: "Qt"; submodules: ["core", "gui", "network", "quick", "websockets"]}
+  Depends { name: "Qt"; submodules: ["core", "gui", "network", "quick", "websockets","widgets"]}
 }
 

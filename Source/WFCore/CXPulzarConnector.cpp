@@ -36,10 +36,10 @@ void CXPulzarConnector::tSetConnectionID(const QString& lConnectionID) {
   emit sConnectionIDChanged();
 }
 
-void CXPulzarConnector::tSetUpdateChannel(const QString& lUpdateChannel) {
+/*void CXPulzarConnector::tSetUpdateChannel(const QString& lUpdateChannel) {
   mUpdateChannel = lUpdateChannel;
   emit sUpdateChannelChanged();
-}
+}*/
 
 void CXPulzarConnector::tSetUpdatePriority(const QString& lUpdatePriority) {
   mUpdatePriority = lUpdatePriority;
@@ -161,7 +161,7 @@ void CXPulzarConnector::tOnMessageReceived(QString lMessage) {
         QStringList lStringList = i1.value().toString().split("|");
         QVariantList lVariantList;
         if(!i1.hasNext()) {
-          tSetUpdateChannel(lStringList.at(2));
+        //  tSetUpdateChannel(lStringList.at(2));
           tSetUpdatePriority(lStringList.at(3));
         }
         lVariantList.append(lStringList.at(4));
