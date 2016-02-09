@@ -1,4 +1,4 @@
-WorldcoinBC 2.0.1 
+WorldcoinBC 2.0.2 
 Release Notes
 
 1] Are my coins safe?
@@ -8,7 +8,7 @@ Core functions haven't changed, the daemon is almost the same as 0.8.6.x version
 
 2] Upgrading
 
-If you are running version 2.0.0 then the update icon will start flashing, open the 'Updater' component on the left panel and click 'Apply'. By default WBC will make a backup of your wallet to the directory specified in 'Backup Wallet' component, double check this parameter if you have any doubts. 
+If you are running version 2.0.x then the update icon will start flashing, open the 'Updater' component on the left panel and click 'Apply' (if you are using 2.0.1 just click on the info bar icon). By default WBC will make a backup of your wallet to the directory specified in 'Backup Wallet' component, double check this parameter if you have any doubts. 
 
 The upgrading protocol has suffered heavy changes in 2.x.x series, so upgrading from 1.x.x series using update tool is not possible, we suggest to create a new folder and install there; please check that the destination  folder doesn't need admin privileges. 
 
@@ -25,10 +25,11 @@ Linux 64 bits 2 Gb Ram
 
 4] What's new in this version
 
-4.1] Windows 10.- Fixed compatibility issues with Windows 10 (incorrect rendering)
-4.2] Address Detail.- Fixed bug that didn't display all addresses in some circumstances
-4.3] Transaction List.- Added new component that displays last N transactions (parameter N can be changed and saved)
-4.4] Encrypt Wallet.- Added functionality that allows to change the encryption password 
+4.1] New Components.- Receive Address for address creation, Daemon settings and Wallet settings.
+4.2] Panel .- Custom tooltips implemented; load components when clicking an icon of the Infobar highlighting relevant section.
+4.3] UI.- Basic tray support
+4.4] Wapptom and info bar icon.- Added 'Popularity' indicator on info bar and as a Wapptom for component reuse
+4.5] UI.- Several Fixes and improvements
 
 
 
@@ -65,11 +66,13 @@ This version is about testing all new infrastructure therefore only basic critic
 -  Address Detail
 -  Wallet Summary
 -  Encrypt Wallet
--  Backup Config
+-  Backup Settings
 -  Backup Wallet
 -  Updater
--  Transaction List*
-
+-  Transaction List
+-   Receiving Address*
+-  Daemon Settings*
+-  Wallets Settings*
 * New!
 
 You can achieve anything you want using the Console component.
@@ -78,4 +81,5 @@ Many other official components will be developed in further versions for interme
 7] Want to help?
 
 Please contact us at contact@worldcoin.info or write a message on the forums at  forum.worldcoin.global.
+
 

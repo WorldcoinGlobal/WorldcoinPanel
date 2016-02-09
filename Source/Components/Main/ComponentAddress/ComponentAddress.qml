@@ -31,7 +31,7 @@ AXComponent {
       anchors.fill: parent
       horizontalAlignment: "AlignHCenter"
       verticalAlignment: "AlignVCenter"
-      text: qsTr("The addres generated won't be displayed until it receives some funds.")
+      text: qsTr("The address generated won't be displayed until it receives some funds.")
       color: SStyleSheet.coComponentDetailTotalTextColor
       font.bold: true
   //    wrapMode: Text.WordWrap

@@ -16,7 +16,14 @@ DynamicLibrary {
     qbs.installDir: "."
     files: [ "*.cfg" ]
   }
- /* Group {
+  Group {
+    condition: qbs.targetOS.contains("linux")
+    qbs.install: true
+    qbs.installDir: "."
+    files: [ "Worldcoin.sh" ]
+  }
+
+/*  Group {
     qbs.install: true
     qbs.installDir: "."
     fileTagsFilter: "dynamiclibrary"
