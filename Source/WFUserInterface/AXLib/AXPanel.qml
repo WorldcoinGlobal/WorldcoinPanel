@@ -279,7 +279,10 @@ GXWindow {
         }
         wiRoot.siCloseRequested();
       }
-      onSiMinimizeButtonClicked: { wiRoot.showMinimized() }
+      onSiMinimizeButtonClicked: {
+        if(mCXDefinitions.mMinimizeToTray == "0") wiRoot.showMinimized()
+        else wiRoot.hide()
+      }
       onSiMaximizeButtonClicked: { fuShowMaximized() }      
       onSiWindowMoved: {
         wiRoot.x = wiRoot.x + poDelta.x

@@ -9,7 +9,7 @@ AXComponent {
  // property real reColumnWidth: 4.5
 
   id: rcRoot
-  reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight * 2 + SStyleSheet.reComponentHorizontalHeaderRowHeight * 8
+  reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight * 3 + SStyleSheet.reComponentHorizontalHeaderRowHeight * 8
   reWidthCm: 9
 
   Rectangle {
@@ -50,7 +50,7 @@ AXComponent {
     }
   }
   FXCheckBox {
-    id: cbMinimizeOnClose
+    id: cbMinimizeToTray
     enabled: true
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -60,9 +60,24 @@ AXComponent {
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
     reHeightCm: SStyleSheet.reComponentRowHeight
     style: coCheckBox
+    srSetting: "MinimizeToTray"
+    srDefaultValue: "0"
+    text: qsTr("Minimize to tray only")
+  }
+  FXCheckBox {
+    id: cbMinimizeOnClose
+    enabled: true
+    anchors.left: parent.left
+    anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
+    anchors.top: cbMinimizeToTray.bottom
+    anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
+    anchors.right: parent.right
+    anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
+    reHeightCm: SStyleSheet.reComponentRowHeight
+    style: coCheckBox
     srSetting: "MinimizeOnClose"
     srDefaultValue: "1"
-    text: qsTr("Minimize on tray when close")
+    text: qsTr("Minimize to tray when close")
   }
   AXFrame {
     id: rcUpdateTitle
@@ -205,7 +220,10 @@ AXComponent {
   }*/
   function fuAccept() {
     var boMinimizeOnTray = "0"
+    var boMinimizeToTray = "0"
     if(cbMinimizeOnClose.checked) boMinimizeOnTray = "1"
+    if(cbMinimizeToTray.checked) boMinimizeToTray = "1"
+    mCXDefinitions.mMinimizeToTray = String(boMinimizeToTray)
     mCXDefinitions.mMinimizeOnClose = String(boMinimizeOnTray)
     mCXDefinitions.mUpdateCheckPeriod = String(cbUpdatePeriod.currentIndex + 1)
     mCXDefinitions.mUpdateChannel = String(cbUpdateChannel.currentIndex + 1)
@@ -213,12 +231,21 @@ AXComponent {
   }
   function fuActivate() {
     var boMinimizeOnTray = "0"
+    var boMinimizeToTray = "0"
     if(mCXDefinitions.mMinimizeOnClose === "") {
       if(cbMinimizeOnClose.srDefaultValue == "0") cbMinimizeOnClose.boValue = false
       else cbMinimizeOnClose.boValue = true
     }
     if(mCXDefinitions.mMinimizeOnClose === "0") cbMinimizeOnClose.boValue = false
     if(mCXDefinitions.mMinimizeOnClose === "1") cbMinimizeOnClose.boValue = true
+
+    if(mCXDefinitions.mMinimizeToTray === "") {
+      if(cbMinimizeToTray.srDefaultValue == "0") cbMinimizeToTray.boValue = false
+      else cbMinimizeToTray.boValue = true
+    }
+    if(mCXDefinitions.mMinimizeToTray === "0") cbMinimizeToTray.boValue = false
+    if(mCXDefinitions.mMinimizeToTray === "1") cbMinimizeToTray.boValue = true
+
     cbUpdatePeriod.currentIndex = Number(mCXDefinitions.mUpdateCheckPeriod) - 1
     cbUpdateChannel.currentIndex = Number(mCXDefinitions.mUpdateChannel) - 1
   }

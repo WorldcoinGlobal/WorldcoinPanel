@@ -13,6 +13,7 @@ CXDefinitions::CXDefinitions(QObject* pParent) : QObject(pParent) {
   mY = lSettings.value("MainWindowY", -1).toInt();
   mAnimationDuration = lSettings.value("AnimationDuration", cAnimationDuration).toString();
   mMinimizeOnClose = lSettings.value("MinimizeOnClose", "").toString();
+  mMinimizeToTray = lSettings.value("MinimizeToTray", "").toString();
   lSettings.endGroup();
   lSettings.beginGroup("Version");
   mCurrentVersion = WORLDCOINPANEL_VERSION; //lSettings.value("CurrentVersion").toString();
@@ -91,6 +92,7 @@ void CXDefinitions::fSaveSettings(){
   lSettings.setValue("MainWindowX", mX);
   lSettings.setValue("MainWindowY", mY);
   lSettings.setValue("MinimizeOnClose", mMinimizeOnClose);
+  lSettings.setValue("MinimizeToTray", mMinimizeToTray);
   lSettings.endGroup();
   lSettings.beginGroup("Version");
   lSettings.setValue("CurrentVersion", mCurrentVersion);

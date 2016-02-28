@@ -70,6 +70,7 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
   Q_PROPERTY(QString mUpdateCheckPeriod READ fUpdateCheckPeriod WRITE fSetUpdateCheckPeriod NOTIFY sUpdateCheckPeriodChanged)
   Q_PROPERTY(QString mUpdateChannel READ fUpdateChannel WRITE fSetUpdateChannel NOTIFY sUpdateChannelChanged)
   Q_PROPERTY(QString mMinimizeOnClose READ fMinimizeOnClose WRITE fSetMinimizeOnClose NOTIFY sMinimizeOnCloseChanged)
+  Q_PROPERTY(QString mMinimizeToTray READ fMinimizeToTray WRITE fSetMinimizeToTray NOTIFY sMinimizeToTrayChanged)
 
   Q_ENUMS(eComponentType)
   Q_ENUMS(eRole)
@@ -218,6 +219,7 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     QString fUpdateChannel() const { return mUpdateChannel; }
     QString fUpdateCheckPeriod() const { return mUpdateCheckPeriod; }
     QString fMinimizeOnClose() const { return mMinimizeOnClose; }
+    QString fMinimizeToTray() const { return mMinimizeToTray; }
     QString fRegion() const { return mRegion; }
 
 
@@ -307,6 +309,12 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
         emit sMinimizeOnCloseChanged();
       }
     }
+    void fSetMinimizeToTray(const QString& lMinimizeToTray) {
+      if(lMinimizeToTray != mMinimizeToTray) {
+        mMinimizeToTray = lMinimizeToTray;
+        emit sMinimizeToTrayChanged();
+      }
+    }
 
   public slots:
     void fSaveSettings();
@@ -326,6 +334,7 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     void sUpdateChannelChanged();
     void sUpdateCheckPeriodChanged();
     void sMinimizeOnCloseChanged();
+    void sMinimizeToTrayChanged();
 
   private:
     bool mSaveLog;
@@ -345,6 +354,7 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     QString mUpdateCheckPeriod;
     QString mRegion;
     QString mMinimizeOnClose;
+    QString mMinimizeToTray;
 };
 
 #endif // CXDefinitions_H
