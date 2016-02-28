@@ -233,15 +233,27 @@ AXComponent {
     var boMinimizeOnTray = "0"
     var boMinimizeToTray = "0"
     if(mCXDefinitions.mMinimizeOnClose === "") {
-      if(cbMinimizeOnClose.srDefaultValue == "0") cbMinimizeOnClose.boValue = false
-      else cbMinimizeOnClose.boValue = true
+      if(cbMinimizeOnClose.srDefaultValue == "0") {
+        cbMinimizeOnClose.boValue = false
+        mCXDefinitions.mMinimizeOnClose = "0"
+      }
+      else {
+        cbMinimizeOnClose.boValue = true
+        mCXDefinitions.mMinimizeOnClose = "1"
+      }
     }
     if(mCXDefinitions.mMinimizeOnClose === "0") cbMinimizeOnClose.boValue = false
     if(mCXDefinitions.mMinimizeOnClose === "1") cbMinimizeOnClose.boValue = true
 
     if(mCXDefinitions.mMinimizeToTray === "") {
-      if(cbMinimizeToTray.srDefaultValue == "0") cbMinimizeToTray.boValue = false
-      else cbMinimizeToTray.boValue = true
+      if(cbMinimizeToTray.srDefaultValue == "0") {
+        cbMinimizeToTray.boValue = false
+        mCXDefinitions.mMinimizeToTray = "0"
+      }
+      else {
+        cbMinimizeToTray.boValue = true
+        mCXDefinitions.mMinimizeToTray = "1"
+      }
     }
     if(mCXDefinitions.mMinimizeToTray === "0") cbMinimizeToTray.boValue = false
     if(mCXDefinitions.mMinimizeToTray === "1") cbMinimizeToTray.boValue = true

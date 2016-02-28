@@ -513,10 +513,10 @@ void GXGuiApplication::fUpdateStatusText(int lCode, const QStringList& lParamete
 
 
 void GXGuiApplication::fOnClose() {    
-  if(mDefinitions.fMinimizeOnClose().toInt()) {
+/*  if(mDefinitions.fMinimizeOnClose().toInt()) {
     rMainWindow->hide();
   }
-  else {
+  else {*/
     fUpdateStatusText(2200009);
     mDefinitions.fSaveSettings();
 
@@ -543,5 +543,5 @@ void GXGuiApplication::fOnClose() {
       if(mLogFile.exists() && !mLogFile.remove()) fLogMessage(3200004, QStringList() << mLogFile.fileName(), QString());
     }
     qApp->quit();
-  }
+ // }
 }

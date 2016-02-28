@@ -276,8 +276,9 @@ GXWindow {
           maRoot.z = 10000;
           maRoot.enabled = false;
           loTitleBar.item.boMouseEnabled = false;
+          wiRoot.siCloseRequested();
         }
-        wiRoot.siCloseRequested();
+        else wiRoot.hide()
       }
       onSiMinimizeButtonClicked: {
         if(mCXDefinitions.mMinimizeToTray == "0") wiRoot.showMinimized()
