@@ -2,6 +2,7 @@ import qbs
 
 Project {
   references: [
-    "ConnectorWorldcoin/ConnectorWorldcoin.qbs"
+    "ConnectorWorldcoin/ConnectorWorldcoin.qbs",
+    "ConnectorBitcoin/ConnectorBitcoin.qbs"
   ]
 }

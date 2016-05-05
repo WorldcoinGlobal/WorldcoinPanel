@@ -278,6 +278,7 @@ bool BXCryptoConnector::fExecute(int lRequestType, quint64 lRequestID, const QSt
 void BXCryptoConnector::fSendReply() {
   bool lSuccess = false;
   QJsonRpcServiceReply* pReply = qobject_cast<QJsonRpcServiceReply*> (sender());
+  disconnect(rRpcReply, &QJsonRpcServiceReply::finished, this, &BXCryptoConnector::fSendReply);
   QJsonRpcMessage lResponse = pReply->response();
   QString lInput(pReply->property("yInput").toString());
   QString lOutput(pReply->property("yOutput").toString());

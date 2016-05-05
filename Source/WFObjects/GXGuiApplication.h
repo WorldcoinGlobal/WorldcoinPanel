@@ -36,7 +36,7 @@ class WFOBJECTS_EXPORT GXGuiApplication : public BXGuiApplication
 
   public:
     explicit GXGuiApplication(int& lArgc, char** pArgv);
-    ~GXGuiApplication();
+     ~GXGuiApplication();
 
     bool fPendingRequests(bool lLocalOnly = false);
 

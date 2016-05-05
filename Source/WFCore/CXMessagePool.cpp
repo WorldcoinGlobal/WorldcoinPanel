@@ -24,6 +24,7 @@ const CXMessage CXMessagePool::fMessage(int lCode, const QStringList& lParameter
     case 2200007: lMessage.fSetText(tr("Main daemon stopped. Connector '%1'").arg(lParameters.at(0))); break;
     case 2200008: lMessage.fSetText(tr("Main daemon indexing. Please wait ... Connector '%1'").arg(lParameters.at(0))); break;
     case 2200009: lMessage.fSetText(tr("Closing Business Centre ... Please wait")); break;
+    case 2200010: lMessage.fSetText(tr("Checkpoint: %1").arg(lParameters.at(0))); break;
     case 3200001: lMessage.fSetText(tr("Unable to open file! File name: '%1'").arg(lParameters.at(0))); break;
     case 3200002: lMessage.fSetText(tr("Unable to create folder! Folder name: '%1'").arg(lParameters.at(0))); break;
     case 3200003: lMessage.fSetText(tr("Unable to copy file! Folder name: '%1'. File name : '%2'.").arg(lParameters.at(0)).arg(lParameters.at(1))); break;
