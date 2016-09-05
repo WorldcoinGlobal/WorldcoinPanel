@@ -16,5 +16,5 @@ void WapptomConnectionCount::fSetup() {
   mInput = QString("getconnectioncount");
   mSource = tr("Local Wallet");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+//  tSetConnector(cDefaultDaemon);
 }

@@ -5,8 +5,8 @@ import QtQuick.Window 2.2
 Item {
 
 /***** Fonts *****/
-  property color coSubtitlesBigTextColor: "#1e6faf"
-  property color coTitlesBigTextColor: "#1e6faf"
+  property color coSubtitlesBigTextColor: "#94bfea" //"#1e6faf"
+  property color coTitlesBigTextColor: "#94bfea" //"#1e6faf"
   property real reTitlesBigTextSize: 0.8
   property real reSubtitlesBigTextSize: 0.6
   property string srFontFamily: "Arial"
@@ -14,14 +14,14 @@ Item {
 /***** Main Panel *****/
   property real reZoomDelta: 0.03
   property real reCornerRadiusCm: 0.5
-  property color coMainInfoBackgroundColor: "SteelBlue"
+  property color coMainInfoBackgroundColor: "#2a579a" 
   property color coMainInfoTextColor: "White"
   property color coMainCriticalBackgroundColor: "Red"
   property color coMainCriticalTextColor: "White"
 
 
 /***** Main Title Bar *****/
-  property color coMainTitleBarColor: "SteelBlue"
+  property color coMainTitleBarColor: "#2a579a" // "#084d96"
   property color coMainTitleTextColor: "White"
   property real reMainTitleBarHeight: 0.6
   property real reMainTitleBarRightMargin: 0.25
@@ -33,11 +33,11 @@ Item {
   property color coMainTopBorderColor: coMainTitleBarColor
   property color coMainLeftBorderColor: coMainTitleBarColor
   property color coMainRightBorderColor: coMainTitleBarColor //"#00427b"
-  property color coMainBottomBorderColor: "SteelBlue" //"#00427b"
+  property color coMainBottomBorderColor: "#2a579a" //"#084d96" 
   property real reMainTitleBarBorderWidth: 0.1
 
 /***** Status Bar *****/
-  property color coMainStatusBarColor: "SteelBlue"   //"#00427b"
+  property color coMainStatusBarColor: "#2a579a" //"#084d96" 
   property color coMainStatusTextColor: "White"
   property color coMainStatusBarProccesingBackgroundColor: "#FF8C00"
   property color coMainStatusBarReadyBackgroundColor: "CadetBlue"
@@ -52,7 +52,7 @@ Item {
   property real reSliderGrooveWidth: 3
   property real reSliderGrooveHeight: 0.15
   property real reSliderGrooveRadius: 0.1
-  property color reSliderGrooveColor: "LightSteelBlue"
+  property color reSliderGrooveColor: "#f1f1f1" //"LightSteelBlue"
   property color reSliderHandlePressedColor: "White"
   property color reSliderHandleReleaseColor: "LightGray"
   property color reSliderHandleBorderColor: "Gray"
@@ -68,16 +68,16 @@ Item {
   property real reModulePanelAreaRadius: 0
   property real reModulePanelModuleRadius: 0.35
   property real reModulePanelComponentRadius: 0
-  property color coModulePanelBorderColor: "SteelBlue"
-  property color coModulePanelTitleBackgroudColor: "SteelBlue"
+  property color coModulePanelBorderColor: "#2a579a" //"#084d96"
+  property color coModulePanelTitleBackgroudColor: "#2a579a"      
   property color coModulePanelTitleTextColor: "White"
-  property color coModulePanelBackgroundColor: "#c7d4e3"
-  property color coModulePanelAreaBackgroundColor: "#6B9BC3"
-  property color coModulePanelModuleBackgroundColor: "#6B9BC3"
+  property color coModulePanelBackgroundColor: "#f1f1f1"//"White"
+  property color coModulePanelAreaBackgroundColor: "#2a579a" 
+  property color coModulePanelModuleBackgroundColor: "#2a579a" 
   property color coModulePanelComponentBackgroundColor: coModulePanelBackgroundColor
-  property color coModulePanelHighlightedAreaBackgroundColor: "SteelBlue"
-  property color coModulePanelHighlightedModuleBackgroundColor: "SteelBlue"
-  property color coModulePanelHighlightedComponentBackgroundColor: "#FF8C00"
+  property color coModulePanelHighlightedAreaBackgroundColor: "#2a579a" 
+  property color coModulePanelHighlightedModuleBackgroundColor: "#08964d"
+  property color coModulePanelHighlightedComponentBackgroundColor:  "#2a579a"
   property color coModulePanelAreaTextColor: "White"
   property color coModulePanelModuleTextColor: "White"
   property color coModulePanelComponentTextColor: "#315B7E"
@@ -86,23 +86,24 @@ Item {
   property color coModulePanelHighlightedComponentTextColor: "White"
 
 /***** Info Bar *****/
-  property color coInfoBarBackgroudColor: "LightSteelBlue"
-  property color coInfoBarBottomBorderColor: "LightSteelBlue"
-  property color coInfoBarSeparatorColor: "SteelBlue"
+  property color coInfoBarBackgroudColor: "#f1f1f1" //"#c7d4e3"
+  property color coInfoBarBottomBorderColor: "#f1f1f1" //"#c7d4e3"
+  property color coInfoBarSeparatorColor: "#2a579a" //"#084d96"
   property color coInfoBarTextColor: "White"
+  property color coInfoBarVersionTextColor: "#706e6e" //"White"
   property real reInfoBarSpacing: 0.2
   property real reInfoBarHeight: 1
   property real reInfoBarSeparatorWidth: 0.05
   property real reInfoBarBorderWidth: reModulePanelBorderWidth
 
 /***** Search Panel *****/
-  property color coSearchPanelTitleBackgroudColor: "SteelBlue"
+  property color coSearchPanelTitleBackgroudColor: "#2a579a"
   property color coSearchPanelPanelBackgroudColor: "#c7d4e3"
-  property color coSearchPanelBorderColor: "SteelBlue"
+  property color coSearchPanelBorderColor: "#2a579a"
   property color coSearchPanelTitleTextColor: "White"
   property color coSearchPanelComponentTextColor: coSearchPanelPanelBackgroudColor
   property color coSearchPanelHighlightedTextColor: "White"
-  property color coSearchPanelHighlightedBackgroundColor: "SteelBlue"
+  property color coSearchPanelHighlightedBackgroundColor: "#2a579a"
   property real reSearchPanelBorderWidth: reModulePanelBorderWidth
   property real reSearchPanelTitleHeight: 0.38
   property real reSearchPanelDefaultWidth: 0
@@ -110,22 +111,22 @@ Item {
   property string srSearchPanelTextFontFamily: srFontFamily
 
 /***** Log Panel *****/
-  property color coLogPanelTitleBackgroudColor: "SteelBlue"
-  property color coLogPanelPanelBackgroudColor: "#c7d4e3"
-  property color coLogPanelBorderColor: "SteelBlue"
+  property color coLogPanelTitleBackgroudColor: "#2a579a"
+  property color coLogPanelPanelBackgroudColor: "#f1f1f1" //"#c7d4e3"
+  property color coLogPanelBorderColor: "#2a579a"
   property color coLogPanelTitleTextColor: "White"
   property color coLogPanelComponentTextColor: coSearchPanelPanelBackgroudColor
   property color coLogPanelHighlightedTextColor: "White"
-  property color coLogPanelHighlightedBackgroundColor: "SteelBlue"
+  property color coLogPanelHighlightedBackgroundColor:  "#f1f1f1"// "#2a579a"
   property real reLogPanelTitleHeight: reSearchPanelTitleHeight
   property real reLogPanelHeaderHeight: 0.45
   property string srLogPanelTextFontFamily: srFontFamily
 
 /***** Workspace *****/
-  property color coWorkspaceTabBackgroudColor: "SteelBlue"
-  property color coWorkspacePanelBackgroudColor: "#c7d4e3"
+  property color coWorkspaceTabBackgroudColor: "#2a579a"
+  property color coWorkspacePanelBackgroudColor: "#e6e6e6" //"#c7d4e3"
   property color coWorkspaceTabTextColor: "White"
-  property color coWorkspaceBorderColor: "SteelBlue"
+  property color coWorkspaceBorderColor: "#2a579a"
   property color coWorkspaceHighlightingColor: "LightYellow"
   property real reWorkspaceTabHeight: 0.5
   property real reWorkspaceTabRadius: 0.5
@@ -151,12 +152,12 @@ Item {
   property real reTableAddressWidth: 7
   property real reTableHashWidth: 9
 
-  property color coHorizontalHeaderColor: "LightSteelBlue"
+  property color coHorizontalHeaderColor: "#f1f1f1" //"LightSteelBlue"
   property color coHorizontalHeaderTextColor: "Black"
-  property color coHorizontalHeaderBorderColor: "SteelBlue"
-  property color coCellColor: "#c7d4e3"
+  property color coHorizontalHeaderBorderColor: "#2a579a"
+  property color coCellColor: "#e6e6e6"
   property color coCellTextColor: "Black"
-  property color coCellBorderColor: "SteelBlue"
+  property color coCellBorderColor: "#2a579a"
 
   property real reHorizontalHeaderHeight: 0.5
   property real reHorizontalHeaderMargin: 0.1
@@ -168,14 +169,14 @@ Item {
 /***** Component Window *****/
   property color coComponentTitleTextColor: "White"
   property color coComponentTitleBarColor: coMainTitleBarColor
-  property color coComponentActiveTitleBarColor: "#315B7E"
+  property color coComponentActiveTitleBarColor: "#22467b"
   property color coComponentTopBorderColor: coMainTitleBarColor
   property color coComponentLeftBorderColor: coMainTitleBarColor
   property color coComponentRightBorderColor: coMainTitleBarColor
   property color coComponentBottomBorderColor: coMainTitleBarColor
   property color coComponentStatusBarColor: coMainStatusBarColor    
   property color coComponentStatusTextColor: "White"    
-  property color coComponentWorkspaceColor: "LightSteelBlue"
+  property color coComponentWorkspaceColor: "#f1f1f1" //"#c7d4e3"
   property real reComponentBorderWidth: 0.05
   property real reComponentCornerRadiusCm: 0.2
   property real reComponentTitleBarHeight: 0.4
@@ -190,19 +191,19 @@ Item {
   property real reComponentStatusBarButtonSpace: 0.0
 
 /***** Component *****/
-  property color coComponentInternalBorderColor: "SteelBlue"
-  property color coComponentHorizontalHeaderColor: "CadetBlue"
-  property color coComponentVerticalHeaderColor: "#8FBBBC"
+  property color coComponentInternalBorderColor: "#2a579a"
+  property color coComponentHorizontalHeaderColor: "#ccd4da" // "CadetBlue"
+  property color coComponentVerticalHeaderColor: "#8daec6" //"#8FBBBC"
   property color coComponentHorizontalHeaderTextColor: "White"
   property color coComponentVerticalHeaderTextColor: "White"
-  property color coComponentDetailBackgroundColor:  "#c7d4e3"
+  property color coComponentDetailBackgroundColor: "#f1f1f1" //"#c7d4e3"
   property color coComponentDetailTextColor: "#315B7E"
-  property color coComponentDetailHighlightBackgroundColor: "#FF8C00"
-  property color coComponentDetailSubtotalBackgroundColor: "#8FBBBC"
+  property color coComponentDetailHighlightBackgroundColor: "#C6a88d" //#FF8C00"
+  property color coComponentDetailSubtotalBackgroundColor:"#8daec6"// "#8FBBBC"
   property color coComponentDetailSubtotalTextColor: "White"
-  property color coComponentDetailTotalBackgroundColor: "#FF8C00"
-  property color coComponentWarningBackgroundColor: "#FF8C00"
-  property color coComponentInformationBackgroundColor: "#0000FF"
+  property color coComponentDetailTotalBackgroundColor: "#C6a88d" //"#FF8C00"
+  property color coComponentWarningBackgroundColor: "#C6a88d" //"#FF8C00"
+  property color coComponentInformationBackgroundColor: "#8daec6" //"#0000FF"
   property color coComponentWarningTextColor: "White"
   property color coComponentDetailTotalTextColor: "White"
   property color coComponentInputNeutralColor: "LightYellow"
@@ -218,10 +219,10 @@ Item {
   property real reComponentItemSpace: 0.2
 
 /***** Component Command Bar*****/
-  property color coCommandBarBackgroudColor: "LightSteelBlue"
-  property color coCommandBarBorderColor: "SteelBlue"
-  property color coCommandBarOkButtonBorderColor: "SteelBlue"
-  property color coCommandBarOkButtonReleasedColor: "SteelBlue"
+  property color coCommandBarBackgroudColor: "#c7d4e3"
+  property color coCommandBarBorderColor: "#2a579a"
+  property color coCommandBarOkButtonBorderColor: "#2a579a"
+  property color coCommandBarOkButtonReleasedColor: "#2a579a"
   property color coCommandBarOkButtonPressedColor: "#6B9BC3"
   property color coCommandBarOkButtonDisabledColor: "DarkGray"
   property color coCommandBarOkButtonDisabledBorderColor: "DarkGray"
@@ -241,18 +242,22 @@ Item {
   property real reCommandBarButtonRadius: 0.5
 
 /***** Component Tools *****/
-  property color coCheckBoxActiveBorderFocus: "SteelBlue"
+  property color coCheckBoxActiveBorderFocus: "#2a579a"
   property color coCheckBoxInactiveBorderFocus: "Gray"
   property color coCheckBoxBackgroundColor: "White"
-  property color coCheckBoxActiveColor: "SteelBlue"
+  property color coCheckBoxActiveColor: "#2a579a"
   property color coCheckBoxInactiveColor: "Gray"
   property color coCheckBoxTextColor: "Black"
   property color coComboBoxTextColor: "Black"
+  property color coComboBoxIndicatorActiveColor: "DarkGray"
+  property color coComboBoxIndicatorInactiveColor: "Gray"
+  property color coComboBoxBackgroundColor: "White"
   property color coToolTipBackgroundColor: "LightYellow"
   property color coToolTipTextColor: "DarkGray"
   property real reCheckBoxHeight: 0.3
   property real reCheckBoxWidth: 0.3
   property real reCheckBoxRadius: 0.07
+  property real reComboBoxRadius: 0.1
   property real reTextFieldRadius: 0.1
   property real reToolTipRadius: 0.2
 }

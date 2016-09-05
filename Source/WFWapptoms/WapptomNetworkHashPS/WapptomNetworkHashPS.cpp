@@ -16,5 +16,5 @@ void WapptomNetworkHashPS::fSetup() {
   mInput = QString("getnetworkhashps");
   mSource = tr("Local Wallet");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+//  tSetConnector(cDefaultDaemon);
 }

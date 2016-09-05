@@ -179,6 +179,7 @@ bool BXCryptoConnector::fRestart() {
 }
 
 void BXCryptoConnector::fSetup() {
+  mStatus = 0;
   fSetStatus(CXDefinitions::EServiceStopped);
   QString lRpcUrl(QString("http://127.0.0.1:%1").arg(mRpcPort));
   rRpc = new CXRcpClient(lRpcUrl,mUser,mPassword, this);
@@ -191,9 +192,11 @@ void BXCryptoConnector::fSetup() {
 }
 
 void BXCryptoConnector::fSetStatus(int lStatus) {
+  if(mStatus == lStatus) return;
   mStatus = lStatus;
 
-  emit sStatusChanged(fName(), mStatus);
+ // emit sStatusChanged(fName(), mStatus);
+  emit sStatusChanged();
   if(lStatus == CXDefinitions::EServiceProcessing)
     mTimer.start(cDefaultSampleTime);
   else {
@@ -205,15 +208,22 @@ void BXCryptoConnector::fSetStatus(int lStatus) {
 void BXCryptoConnector::fLoadSettings() {
   QSettings lSettings(cDaemonsConf, QSettings::IniFormat);
   lSettings.beginGroup(fName());
-  mBinaryName = lSettings.value("BinaryName").toString();
-  mDataDirectory = lSettings.value("DataDirectory").toString();
-  mUser = lSettings.value("User").toString();
-  mPassword = lSettings.value("Password").toString();
-  mPort = lSettings.value("Port").toString();
-  mRpcPort = lSettings.value("RpcPort").toString();
-  mPidFileName = lSettings.value("PidFile").toString();
-  mLockFileName = lSettings.value("LockFile").toString();
-  mEnabled = lSettings.value("Enabled", false).toBool();
+  mBinaryName = lSettings.value("BinaryName", fDefaultBinaryName()).toString();
+  mClientName = lSettings.value("ClientName", fDefaultClientName()).toString();
+  if(CXDefinitions::fCurrentOS() == CXDefinitions::EWindowsOS) {
+    mBinaryName = mBinaryName + ".exe";
+    mClientName = mClientName + ".exe";
+  }
+  //if(CXDefinitions::fCurrentOS() == CXDefinitions::ELinuxOS) mBinaryName = mBinaryName + ".exe";
+
+  mDataDirectory = lSettings.value("DataDirectory", fDefaultDataDirectory()).toString();
+  mUser = lSettings.value("User", fDefaultUser()).toString();
+  mPassword = lSettings.value("Password", fDefaultPassword()).toString();
+  mPort = lSettings.value("Port", fDefaultPort()).toString();
+  mRpcPort = lSettings.value("RpcPort", fDefaultRpcPort()).toString();
+  mPidFileName = lSettings.value("PidFile", fDefaultPidFile()).toString();
+  mLockFileName = lSettings.value("LockFile", fDefaultLockFile()).toString();
+  mEnabled = lSettings.value("Enabled", fDefaultEnabled()).toBool();
   lSettings.endGroup();
 
   fLoadCommandDefinitions(cCommandDefinitions);
@@ -417,27 +427,25 @@ QString BXCryptoConnector::fParseResponse(const QJsonValue& lResult, const QStri
 
 bool BXCryptoConnector::fStop() {
   QProcess lDaemon;
-  fSetStatus(CXDefinitions::EServiceStopped);
-  QFile lDaemonFile(QString("%1/%2/%3").arg(qApp->applicationDirPath()).arg(cDaemonsDir).arg(mBinaryName));
+  fSetStatus(CXDefinitions::EServiceProcessing);
+  QFile lDaemonFile(QString("%1/%2/%3").arg(qApp->applicationDirPath()).arg(cDaemonsDir).arg(mClientName));
   if(lDaemonFile.exists()) {
     QEventLoop lDaemonLoop;
-    if(mStatus == CXDefinitions::EServiceProcessing) {
+/*    if(mStatus == CXDefinitions::EServiceProcessing) {
       connect(this, &BXCryptoConnector::sProcessingFinished, &lDaemonLoop, &QEventLoop::quit);
       lDaemonLoop.exec();
-    }    
+    }*/
     lDaemon.start(lDaemonFile.fileName(), QStringList() << QString("-conf=%1/%2").arg(mDataDirectory).arg(fConfigFile()) << QString("-datadir=%1").arg(mDataDirectory) << QString("stop"));
     QTimer::singleShot(5000,&lDaemonLoop, SLOT(quit()));
-    connect(&lDaemon, SIGNAL(finished(int)), &lDaemonLoop, SLOT(quit()));
+    connect(&mDaemon, SIGNAL(finished(int)), &lDaemonLoop, SLOT(quit()));
     lDaemonLoop.exec();
   }
+  fSetStatus(CXDefinitions::EServiceStopped);
   mTimer.stop();
   return true;
 }
 
 bool BXCryptoConnector::fStart() {
-  if(CXDefinitions::fCurrentOS() == CXDefinitions::EWindowsOS) mBinaryName = mBinaryName + ".exe";
-  //if(CXDefinitions::fCurrentOS() == CXDefinitions::ELinuxOS) mBinaryName = mBinaryName + ".exe";
-
   if(fStatus() == CXDefinitions::EServiceError) return false;
   fSetStatus(CXDefinitions::EServiceProcessing);
   if(!fCheckParameters()) {
@@ -458,13 +466,13 @@ bool BXCryptoConnector::fStart() {
   }
   QFile lDaemonFile(QString("%1/%2/%3").arg(qApp->applicationDirPath()).arg(cDaemonsDir).arg(mBinaryName));
   if(!lDaemonFile.exists()) {
-    emit sLogMessageRequest(3200010, QStringList() << lDaemonFile.fileName(), tr("Connector: '%1'").arg(fLabel()), CXDefinitions::ELogAll);
+    emit sLogMessageRequest(3200010,  QStringList() << lDaemonFile.fileName(), tr("Connector: '%1'").arg(fLabel()), CXDefinitions::ELogAll);
     if(fName() == cDefaultDaemon) {
       fSetStatus(CXDefinitions::EServiceError);
       return false;
     }
   }
-  else mDaemon.start(lDaemonFile.fileName(), QStringList() << QString("-conf=%1/%2").arg(mDataDirectory).arg(fConfigFile()) << QString("-datadir=%1").arg(mDataDirectory) << QString("-rpcwait"));
+  else mDaemon.start(lDaemonFile.fileName(), fStartupParameters());
   return true;
 }
 
@@ -490,6 +498,29 @@ void BXCryptoConnector::fEvaluateConnection() {
     emit sLogMessageRequest(2200006, QStringList() << fName(), QString(), CXDefinitions::ELogAll);
     fSetStatus(CXDefinitions::EServiceReady);
   }
+}
+
+void BXCryptoConnector::fSaveSettings() {
+  QSettings lSettings(cDaemonsConf, QSettings::IniFormat);
+  lSettings.beginGroup(fName());
+  QString lBinaryName = mBinaryName;
+  QString lClientName = mClientName;
+  if(CXDefinitions::fCurrentOS() == CXDefinitions::EWindowsOS) {
+    lBinaryName.remove(".exe");
+    lClientName.remove(".exe");
+  }
+  lSettings.setValue("BinaryName", lBinaryName);
+  lSettings.setValue("ClientName", lClientName);
+  lSettings.setValue("DataDirectory", mDataDirectory);
+  lSettings.setValue("User", mUser);
+  lSettings.setValue("Password", mPassword);
+  lSettings.setValue("Port", mPort);
+  lSettings.setValue("RpcPort", mRpcPort);
+  lSettings.setValue("PidFile", mPidFileName);
+  lSettings.setValue("LockFile", mLockFileName);
+  if(mEnabled) lSettings.setValue("Enabled", "1");
+  else lSettings.setValue("Enabled", "0");
+  lSettings.endGroup();
 }
 
 void BXCryptoConnector::fTryConnection() {

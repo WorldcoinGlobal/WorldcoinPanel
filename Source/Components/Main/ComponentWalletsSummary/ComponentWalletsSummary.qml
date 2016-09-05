@@ -5,15 +5,16 @@ import ACMeasures.Lib 1.0
 import WFDefinitions.Lib 1.0
 
 AXComponent {
-  readonly property string srBalance: WABalance.mDisplayValue
-  readonly property string srEncrypted: WAEncrypted.mDisplayValue
-  readonly property string srTotalBlockCount: WNTotalBlockCount.mDisplayValue
-  readonly property string srBlockCount: WABlockCount.mDisplayValue
-  readonly property string srConnections: WAConnectionCount.mDisplayValue
-  readonly property string srDifficulty: WADifficulty.mDisplayValue
-  readonly property string srNetworkHashPS: WANetworkHashPS.mDisplayValue
-  readonly property string srExchangeRate: WNExchangeRate.mDisplayValue
-  readonly property string srBestBlockHash: WABestBlockHash.mDisplayValue
+  property string srBalance: WABalance.mDisplayValue
+  property string srBalanceWithoutConf: WABalanceWithoutConf.mDisplayValue
+  property string srEncrypted: WAEncrypted.mDisplayValue
+  property string srTotalBlockCount: WNTotalBlockCount.mDisplayValue
+  property string srBlockCount: WABlockCount.mDisplayValue
+  property string srConnections: WAConnectionCount.mDisplayValue
+  property string srDifficulty: WADifficulty.mDisplayValue
+  property string srNetworkHashPS: WANetworkHashPS.mDisplayValue
+  property string srExchangeRate: WNExchangeRate.mDisplayValue
+  property string srBestBlockHash: WABestBlockHash.mDisplayValue
   property real rePreviousBalance: 0
   property real reColumnWidth: 6.3
 
@@ -42,7 +43,10 @@ AXComponent {
     reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
     Image {
       id: imCrypto
-      source:  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.svg"), false)
+      source: {
+       if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+       return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
+      }
       fillMode: Image.Stretch
       anchors.left: parent.left
       anchors.leftMargin: parent.width / 3
@@ -63,7 +67,7 @@ AXComponent {
       anchors.right: parent.right
       horizontalAlignment: "AlignLeft"
       verticalAlignment: "AlignVCenter"
-      text: WABalance.mConnector
+      text: mCurrentCoin
       color: SStyleSheet.coComponentHorizontalHeaderTextColor
       font.bold: true
       font.italic: true
@@ -211,7 +215,7 @@ AXComponent {
     }
     Loader {
       sourceComponent: coValue
-      onLoaded: { item.srText = Qt.binding(function() { return  (parseFloat(WABalanceWithoutConf.mDisplayValue) - parseFloat(srBalance) )}) }
+      onLoaded: { item.srText = Qt.binding(function() { return srBalanceWithoutConf }) }
     }
     Loader {
       sourceComponent: coValue
@@ -234,7 +238,7 @@ AXComponent {
   AXFrame {
     id: rcSources
     clip: true
-    color: SStyleSheet.coComponentHorizontalHeaderColor
+    color: SStyleSheet.coComponentInternalBorderColor
     anchors.top: grGrid.bottom
     anchors.left: parent.left
     anchors.right: parent.right
@@ -245,13 +249,48 @@ AXComponent {
       anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentDetailLeftMargin)
       horizontalAlignment: "AlignLeft"
       verticalAlignment: "AlignVCenter"
-      text: "*   Source: " + WNTotalBlockCount.mSource + "\n**  Source: " + WNExchangeRate.mSource
+      text: {
+        var vaTotSource = WNTotalBlockCount.mSource
+        var vaExchangeRate = WNExchangeRate.mSource
+        if(mCurrentCoin === "BTC") {
+          vaTotSource = WNTotalBlockCountBTC.mSource
+          vaExchangeRate = WNExchangeRateBTC.mSource
+        }
+        return ("*   Source: " + vaTotSource + "\n**  Source: " + vaExchangeRate)
+      }
       color: SStyleSheet.coComponentHorizontalHeaderTextColor
       font.bold: true
       font.italic: true
       font.family: SStyleSheet.srComponentFont
     }
   }
+  onMCurrentCoinChanged: {
+    if(mCurrentCoin === "WDC") {
+      srBalance = Qt.binding(function() { return WABalance.mDisplayValue })
+      srEncrypted = Qt.binding(function() { return WAEncrypted.mDisplayValue })
+      srTotalBlockCount = Qt.binding(function() { return WNTotalBlockCount.mDisplayValue })
+      srBlockCount = Qt.binding(function() { return WABlockCount.mDisplayValue })
+      srConnections = Qt.binding(function() { return WAConnectionCount.mDisplayValue })
+      srDifficulty = Qt.binding(function() { return WADifficulty.mDisplayValue })
+      srNetworkHashPS = Qt.binding(function() { return WANetworkHashPS.mDisplayValue })
+      srExchangeRate = Qt.binding(function() { return WNExchangeRate.mDisplayValue })
+      srBestBlockHash = Qt.binding(function() { return WABestBlockHash.mDisplayValue })
+      srBalanceWithoutConf = Qt.binding(function() { return WABalanceWithoutConf.mDisplayValue })
+    }
+    if(mCurrentCoin === "BTC") {
+      srBalance = Qt.binding(function() { return WABalanceBTC.mDisplayValue })
+      srEncrypted = Qt.binding(function() { return WAEncryptedBTC.mDisplayValue })
+      srTotalBlockCount = Qt.binding(function() { return WNTotalBlockCountBTC.mDisplayValue })
+      srBlockCount = Qt.binding(function() { return WABlockCountBTC.mDisplayValue })
+      srConnections = Qt.binding(function() { return WAConnectionCountBTC.mDisplayValue })
+      srDifficulty = Qt.binding(function() { return WADifficultyBTC.mDisplayValue })
+      srNetworkHashPS = Qt.binding(function() { return WANetworkHashPSBTC.mDisplayValue })
+      srExchangeRate = Qt.binding(function() { return WNExchangeRateBTC.mDisplayValue })
+      srBestBlockHash = Qt.binding(function() { return WABestBlockHashBTC.mDisplayValue })
+      srBalanceWithoutConf = Qt.binding(function() { return WABalanceWithoutConfBTC.mDisplayValue })
+    }
+  }
+
   function fuActivate() { }
   function fuSetup() { }
 }

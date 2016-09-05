@@ -105,18 +105,21 @@ void GXGuiApplication::fInit() {
   }
   if(!fLoadWapptoms(cWapptomsDir)) {
     fUpdateStatusText(3200011);
+    QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
   }
-// fLogMessage(2200010, QStringList() << "void GXGuiApplication::fInit -- 13", QString(), CXDefinitions::ELogDisk);
-  rSplashWindow = qobject_cast<GXWindow* >(lComSplash.create());
-  rMainWindow = qobject_cast<GXWindow* >(lComMain.create());
+//  rSplashWindow = qobject_cast<GXWindow* >(lComSplash.create());
+//  rMainWindow = qobject_cast<GXWindow* >(lComMain.create());
   if(!fLoadConnectors(cConnectorsDir)) {
     fUpdateStatusText(3200007);
-    return;
+    QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
   }
-  if(!fStartDaemons()) {
+  if(!mConnectorManager.fStartDaemons()) {
     fUpdateStatusText(3200007);
-    return;
+    QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
   }
+  rSplashWindow = qobject_cast<GXWindow* >(lComSplash.create());
+  rMainWindow = qobject_cast<GXWindow* >(lComMain.create());
+
 // fLogMessage(2200010, QStringList() << "void GXGuiApplication::fInit -- 14", QString(), CXDefinitions::ELogDisk);
   connect(&mEngine, SIGNAL(quit()), qApp, SLOT(quit()));
   connect(&mComponentManager, SIGNAL(sLogMessageRequest(int,QStringList,QString,int)), this, SLOT(fLogMessage(int,QStringList,QString,int)));
@@ -147,7 +150,7 @@ void GXGuiApplication::fInit() {
     rTrayIconMenu->addAction(pQuit);
     rTrayIcon = new QSystemTrayIcon(this);
     rTrayIcon->setContextMenu(rTrayIconMenu);
-    rTrayIcon->setIcon(QIcon(fImageFile("InfoBar_IMDaemonReady.svg")));
+    rTrayIcon->setIcon(QIcon(fImageFile("InfoBar_IMDaemonReady.png")));
     rTrayIcon->setToolTip(tr("WBC Status: Initializing..."));
     rTrayIcon->show();
     connect(rTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(fRaisePanel(QSystemTrayIcon::ActivationReason)));
@@ -205,10 +208,10 @@ void GXGuiApplication::fRegisterObjects() {
   qmlRegisterType<CXDefinitions>("WFDefinitions.Lib", 1, 0, "CXDefinitions");
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fRegisterObjects -- 26", QString(), CXDefinitions::ELogDisk);
   mEngine.rootContext()->setContextProperty("mCXDefinitions", &mDefinitions);
-  mEngine.rootContext()->setContextProperty("mCXStatus", &mStatus);
   mEngine.rootContext()->setContextProperty("mCXPulzarConnector", &mPulzarConnector);
   mEngine.rootContext()->setContextProperty("mLogModel", rLogProxyModel);
   mEngine.rootContext()->setContextProperty("mCXComponentManager", &mComponentManager);
+  mEngine.rootContext()->setContextProperty("mCXConnectorManager", &mConnectorManager);
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fRegisterObjects -- 27", QString(), CXDefinitions::ELogDisk);
 }
 
@@ -219,28 +222,11 @@ void GXGuiApplication::fSaveMessage(const CXMessage& lMessage) {
        << "|" << lMessage.fCustomText() << "\n";
 }
 
-bool GXGuiApplication::fStartDaemons() {
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fStartDaemons -- 30", QString(), CXDefinitions::ELogDisk);
-  fUpdateStatusText(2200003);
-  if(!mConnectors.contains(cDefaultDaemon)) {
-    fLogMessage(3200006);
-    return false;
-  }
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fStartDaemons -- 31", QString(), CXDefinitions::ELogDisk);
-  QMapIterator<QString, QSharedPointer<BXCryptoConnector> > i(mConnectors);
-  while (i.hasNext()) {
-    i.next();
-    if((i.value()->fName() == cDefaultDaemon) && (!i.value()->fStart())) {
-      fLogMessage(3200024, i.value()->fName());
-      return false;
-    }
-    if((i.value()->fName() != cDefaultDaemon) && (i.value()->fIsEnabled()) &&  (!i.value()->fStart())) {
-      fLogMessage(3200024, i.value()->fName());
-      return false;
-    }
-  }
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fStartDaemons -- 32", QString(), CXDefinitions::ELogDisk);
-  return true;
+void GXGuiApplication::fExecuteWizard() {
+    QString lWizard = qApp->applicationDirPath() + "/" + cWizardExec;
+    if(CXDefinitions::fCurrentOS() == CXDefinitions::EWindowsOS) lWizard.append(".exe");
+    QProcess::startDetached(lWizard, QStringList() << "--install");
+    QTimer::singleShot(0, qApp, SLOT(quit()));
 }
 
 bool GXGuiApplication::fLoadConnectors(const QString& lDirName) {
@@ -258,23 +244,25 @@ bool GXGuiApplication::fLoadConnectors(const QString& lDirName) {
       continue;
     }*/
     QPluginLoader lLoader(lFile.fileName());
-    QSharedPointer<BXCryptoConnector> lConnector(qobject_cast<BXCryptoConnector*> (lLoader.instance()));
-    if(lConnector) {
-      mConnectors.insert(lConnector->fName(), lConnector);
-      connect(lConnector.data(), SIGNAL(sLogMessageRequest(int,QStringList,QString,int)), this, SLOT(fLogMessage(int,QStringList,QString,int)));
-      connect(lConnector.data(), &BXCryptoConnector::sStatusChanged, this, &GXGuiApplication::fUpdateDaemonStatus);
-      connect(lConnector.data(), &BXCryptoConnector::sReply, this, &GXGuiApplication::fUpdateValue);
-      connect(lConnector.data(), &BXCryptoConnector::sReplyJson, this, &GXGuiApplication::fUpdateValueJson);
-      lConnector->fLoadSettings();
-      lConnector->fSetup();
+    BXCryptoConnector* pConnector = qobject_cast<BXCryptoConnector*> (lLoader.instance());
+    if(pConnector) {
+      mConnectorManager.insert(pConnector);
+      connect(pConnector, SIGNAL(sLogMessageRequest(int,QStringList,QString,int)), this, SLOT(fLogMessage(int,QStringList,QString,int)));
+      connect(pConnector, &BXCryptoConnector::sStatusChanged, this, &GXGuiApplication::fUpdateTrayIconStatus);
+      connect(pConnector, &BXCryptoConnector::sReply, this, &GXGuiApplication::fUpdateValue);
+      connect(pConnector, &BXCryptoConnector::sReplyJson, this, &GXGuiApplication::fUpdateValueJson);
+      pConnector->fLoadSettings();
+      pConnector->fSaveSettings();
+      pConnector->fSetup();
     }
     else {
       lMessageParams << lFile.fileName() << lLoader.errorString();
       fLogMessage(3200008, lMessageParams, QString());
-      mStatus.tSetDaemonStatus(/*cDefaultDaemon,*/ CXDefinitions::EServiceError);
+      mConnectorManager.fSetStatus(cDefaultDaemon, CXDefinitions::EServiceError);
       return false;
     }
   }
+ // mEngine.rootContext()->setContextProperty("mConnectorList", &mConnectorList);
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fLoadConnectors -- 34", QString(), CXDefinitions::ELogDisk);
   return true;
 }
@@ -297,16 +285,30 @@ bool GXGuiApplication::fLoadWapptoms(const QString& lDirName) {
     QPluginLoader lLoader(lFile.fileName());
     QSharedPointer<BXWapptom> lWapptom(qobject_cast<BXWapptom*> (lLoader.instance()));
     if(lWapptom) {
+      lWapptom->fSetName(lWapptom->fBaseName());
       mWapptoms.insert(lWapptom->fName(), lWapptom);
 //      connect(lWapptom.data(), &BXCryptoConnector::sLogMessageRequest, this, &GXGuiApplication::fLogMessage);
       lWapptom->fSetup();
+      lWapptom->tSetConnector("WDC");
       connect(lWapptom.data(), &BXWapptom::sUpdateValue, this, &GXGuiApplication::fRequestUpdateWapptomValue);
       mEngine.rootContext()->setContextProperty(lWapptom->fName(), lWapptom.data());
+
+      //### BTC
+      QSharedPointer<BXWapptom> lWapptomBTC(lWapptom.data()->fCreate());
+      if(lWapptomBTC) {
+        lWapptomBTC->fSetName(lWapptom->fBaseName() + "BTC");
+        mWapptoms.insert(lWapptomBTC->fName(), lWapptomBTC);
+        lWapptomBTC->fSetup();
+        lWapptomBTC->tSetConnector("BTC");
+        connect(lWapptomBTC.data(), &BXWapptom::sUpdateValue, this, &GXGuiApplication::fRequestUpdateWapptomValue);
+        mEngine.rootContext()->setContextProperty(lWapptomBTC->fName(), lWapptomBTC.data());
+      }
+      //###
     }
     else {
       lMessageParams << lFile.fileName() << lLoader.errorString();
       fLogMessage(3200008, lMessageParams, QString());
-      mStatus.tSetDaemonStatus(/*cDefaultDaemon,*/ CXDefinitions::EServiceError);
+      mConnectorManager.fSetStatus(cDefaultDaemon, CXDefinitions::EServiceError);
       return false;
     }
   }
@@ -349,13 +351,13 @@ void GXGuiApplication::fLogMessage(int lCode, const QStringList &lParameters, co
 void GXGuiApplication::fRequestRawCall(const QString& lConnector, const QString& lRawRequest, const QString &lComponentName, bool lParse, int lLogType){
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fRequestRawCall -- 41", QString(), CXDefinitions::ELogDisk);
   mRequestID += 1;
-  if(!mConnectors.contains(lConnector)) {
+  if(!mConnectorManager.contains(lConnector)) {
     fLogMessage(5200002, QStringList() << lConnector, tr("Component : '%1'").arg(lComponentName));
-    mComponentManager.fProcessMessage(CXDefinitions::EBugMessage, mRequestID, QString(), lComponentName, QString());
+    mComponentManager.fProcessMessage(CXDefinitions::EBugMessage, mRequestID, QString(), lComponentName, QString(), lConnector);
     return;
   }
-  if(mConnectors.value(lConnector)->fStatus() != CXDefinitions::EServiceReady) {
-    mComponentManager.fProcessMessage(CXDefinitions::EWarningMessage, mRequestID, QString(), lComponentName, tr("Daemon not ready ! Connector '%1'").arg(lConnector));
+  if(mConnectorManager.fConnector(lConnector)->fStatus() != CXDefinitions::EServiceReady) {
+    mComponentManager.fProcessMessage(CXDefinitions::EWarningMessage, mRequestID, QString(), lComponentName, tr("Daemon not ready ! Connector '%1'").arg(lConnector), lConnector);
     return;
   }  
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fRequestRawCall -- 42", QString(), CXDefinitions::ELogDisk);
@@ -381,24 +383,24 @@ void GXGuiApplication::fRequestRawCall(const QString& lConnector, const QString&
   else {
     lCurrentRequest.lStatus = CXDefinitions::ERequestProcessing;
     mPendingRequests.insert(mRequestID, lCurrentRequest);
-    mConnectors.value(lConnector)->fExecute(CXDefinitions::ERawCall, mRequestID, lCurrentRequest.lInput, lCurrentRequest.lOutput, false, lParse, lLogType);
+    mConnectorManager.fConnector(lConnector)->fExecute(CXDefinitions::ERawCall, mRequestID, lCurrentRequest.lInput, lCurrentRequest.lOutput, false, lParse, lLogType);
   }
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fRequestRawCall -- 44", QString(), CXDefinitions::ELogDisk);
 }
 
 void GXGuiApplication::fRequestUpdateWapptomValue(const QString &lWapptomName) {
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fRequestUpdateWapptomValue -- 45", QString(), CXDefinitions::ELogDisk);
-  if(mStatus.fDaemonStatus() != CXDefinitions::EServiceReady)
-    return;
   BXWapptom* pWapptom = 0;
   if(!mWapptoms.contains(lWapptomName)) {
     fLogMessage(5200003, QStringList() << pWapptom->fName() << pWapptom->fConnector(), QString());
     return;
   }
   pWapptom = mWapptoms.value(lWapptomName).data();
+  if(mConnectorManager.fStatus(pWapptom->fConnector()) != CXDefinitions::EServiceReady)
+    return;
   QString lConnector(pWapptom->fConnector());
   if(pWapptom->fType() == CXDefinitions::EWapptomWallet) {
-    if(!mConnectors.contains(lConnector)) {
+    if(!mConnectorManager.contains(lConnector)) {
       fLogMessage(5200002, QStringList() << pWapptom->fConnector(), QString());
       return;
     }
@@ -428,7 +430,7 @@ void GXGuiApplication::fRequestUpdateWapptomValue(const QString &lWapptomName) {
     else {
       lCurrentRequest.lStatus = CXDefinitions::ERequestProcessing;
       mPendingRequests.insert(mRequestID, lCurrentRequest);
-      mConnectors.value(lConnector)->fExecute(CXDefinitions::EWapptom, mRequestID, pWapptom->fInput(), pWapptom->fOutput(), pWapptom->fResponseStateIsAnswer(), true);
+      mConnectorManager.fConnector(lConnector)->fExecute(CXDefinitions::EWapptom, mRequestID, pWapptom->fInput(), pWapptom->fOutput(), pWapptom->fResponseStateIsAnswer(), true);
     }
   }
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fRequestUpdateWapptomValue -- 47", QString(), CXDefinitions::ELogDisk);
@@ -463,7 +465,6 @@ void GXGuiApplication::fProcessNetworkRequest() {
   SXRequest lRequest = mPendingRequests.value(lRequestID);
   if((pReply->error() == QNetworkReply::NoError)) {
     BXWapptom* pWapptom = mWapptoms.value(lRequest.lName).data();
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fProcessNetworkRequest -- 51", QString(), CXDefinitions::ELogDisk);
     if(pWapptom->fOutput().isEmpty()) pWapptom->tSetValue(QString(pReply->readAll()));
     else {
       QString lResponse(QString(pReply->readAll()));
@@ -478,13 +479,14 @@ void GXGuiApplication::fProcessNetworkRequest() {
            break;
          }
       }
+  fLogMessage(2200010, QStringList() <<QString("/// %1").arg(lResponse), QString(), CXDefinitions::ELogDisk);
       pWapptom->tSetValue(lResponse);
     }
   }
   else fLogMessage(3200022, QStringList() << lRequest.lName << QString::number(lRequestID) << lRequest.lInput << pReply->errorString(), QString());
   pReply->deleteLater();
   mPendingRequests.remove(lRequestID);
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fProcessNetworkRequest -- 52", QString(), CXDefinitions::ELogDisk);
+fLogMessage(2200010, QStringList() << "void GXGuiApplication::fProcessNetworkRequest -- 52", QString(), CXDefinitions::ELogDisk);
 }
 
 void GXGuiApplication::fUpdateValue(bool lSuccess, quint64 lRequestID, const QString &lValue) {
@@ -498,6 +500,7 @@ void GXGuiApplication::fUpdateValue(bool lSuccess, quint64 lRequestID, const QSt
   if(lSuccess) lMessageType = CXDefinitions::ESuccessMessage;
   else lMessageType = CXDefinitions::EErrorMessage;
   mPendingRequests.remove(lRequestID);
+//qDebug(QString("%1 - %2 :: %3").arg(lRequest.lName).arg(lRequest.lConnector).arg(lRequest.lStatus).toLatin1());
   if(lSuccess && lRequest.lType == CXDefinitions::EWapptom) {
     bool lInitialized = mWapptoms.value(lRequest.lName)->fInitialized();
     mWapptoms.value(lRequest.lName)->tSetValue(lValue);
@@ -505,22 +508,29 @@ void GXGuiApplication::fUpdateValue(bool lSuccess, quint64 lRequestID, const QSt
       double lPrevious = mWapptoms.value(lRequest.lName)->fPreviousValue().toDouble();
       double lCurrent = mWapptoms.value(lRequest.lName)->fValue().toDouble();
       double lTotal = lCurrent - lPrevious;
-      if(lTotal > 0) rTrayIcon->showMessage(tr("Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
-      if(lTotal < 0) rTrayIcon->showMessage(tr("Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+      if(lTotal > 0) rTrayIcon->showMessage(tr("WDC Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+      if(lTotal < 0) rTrayIcon->showMessage(tr("WDC Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+    }
+    if(rTrayIcon && (lRequest.lName == "WABalanceBTC") && lInitialized) {
+      double lPrevious = mWapptoms.value(lRequest.lName)->fPreviousValue().toDouble();
+      double lCurrent = mWapptoms.value(lRequest.lName)->fValue().toDouble();
+      double lTotal = lCurrent - lPrevious;
+      if(lTotal > 0) rTrayIcon->showMessage(tr("BTC Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+      if(lTotal < 0) rTrayIcon->showMessage(tr("BTC Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
     }
   }
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateValue -- 54", QString(), CXDefinitions::ELogDisk);
-  if(lRequest.lType == CXDefinitions::ERawCall) mComponentManager.fProcessMessage(lMessageType, lRequestID, lRequest.lInput, lRequest.lName, lValue);
+  if(lRequest.lType == CXDefinitions::ERawCall) mComponentManager.fProcessMessage(lMessageType, lRequestID, lRequest.lInput, lRequest.lName, lValue, lRequest.lConnector);
   QMapIterator<quint64, SXRequest> i(mPendingRequests);
   while(i.hasNext()) {
     i.next();
     if(i.value().lStatus == CXDefinitions::ERequestQueued) {
       mPendingRequests[i.key()].lStatus = CXDefinitions::ERequestProcessing;
-      mConnectors.value(i.value().lConnector)->fExecute(i.value().lType, i.key(), i.value().lInput, i.value().lOutput, i.value().lResponseStateIsAnswer, i.value().lParse, i.value().lLogType);
+      mConnectorManager.fConnector(i.value().lConnector)->fExecute(i.value().lType, i.key(), i.value().lInput, i.value().lOutput, i.value().lResponseStateIsAnswer, i.value().lParse, i.value().lLogType);
       break;
     }
   }
-  fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateValue -- 55", QString(), CXDefinitions::ELogDisk);
+//  fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateValue -- 55", QString(), CXDefinitions::ELogDisk);
 }
 
 void GXGuiApplication::fUpdateValueJson(bool lSuccess, quint64 lRequestID, const QJsonValue& lValue) {
@@ -533,7 +543,7 @@ void GXGuiApplication::fUpdateValueJson(bool lSuccess, quint64 lRequestID, const
   int lMessageType;
   if(lSuccess) lMessageType = CXDefinitions::ESuccessMessage;
   else lMessageType = CXDefinitions::EErrorMessage;
-  if(lRequest.lType == CXDefinitions::ERawCall) mComponentManager.fProcessMessage(lMessageType, lRequestID, lRequest.lInput, lRequest.lName, lValue);
+  if(lRequest.lType == CXDefinitions::ERawCall) mComponentManager.fProcessMessage(lMessageType, lRequestID, lRequest.lInput, lRequest.lName, lValue, lRequest.lConnector);
   mPendingRequests.remove(lRequestID);
   QMapIterator<quint64, SXRequest> i(mPendingRequests);
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateValueJson -- 57", QString(), CXDefinitions::ELogDisk);
@@ -541,22 +551,24 @@ void GXGuiApplication::fUpdateValueJson(bool lSuccess, quint64 lRequestID, const
     i.next();
     if(i.value().lStatus == CXDefinitions::ERequestQueued) {
       mPendingRequests[i.key()].lStatus = CXDefinitions::ERequestProcessing;
-      mConnectors.value(i.value().lConnector)->fExecute(i.value().lType, i.key(), i.value().lInput, i.value().lOutput, i.value().lResponseStateIsAnswer, i.value().lParse, i.value().lLogType);
+      mConnectorManager.fConnector(i.value().lConnector)->fExecute(i.value().lType, i.key(), i.value().lInput, i.value().lOutput, i.value().lResponseStateIsAnswer, i.value().lParse, i.value().lLogType);
       break;
     }
   }
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateValueJson -- 58", QString(), CXDefinitions::ELogDisk);
 }
 
-void GXGuiApplication::fUpdateDaemonStatus(const QString& lConnectorName, int lDaemonStatus) {
+void GXGuiApplication::fUpdateTrayIconStatus() {
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateDaemonStatus -- 59", QString(), CXDefinitions::ELogDisk);
+  BXCryptoConnector* pConnector = qobject_cast<BXCryptoConnector*> (sender());
+  QString lConnectorName = pConnector->fName();
+  int lDaemonStatus = pConnector->fStatus();
   if(lConnectorName == cDefaultDaemon) {
-    mStatus.tSetDaemonStatus(/*lConnectorName,*/ lDaemonStatus);
     if(lDaemonStatus == CXDefinitions::EServiceStopped) fUpdateStatusText(2200007, QStringList() << lConnectorName);
     if(lDaemonStatus == CXDefinitions::EServiceProcessing) fUpdateStatusText(2200008, QStringList() << lConnectorName);
     if(lDaemonStatus == CXDefinitions::EServiceReady) fUpdateStatusText(2200001);
     if(lDaemonStatus == CXDefinitions::EServiceError) fUpdateStatusText(3200015, QStringList() << lConnectorName);
-    if(rTrayIcon) rTrayIcon->setToolTip(tr("WBC Status: %1").arg(mStatus.fStatusText()));
+    if(rTrayIcon) rTrayIcon->setToolTip(tr("WBC Status: %1").arg(mDefaultDaemonStatusText));
   }
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateDaemonStatus -- 60", QString(), CXDefinitions::ELogDisk);
 }
@@ -564,45 +576,33 @@ void GXGuiApplication::fUpdateDaemonStatus(const QString& lConnectorName, int lD
 void GXGuiApplication::fUpdateStatusText(int lCode, const QStringList& lParameters) {
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateStatusText -- 61", QString(), CXDefinitions::ELogDisk);
   CXMessage lMessage(CXMessagePool::fMessage(lCode, lParameters, QString()));
-  mStatus.tSetStatusText(lMessage.fText());
+  mDefaultDaemonStatusText = lMessage.fText();
+  emit sStatusTextChanged(mDefaultDaemonStatusText);
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateStatusText -- 62", QString(), CXDefinitions::ELogDisk);
 }
 
 
 void GXGuiApplication::fOnClose() {    
-/*  if(mDefinitions.fMinimizeOnClose().toInt()) {
-    rMainWindow->hide();
+  fUpdateStatusText(2200009);
+  mDefinitions.fSaveSettings();
+  mConnectorManager.fEndService();
+  QDir lLogDir(cDefaultLogDirectory);
+  if(!lLogDir.exists()) {
+    if(!QDir::current().mkdir(cDefaultLogDirectory)) BXGuiApplication::fInstance()->fLogMessage(3200002, QStringList() << cDefaultLogDirectory, QString());
   }
-  else {*/
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fOnClose -- 63", QString(), CXDefinitions::ELogDisk);
-    fUpdateStatusText(2200009);
-    mDefinitions.fSaveSettings();
+  else {
+    QString lBackupName;
+    int lBackupNumber = 1;
+    while(true) {
+      lBackupName = cDefaultLogDirectory + "/" + cDefaultLog.section(".",0,0) + "_" + QDate::currentDate().toString(cDefaultDateFormat) + "." + cDefaultLog.section(".",1,-1) + "." + QString::number(lBackupNumber);
+      QFile lBackupFile(lBackupName);
+      if(lBackupFile.exists()) lBackupNumber++;
+      else break;
+    }
+    if(mLogFile.isOpen()) mLogFile.close();
+    if(!QFile::copy(cDefaultLog, lBackupName)) fLogMessage(3200003, QStringList() << cDefaultLogDirectory << lBackupName, QString());
+    if(mLogFile.exists() && !mLogFile.remove()) fLogMessage(3200004, QStringList() << mLogFile.fileName(), QString());
+  }
 
-    QMapIterator<QString, QSharedPointer<BXCryptoConnector> > i(mConnectors);
-    while (i.hasNext()) {
-      i.next();
-      i.value()->fEndService();
-    }
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fOnClose -- 64", QString(), CXDefinitions::ELogDisk);
-    QDir lLogDir(cDefaultLogDirectory);
-    if(!lLogDir.exists()) {
-      if(!QDir::current().mkdir(cDefaultLogDirectory)) fLogMessage(3200002, QStringList() << cDefaultLogDirectory, QString());
-    }
-    else {
-      QString lBackupName;
-      int lBackupNumber = 1;
-      while(true) {
-        lBackupName = cDefaultLogDirectory + "/" + cDefaultLog.section(".",0,0) + "_" + QDate::currentDate().toString(cDefaultDateFormat) + "." + cDefaultLog.section(".",1,-1) + "." + QString::number(lBackupNumber);
-        QFile lBackupFile(lBackupName);
-        if(lBackupFile.exists()) lBackupNumber++;
-        else break;
-      }
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fOnClose -- 65", QString(), CXDefinitions::ELogDisk);
-      if(mLogFile.isOpen()) mLogFile.close();
-      if(!QFile::copy(cDefaultLog, lBackupName)) fLogMessage(3200003, QStringList() << cDefaultLogDirectory << lBackupName, QString());
-      if(mLogFile.exists() && !mLogFile.remove()) fLogMessage(3200004, QStringList() << mLogFile.fileName(), QString());
-    }
-//fLogMessage(2200010, QStringList() << "void GXGuiApplication::fOnClose -- 66", QString(), CXDefinitions::ELogDisk);
-    qApp->quit();
- // }
+  QMetaObject::invokeMethod(qApp, "quit", Qt::QueuedConnection);
 }

@@ -13,7 +13,8 @@ class WapptomBalance : public BXWapptom {
   public:
     ~WapptomBalance();
 
-    QString fName() const { return QString("WABalance"); }
+    BXWapptom* fCreate() { return new WapptomBalance(); }
+    QString fBaseName() const { return QString("WABalance"); }
     QString fInput() const { return QString("%1 %2").arg(mInput).arg(mParams); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomWallet; }

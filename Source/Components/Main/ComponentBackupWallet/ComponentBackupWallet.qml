@@ -7,7 +7,7 @@ import Qt.labs.folderlistmodel 2.1
 
 AXComponent {
   id: rcRoot
-  reHeightCm: 8
+  reHeightCm: 9
   reWidthCm: 13
   property string srBaseBackupName: ComponentBackupSettings.srBaseName
   property string srBaseBackupExtension: "dat"
@@ -15,9 +15,51 @@ AXComponent {
   signal siBackupCompleted
 
   AXFrame {
-    id: rcFileTitle
+    id: rcTitle
     color: SStyleSheet.coComponentHorizontalHeaderColor
     anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
+    property alias imImage: imCrypto.source
+    property alias srText: txText.text
+    Image {
+      id: imCrypto
+      source: {
+        if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+        return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
+      }
+      fillMode: Image.Stretch
+      anchors.left: parent.left
+      anchors.leftMargin: parent.width / 3
+      anchors.top: parent.top
+      anchors.topMargin: parent.height / 10
+      anchors.bottomMargin: parent.height / 10
+      anchors.bottom: parent.bottom
+      sourceSize.height: mCXDefinitions.ESizeSmall
+      sourceSize.width: mCXDefinitions.ESizeSmall
+      width: height
+    }
+    Text {
+      id: txText
+      anchors.left: imCrypto.right
+      anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentDetailLeftMargin)
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      horizontalAlignment: "AlignLeft"
+      verticalAlignment: "AlignVCenter"
+      text: mCurrentCoin
+      color: SStyleSheet.coComponentHorizontalHeaderTextColor
+      font.bold: true
+      font.italic: true
+      font.family: SStyleSheet.srComponentFont
+    }
+  }
+  AXFrame {
+    id: rcFileTitle
+    color: SStyleSheet.coComponentHorizontalHeaderColor
+    anchors.top: rcTitle.bottom
     anchors.left: parent.left
     anchors.right: parent.right
     reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
@@ -225,8 +267,8 @@ AXComponent {
     lvFiles.currentIndex = -1;
   }
   function fuAccept() {
-    var vaBackupName = mCXDefinitions.fCanonicalPath(moFolderModel.folder, true) + "/" + ComponentBackupSettings.srBaseName + "_" + ComponentBackupSettings.srCoin + "_" + mCXDefinitions.fCurrentDate() + ".dat"
-    fRawCallRequested(ComponentBackupSettings.srCoin, "backupwallet " + vaBackupName)
+    var vaBackupName = mCXDefinitions.fCanonicalPath(moFolderModel.folder, true) + "/" + ComponentBackupSettings.srBaseName + "_" + mCurrentCoin + "_" + mCXDefinitions.fCurrentDate() + ".dat"
+    fRawCallRequested(mCurrentCoin, "backupwallet " + vaBackupName)
   }
   function fuActivate() { }
   function fuSetup() { }

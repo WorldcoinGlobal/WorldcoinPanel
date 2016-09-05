@@ -109,3 +109,12 @@ void CXDefinitions::fSaveSettings(){
   lSettings.endGroup();
 
 }
+
+QString CXDefinitions::fStatusText(int lStatus) {
+  if(lStatus == EServiceStopped) return tr("Stopped");
+  if(lStatus == EServiceClosing) return tr("Closing");
+  if(lStatus == EServiceError) return tr("Error!");
+  if(lStatus == EServiceProcessing) return tr("Processing");
+  if(lStatus == EServiceReady) return tr("Ready!");
+  return tr("Status not found!");
+}

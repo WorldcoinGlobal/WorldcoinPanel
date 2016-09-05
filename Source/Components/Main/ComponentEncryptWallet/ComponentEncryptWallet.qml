@@ -7,10 +7,9 @@ import WFDefinitions.Lib 1.0
 
 AXComponent {
   id: rcRoot
-  reHeightCm: 4.5
+  reHeightCm: 5.5
   reWidthCm: 12
 
-  readonly property string srCoin: "WDC"
   property real reColumnWidth: 7
 
   Rectangle {
@@ -18,9 +17,48 @@ AXComponent {
     color: SStyleSheet.coComponentDetailBackgroundColor
   }
   AXFrame {
-    id: rcEncryption
+    id: rcTitle
     color: SStyleSheet.coComponentHorizontalHeaderColor
     anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
+    Image {
+      id: imCrypto
+      source: {
+        if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false);
+        return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
+      }
+      fillMode: Image.Stretch
+      anchors.left: parent.left
+      anchors.leftMargin: parent.width / 3
+      anchors.top: parent.top
+      anchors.topMargin: parent.height / 10
+      anchors.bottomMargin: parent.height / 10
+      anchors.bottom: parent.bottom
+      sourceSize.height: mCXDefinitions.ESizeSmall
+      sourceSize.width: mCXDefinitions.ESizeSmall
+      width: height
+    }
+    Text {
+      anchors.left: imCrypto.right
+      anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentDetailLeftMargin)
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      horizontalAlignment: "AlignLeft"
+      verticalAlignment: "AlignVCenter"
+      text: mCurrentCoin
+      color: SStyleSheet.coComponentHorizontalHeaderTextColor
+      font.bold: true
+      font.italic: true
+      font.family: SStyleSheet.srComponentFont
+    }
+  }
+  AXFrame {
+    id: rcEncryption
+    color: SStyleSheet.coComponentHorizontalHeaderColor
+    anchors.top: rcTitle.bottom
     anchors.left: parent.left
     anchors.right: parent.right
     reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
@@ -200,9 +238,9 @@ AXComponent {
 
   function fuAccept() {
     if(ComponentWalletsSummary.srEncrypted === "False")
-      fRawCallRequested(srCoin, "encryptwallet " + tfPassphrase.srValue, 0, CXDefinitions.ELogPanel)
+      fRawCallRequested(mCurrentCoin, "encryptwallet " + tfPassphrase.srValue, 0, CXDefinitions.ELogPanel)
     else
-      fRawCallRequested(srCoin, "walletpassphrasechange " + tfOldPassphrase.srValue  + " " + tfPassphrase.srValue, 0, CXDefinitions.ELogPanel)
+      fRawCallRequested(mCurrentCoin, "walletpassphrasechange " + tfOldPassphrase.srValue  + " " + tfPassphrase.srValue, 0, CXDefinitions.ELogPanel)
 
     sComponentProcessing(1)
     rcDisabled.opacity = 0.3

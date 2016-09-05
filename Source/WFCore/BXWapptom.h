@@ -30,7 +30,9 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
   public:
     virtual ~BXWapptom();
 
-    virtual QString fName() const = 0;
+    virtual BXWapptom* fCreate() = 0;
+    virtual QString fBaseName() const = 0;
+    virtual QString fName() const { return mName; }
     virtual QString fInput() const { return mInput; }
     virtual QString fOutput() const { return mOutput; }
     virtual QString fSource() const { return mSource; }
@@ -49,6 +51,7 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     QString fPreviousValue() const { return mPreviousValue; }
     QString fParams() const { return mParams; }
     virtual QString fDisplayValue() const { return mDisplayValue; }
+    void fSetName(const QString& fName) { mName = fName; }
 
   protected:
     bool mActive;
@@ -68,6 +71,7 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     QString mInput;
     QString mOutput;
     QString mSource;
+    QString mName;
     QTimer mPollTimer;
 
   signals:
@@ -100,7 +104,7 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     virtual void tSetPreviousValue(const QString& lPreviousValue) { mPreviousValue = lPreviousValue; emit sPreviousValueChanged(); }
     virtual void tSetParams(const QString& lParams) { mParams = lParams; emit sParamsChanged(); }
     virtual void tSetInput(const QString& lInput) { mInput = lInput; emit sInputChanged(); }
-    virtual void tSetOutput(const QString& lOutput) { mInput = lOutput; emit sOutputChanged(); }
+    virtual void tSetOutput(const QString& lOutput) { mOutput = lOutput; emit sOutputChanged(); }
     virtual void tSetDisplayValue(const QString& lValue) { mDisplayValue = lValue; emit sDisplayValueChanged(); }
     virtual void tSetSource(const QString& lSource) { mSource = lSource; emit sSourceChanged(); }
     virtual void tSetSingleShot(bool lSingleShot) { mSingleShot = lSingleShot; emit sSingleShotChanged(); }

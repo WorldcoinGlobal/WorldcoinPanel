@@ -17,6 +17,7 @@ Rectangle {
   property string srTextFontFamily
   property bool srTextFontBold
   property bool srTextFontItalic
+  property string srCurrentCoin
 
   Rectangle {
     id: rcTab
@@ -88,6 +89,7 @@ Rectangle {
             coLoadedCommandBar.siCancelButtonClicked.connect(coLoadedWindow.fuCloseSubWindow)
             coLoadedCommandBar.siOkButtonClicked.connect(coLoadedComponent.fuAccept)
             coLoadedComponent.sComponentProcessing.connect(coLoadedCommandBar.fuDisable)
+            coLoadedComponent.sClose.connect(coLoadedWindow.fuCloseSubWindow)
             coLoadedCommandBar.boStatus = Qt.binding(function() { return coLoadedComponent.mStatus })
             coLoadedCommandBar.boCancelVisible = Qt.binding(function() { return coLoadedComponent.mCancelVisible })
             coLoadedCommandBar.srCancelText = Qt.binding(function() { return coLoadedComponent.mCancelText })
@@ -97,6 +99,7 @@ Rectangle {
           else
             coLoadedWindow.reCommandBarHeight = 0
           coLoadedComponent.tSetType(inComponentType)
+          coLoadedComponent.mCurrentCoin = Qt.binding(function() { return rcRoot.srCurrentCoin })
       //    coLoadedComponent.objectName = srComponentName
           mCXComponentManager.fRegisterComponent(srComponentName, coLoadedWindow, coLoadedComponent)
           wiRoot.siLogMessageRequest(1200002, srComponentName, null)

@@ -17,5 +17,5 @@ void WapptomBalance::fSetup() {
 //  mParams = QString("\"*\" %1").arg(cDefaultMinConfForBalance);
   mSource = tr("Local Wallet");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+ // tSetConnector(cDefaultDaemon);
 }

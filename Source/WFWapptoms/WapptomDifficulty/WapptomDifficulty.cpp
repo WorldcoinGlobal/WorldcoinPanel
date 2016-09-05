@@ -16,5 +16,5 @@ void WapptomDifficulty::fSetup() {
   mInput = QString("getdifficulty");
   mSource = tr("Local Wallet");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+//  tSetConnector(cDefaultDaemon);
 }

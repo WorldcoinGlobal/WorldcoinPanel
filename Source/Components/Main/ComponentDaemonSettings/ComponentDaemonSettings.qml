@@ -41,9 +41,11 @@ AXComponent {
     anchors.left: parent.left
     anchors.right: parent.right
     reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
+    property alias imImage: imCrypto.source
+    property alias srText: txText.text
     Image {
       id: imCrypto
-      source:  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.svg"), false)
+      source:  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
       fillMode: Image.Stretch
       anchors.left: parent.left
       anchors.leftMargin: parent.width / 3
@@ -56,6 +58,7 @@ AXComponent {
       width: height
     }
     Text {
+      id: txText
       anchors.left: imCrypto.right
       anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentDetailLeftMargin)
       anchors.top: parent.top
@@ -107,7 +110,7 @@ AXComponent {
     }
   }
   FXCheckBox {
-    id: cbWdcDaemonEnabled
+    id: cbDaemonEnabled
     enabled: false
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -121,13 +124,13 @@ AXComponent {
     srDefaultValue: "1"
     srConnector: "WDC"
     boUseDaemonConf: true
-    text: qsTr("Enabled")
+    text: checked ? qsTr("Enabled") : qsTr("Disabled")
   }
   FXTextField {
-    id: tfWdcExecName
+    id: tfBinaryName
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
-    anchors.top: cbWdcDaemonEnabled.bottom
+    anchors.top: cbDaemonEnabled.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.right: parent.right
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -143,15 +146,15 @@ AXComponent {
       reRadius: SStyleSheet.reTextFieldRadius
       coBackgroundColor: SStyleSheet.coComponentInputNeutralColor
       font.family: SStyleSheet.srFontFamily
-      font.pixelSize: tfWdcExecName.height * 0.6
+      font.pixelSize: tfBinaryName.height * 0.6
       textColor: SStyleSheet.coComponentInputTextColor
     }
   }
   FXTextField {
-    id: tfWdcDaemonDir
+    id: tfDataDirectory
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
-    anchors.top: tfWdcExecName.bottom
+    anchors.top: tfBinaryName.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.right: parent.right
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -166,15 +169,15 @@ AXComponent {
       reRadius: SStyleSheet.reTextFieldRadius
       coBackgroundColor: SStyleSheet.coComponentInputNeutralColor
       font.family: SStyleSheet.srFontFamily
-      font.pixelSize: tfWdcExecName.height * 0.6
+      font.pixelSize: height * 0.6
       textColor: SStyleSheet.coComponentInputTextColor
     }
   }
   FXTextField {
-    id: tfWdcPort
+    id: tfPort
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
-    anchors.top: tfWdcDaemonDir.bottom
+    anchors.top: tfDataDirectory.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.right: parent.right
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -189,15 +192,15 @@ AXComponent {
       reRadius: SStyleSheet.reTextFieldRadius
       coBackgroundColor: SStyleSheet.coComponentInputNeutralColor
       font.family: SStyleSheet.srFontFamily
-      font.pixelSize: tfWdcExecName.height * 0.6
+      font.pixelSize: height * 0.6
       textColor: SStyleSheet.coComponentInputTextColor
     }
   }
   FXTextField {
-    id: tfWdcRpcPort
+    id: tfRpcPort
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
-    anchors.top: tfWdcPort.bottom
+    anchors.top: tfPort.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.right: parent.right
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -212,15 +215,15 @@ AXComponent {
       reRadius: SStyleSheet.reTextFieldRadius
       coBackgroundColor: SStyleSheet.coComponentInputNeutralColor
       font.family: SStyleSheet.srFontFamily
-      font.pixelSize: tfWdcExecName.height * 0.6
+      font.pixelSize: height * 0.6
       textColor: SStyleSheet.coComponentInputTextColor
     }
   }
   FXTextField {
-    id: tfWdcUser
+    id: tfUser
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
-    anchors.top: tfWdcRpcPort.bottom
+    anchors.top: tfRpcPort.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.right: parent.right
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -235,15 +238,15 @@ AXComponent {
       reRadius: SStyleSheet.reTextFieldRadius
       coBackgroundColor: SStyleSheet.coComponentInputNeutralColor
       font.family: SStyleSheet.srFontFamily
-      font.pixelSize: tfWdcExecName.height * 0.6
+      font.pixelSize: tfUser.height * 0.6
       textColor: SStyleSheet.coComponentInputTextColor
     }
   }
   FXTextField {
-    id: tfWdcPassword
+    id: tfPassword
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
-    anchors.top: tfWdcUser.bottom
+    anchors.top: tfUser.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.right: parent.right
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -259,15 +262,15 @@ AXComponent {
       reRadius: SStyleSheet.reTextFieldRadius
       coBackgroundColor: SStyleSheet.coComponentInputNeutralColor
       font.family: SStyleSheet.srFontFamily
-      font.pixelSize: tfWdcExecName.height * 0.6
+      font.pixelSize: height * 0.6
       textColor: SStyleSheet.coComponentInputTextColor
     }
   }
   FXTextField {
-    id: tfWdcRepeatPassword
+    id: tfRepeatPassword
     anchors.left: parent.left
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
-    anchors.top: tfWdcPassword.bottom
+    anchors.top: tfPassword.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.right: parent.right
     anchors.rightMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -284,7 +287,7 @@ AXComponent {
       reRadius: SStyleSheet.reTextFieldRadius
       coBackgroundColor: SStyleSheet.coComponentInputNeutralColor
       font.family: SStyleSheet.srFontFamily
-      font.pixelSize: tfWdcExecName.height * 0.6
+      font.pixelSize: height * 0.6
       textColor: SStyleSheet.coComponentInputTextColor
     }
   }
@@ -300,10 +303,31 @@ AXComponent {
       }
     }
   }
+  onSCurrentCoinChanged: {
+    if(mCurrentCoin === "WDC") {
+      rcValueTitle.imImage =  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
+      cbDaemonEnabled.enabled = false
+    }
+    else {
+      cbDaemonEnabled.enabled = true
+    }
+    if(mCurrentCoin === "BTC") rcValueTitle.imImage =  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+    rcValueTitle.srText = mCurrentCoin
+    cbDaemonEnabled.srConnector = mCurrentCoin
+    tfBinaryName.srConnector = mCurrentCoin
+    tfDataDirectory.srConnector = mCurrentCoin
+    tfPort.srConnector = mCurrentCoin
+    tfRpcPort.srConnector = mCurrentCoin
+    tfUser.srConnector = mCurrentCoin
+    tfPassword.srConnector = mCurrentCoin
+    tfRepeatPassword.srConnector = mCurrentCoin
+    fuActivate()
+  }
+
   Component.onCompleted: {
     mStatus = Qt.binding(function() {
-                if((tfWdcPassword.srValue != "") && (tfWdcPassword.srValue === tfWdcRepeatPassword.srValue)) return true
-                if((tfWdcPassword.srValue != "") && (tfWdcRepeatPassword.srValue == "")) return true
+                if((tfPassword.srValue != "") && (tfPassword.srValue === tfRepeatPassword.srValue)) return true
+                if((tfPassword.srValue != "") && (tfRepeatPassword.srValue == "")) return true
                 return false
               })
   }
@@ -311,25 +335,25 @@ AXComponent {
     sComponentProcessing(1)
     rcDisabled.opacity = 0.3
 
-    cbWdcDaemonEnabled.fuSave()
-    tfWdcExecName.fuSave()
-    tfWdcDaemonDir.fuSave()
-    tfWdcPort.fuSave()
-    tfWdcRpcPort.fuSave()
-    tfWdcUser.fuSave()
-    if(tfWdcRepeatPassword.srValue != "")  tfWdcPassword.fuSave()
-    tfWdcRepeatPassword.srValue = ""
-
+    cbDaemonEnabled.fuSave()
+    tfBinaryName.fuSave()
+    tfDataDirectory.fuSave()
+    tfPort.fuSave()
+    tfRpcPort.fuSave()
+    tfUser.fuSave()
+    if(tfRepeatPassword.srValue != "")  tfPassword.fuSave()
+    tfRepeatPassword.srValue = ""
+    sClose()
     fQuitApplication()
   }
   function fuActivate() {
-    cbWdcDaemonEnabled.fuLoad()
-    tfWdcExecName.fuLoad()
-    tfWdcDaemonDir.fuLoad()
-    tfWdcPort.fuLoad()
-    tfWdcRpcPort.fuLoad()
-    tfWdcUser.fuLoad()
-    tfWdcPassword.fuLoad()
+    cbDaemonEnabled.fuLoad()
+    tfBinaryName.fuLoad()
+    tfDataDirectory.fuLoad()
+    tfPort.fuLoad()
+    tfRpcPort.fuLoad()
+    tfUser.fuLoad()
+    tfPassword.fuLoad()
   }
   function fuSetup() { }
 }

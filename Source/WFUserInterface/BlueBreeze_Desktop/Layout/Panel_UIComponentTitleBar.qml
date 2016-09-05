@@ -17,6 +17,6 @@ AXTitleBar {
   reButtonSpace: SStyleSheet.reComponentTitleBarButtonSpace
  // urButtonMaximizeImage: "../Images/Panel_IMMaximize.png"
  // urButtonMinimizeImage: "../Images/Panel_IMMinimize.png"
-  urButtonCloseImage: "../Images/Panel_IMClose.svg"
+  urButtonCloseImage: "../Images/Panel_IMClose.png"
 }
 

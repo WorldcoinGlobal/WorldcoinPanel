@@ -16,12 +16,14 @@ class WFCORE_EXPORT GXComponent : public QQuickItem
   Q_PROPERTY(bool mCancelVisible READ fCancelVisible WRITE fSetCancelVisible NOTIFY sCancelVisibleChanged)
   Q_PROPERTY(QString mOkText READ fOkText WRITE fSetOkText NOTIFY sOkTextChanged)
   Q_PROPERTY(QString mCancelText READ fCancelText WRITE fSetCancelText NOTIFY sCancelTextChanged)
+  Q_PROPERTY(QString mCurrentCoin READ fCurrentCoin WRITE fSetCurrentCoin NOTIFY sCurrentCoinChanged)
 
   public:
     explicit GXComponent(QQuickItem* lParent = 0 );
 
     Q_INVOKABLE void fRawCallRequested(const QString& lConnector, const QString& lRawRequest, bool lParse = true, int lLogType = CXDefinitions::ELogAll);
     Q_INVOKABLE int fType() const { return mType; }
+    Q_INVOKABLE QString fCurrentCoin() const { return mCurrentCoin; }
     Q_INVOKABLE QString fName() const { return mName; }
     Q_INVOKABLE void fSetName(const QString& lName ) { mName = lName; emit sNameChanged(); }
     Q_INVOKABLE QString fSetting(const QString& lSetting, bool lUseDaemonConf, const QString& lConnector) const;
@@ -40,6 +42,7 @@ class WFCORE_EXPORT GXComponent : public QQuickItem
     bool mCancelVisible;
     bool mOkVisible;
     int mType;
+    QString mCurrentCoin;
     QString mName;
     QString mCancelText;
     QString mOkText;
@@ -49,17 +52,19 @@ class WFCORE_EXPORT GXComponent : public QQuickItem
     void fSetSetting(const QString& lSetting, const QString& lValue, bool lUseDaemonConf, const QString& lConnector);
     void fSetCancelVisible(bool lVisible) { mCancelVisible = lVisible; emit sCancelVisibleChanged(); }
     void fSetCancelText(const QString& lLabel) { mCancelText = lLabel; emit sCancelTextChanged(); }
+    void fSetCurrentCoin(const QString& lCurrentCoin) { mCurrentCoin = lCurrentCoin; emit sCurrentCoinChanged(); }
     void fSetOkVisible(bool lVisible) { mOkVisible = lVisible; emit sOkVisibleChanged(); }
     void fSetOkText(const QString& lLabel) { mOkText = lLabel; emit sOkTextChanged(); }
 
     void tSetStatus(bool lStatus) { mStatus = lStatus; emit sStatusChanged(); }
 
   signals:
-    void sMessageArrived(int lMessageType, const QString& lRequestID, const QString& lInput, const QString& lMessage);
-    void sMessageArrivedJson(int lMessageType, const QString& lRequestID, const QString& lInput, const QVariantList& lList);
+    void sMessageArrived(int lMessageType, const QString& lRequestID, const QString& lInput, const QString& lMessage, const QString& lConnector);
+    void sMessageArrivedJson(int lMessageType, const QString& lRequestID, const QString& lInput, const QVariantList& lList, const QString& lConnector);
     void sRawCallRequested(const QString& lConnector, const QString& lRawRequest, const QString& lComponentName, bool lParse, int lLogType);
     void sComponentActivated();
     void sComponentProcessing(bool mProcessing);
+    void sCurrentCoinChanged();
     void sNameChanged();
     void sStatusChanged();
     void sOkVisibleChanged();
@@ -67,6 +72,7 @@ class WFCORE_EXPORT GXComponent : public QQuickItem
     void sCancelVisibleChanged();
     void sCancelTextChanged();
     void sChangeTrayIconTooltip(const QString& lText);
+    void sClose();
 };
 
 #endif // GXCOMPONENT_H

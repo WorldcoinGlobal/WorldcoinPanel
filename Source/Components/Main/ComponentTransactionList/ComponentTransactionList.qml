@@ -11,7 +11,6 @@ AXComponent {
   reHeightCm: 8
   reWidthCm: 16
 
-  property string srCoin: "WDC"
   property real reTextFieldWidth: 1
   property real reSubTotal
 
@@ -77,11 +76,53 @@ AXComponent {
       }
     }
   }
+  AXFrame {
+    id: rcTitle
+    color: SStyleSheet.coComponentHorizontalHeaderColor
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
+    property alias imImage: imCrypto.source
+    property alias srText: txText.text
+    Image {
+      id: imCrypto
+      source: {
+        if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+        return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
+      }
+      fillMode: Image.Stretch
+      anchors.left: parent.left
+      anchors.leftMargin: parent.width / 3
+      anchors.top: parent.top
+      anchors.topMargin: parent.height / 10
+      anchors.bottomMargin: parent.height / 10
+      anchors.bottom: parent.bottom
+      sourceSize.height: mCXDefinitions.ESizeSmall
+      sourceSize.width: mCXDefinitions.ESizeSmall
+      width: height
+    }
+    Text {
+      id: txText
+      anchors.left: imCrypto.right
+      anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentDetailLeftMargin)
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      horizontalAlignment: "AlignLeft"
+      verticalAlignment: "AlignVCenter"
+      text: mCurrentCoin
+      color: SStyleSheet.coComponentHorizontalHeaderTextColor
+      font.bold: true
+      font.italic: true
+      font.family: SStyleSheet.srComponentFont
+    }
+  }
   Rectangle {
     id: rcParameters
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.top: parent.top
+    anchors.top: rcTitle.bottom
     height: ACMeasures.fuToDots(SStyleSheet.reComponentHorizontalHeaderRowHeight) * 2
     color: SStyleSheet.coComponentParameterBackgroundColor
     Button {
@@ -124,7 +165,7 @@ AXComponent {
     id: tfTransactionsDisplayed
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.top: parent.top
+    anchors.top: rcTitle.bottom
     reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
 //      anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentIndentation)
@@ -146,9 +187,8 @@ AXComponent {
       textColor: SStyleSheet.coComponentInputTextColor
     }
   }
-  ListModel {
-    id: lmTransactions
-  }
+  ListModel { id: lmTransactions }
+  ListModel { id: lmTransactionsBTC }
   TableView {
     id: tvTransactions
     alternatingRowColors: true
@@ -201,11 +241,16 @@ AXComponent {
     }
     onRowCountChanged: { tmRefreshTimer.running = true }
   }
+  onMCurrentCoinChanged: {
+    if(mCurrentCoin === "WDC") tvTransactions.model = lmTransactions
+    if(mCurrentCoin === "BTC") tvTransactions.model = lmTransactionsBTC
+  }
 
   Connections {
     target: rcRoot
     onSMessageArrivedJson: {
-      lmTransactions.clear()
+      if(lConnector === "WDC") lmTransactions.clear()
+      if(lConnector === "BTC") lmTransactionsBTC.clear()
       for(var i = 0; i < lList.length; i++) {
         var vaTransaction = lList[i]
         var vaType = vaTransaction.category == "send" ? qsTr("Sent") : qsTr("Received")
@@ -215,7 +260,8 @@ AXComponent {
         var vaDate = new Date(0)
         vaDate.setUTCSeconds(vaTransaction.time);
         var vaTxID = vaTransaction.txid
-        lmTransactions.append({"miTransactionType": vaType, "miAddress": vaAddress, "miAmount": vaAmount, "miConfirmations": vaConfirmations, "miDate": vaDate.toString(), "miTxID": vaTxID })
+        if(mCurrentCoin === "BTC") lmTransactionsBTC.append({"miTransactionType": vaType, "miAddress": vaAddress, "miAmount": vaAmount, "miConfirmations": vaConfirmations, "miDate": vaDate.toString(), "miTxID": vaTxID })
+        if(mCurrentCoin === "WDC") lmTransactions.append({"miTransactionType": vaType, "miAddress": vaAddress, "miAmount": vaAmount, "miConfirmations": vaConfirmations, "miDate": vaDate.toString(), "miTxID": vaTxID })
       }
     }
   }
@@ -225,6 +271,6 @@ AXComponent {
       fuActivate()
     }
   }
-  function fuActivate() { fRawCallRequested(srCoin, "listtransactions \"*\" " + tfTransactionsDisplayed.srValue, 0) }
+  function fuActivate() { fRawCallRequested(mCurrentCoin, "listtransactions \"*\" " + tfTransactionsDisplayed.srValue, 0) }
   function fuSetup() { tfTransactionsDisplayed.fuLoad() }
 }

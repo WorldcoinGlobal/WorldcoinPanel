@@ -13,13 +13,14 @@ class WapptomTotalBlockCount : public BXWapptom {
   public:
     ~WapptomTotalBlockCount();
 
-    QString fName() const { return QString("WNTotalBlockCount"); }
+    BXWapptom* fCreate() { return new WapptomTotalBlockCount(); }
+    QString fBaseName() const { return QString("WNTotalBlockCount"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomNetwork; }
 
   public slots:
     void tSetDisplayValue(const QString& lValue);
-  //  void tSetValue(const QString& lValue);
+    void tSetValue(const QString& lValue);
 };
 
 #endif

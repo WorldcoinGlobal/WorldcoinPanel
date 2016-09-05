@@ -22,6 +22,7 @@ class WFCORE_EXPORT BXGuiApplication : public QApplication
     static QString fComponentSetting(const QString& lComponent, const QString& lParameter);
     static QString fDaemonSetting(const QString& lDaemon, const QString& lParameter);
     virtual void fRegisterComponent(GXComponent* pComponent) = 0;
+    virtual void fUpdateStatusText(int lCode, const QStringList& lParameters = QStringList()) = 0;
     QString fImageFile(const QString& lImageName) const;
 
   protected:
@@ -33,6 +34,12 @@ class WFCORE_EXPORT BXGuiApplication : public QApplication
 
   public slots:
     virtual void fOnClose() = 0;
+    virtual void fLogMessage(int lCode, const QStringList& lParameters, const QString& lCustomText, int lLogType = CXDefinitions::ELogAll) = 0;
+    virtual void fLogMessage(int lCode, const QString& lParameter = QString(), const QString& lCustomText = QString()) = 0;
+    virtual void fExecuteWizard() = 0;
+
+  signals:
+    void sStatusTextChanged(const QString& lStatusText);
 };
 
 #endif

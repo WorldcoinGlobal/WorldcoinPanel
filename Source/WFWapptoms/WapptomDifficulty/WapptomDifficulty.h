@@ -13,7 +13,8 @@ class WapptomDifficulty : public BXWapptom {
   public:
     ~WapptomDifficulty();
 
-    QString fName() const { return QString("WADifficulty"); }
+    BXWapptom* fCreate() { return new WapptomDifficulty(); }
+    QString fBaseName() const { return QString("WADifficulty"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomWallet; }
 

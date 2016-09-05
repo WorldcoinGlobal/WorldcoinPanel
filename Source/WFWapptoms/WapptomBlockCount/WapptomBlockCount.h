@@ -13,7 +13,8 @@ class WapptomBlockCount : public BXWapptom {
   public:
     ~WapptomBlockCount();
 
-    QString fName() const { return QString("WABlockCount"); }
+    BXWapptom* fCreate() { return new WapptomBlockCount(); }
+    QString fBaseName() const { return QString("WABlockCount"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomWallet; }
 

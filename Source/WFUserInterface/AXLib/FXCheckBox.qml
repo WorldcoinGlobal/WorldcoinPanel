@@ -39,7 +39,8 @@ CheckBox {
       }
     }
     else {
-      if(parent.fSetting(srSetting, boUseDaemonConf, srConnector) === "0")  {
+      var vaValue = parent.fSetting(srSetting, boUseDaemonConf, srConnector)
+      if((vaValue === "0") || (vaValue === "false"))  {
         cbRoot.checked = false
         boValue = false
       }

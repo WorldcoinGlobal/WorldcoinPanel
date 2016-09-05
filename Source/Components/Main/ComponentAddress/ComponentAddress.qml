@@ -11,7 +11,6 @@ AXComponent {
   reHeightCm: 4.5
   reWidthCm: 12
 
-  readonly property string srCoin: "WDC"
   readonly property string srNewAddress: teAddressCreated.text
   property real reColumnWidth: 3
   property real reComboWidth: 5
@@ -48,7 +47,10 @@ AXComponent {
     reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
     Image {
       id: imCrypto
-      source:  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.svg"), false)
+      source: {
+        if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false);
+        return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
+      }
       fillMode: Image.Stretch
       anchors.left: parent.left
       anchors.leftMargin: parent.width / 3
@@ -68,7 +70,7 @@ AXComponent {
       anchors.right: parent.right
       horizontalAlignment: "AlignLeft"
       verticalAlignment: "AlignVCenter"
-      text: WABalance.mConnector
+      text: mCurrentCoin
       color: SStyleSheet.coComponentHorizontalHeaderTextColor
       font.bold: true
       font.italic: true
@@ -144,6 +146,7 @@ AXComponent {
     model: lmAccountModel
   }
   ListModel { id: lmAccountModel }
+  ListModel { id: lmAccountModelBTC }
   AXFrame {
     id: frAddressCreated
     color: SStyleSheet.coComponentHorizontalHeaderColor
@@ -183,6 +186,12 @@ AXComponent {
       font.family: SStyleSheet.srComponentFont
     }
   }
+  onSCurrentCoinChanged: {
+    if(mCurrentCoin === "BTC") cbAccount.model = lmAccountModelBTC
+    if(mCurrentCoin === "WDC") cbAccount.model = lmAccountModel
+    fuActivate()
+  }
+
   Connections {
     target: rcRoot
     onSMessageArrivedJson: {
@@ -191,23 +200,26 @@ AXComponent {
         for(var h = 0; h < lList.length; h++) {
            var vaAccountList = lList[h]
            var vaAccount = vaAccountList.split("|")
-           if(vaAccount.length > 0) lmAccountModel.append({"miAccount": vaAccount[0]})
+           if(vaAccount.length > 0) {
+             if(lConnector === "WDC") lmAccountModel.append({"miAccount": vaAccount[0]})
+             if(lConnector === "BTC") lmAccountModel.append({"miAccount": vaAccount[0]})
+           }
         }
       }
       else {
         var vaNewAccount = lList[0]
-        teAddressCreated.text = vaNewAccount
+        if(mCurrentCoin === lConnector) teAddressCreated.text = vaNewAccount
       }
       sComponentProcessing(0)
     }
   }
   function fuAccept() {
     sComponentProcessing(1)
-    fRawCallRequested(srCoin, "getnewaddress " + cbAccount.editText, 0)
+    fRawCallRequested(mCurrentCoin, "getnewaddress " + cbAccount.editText, 0)
   }
   function fuActivate() {
     teAddressCreated.text = ""
-    fRawCallRequested(srCoin, "listaccounts", 0)
+    fRawCallRequested(mCurrentCoin, "listaccounts", 0)
   }
   function fuSetup() {
     mCancelVisible = false;

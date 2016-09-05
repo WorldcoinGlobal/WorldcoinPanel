@@ -25,7 +25,7 @@ const int cDefaultSampleTime(5000);
 const int cKillDaemonWaitTime(1000);
 const int cDefaultPrecision(10);
 const int cDefaultMaxTries(3000);
-const int cConnectorRequestQueue(20);
+const int cConnectorRequestQueue(100);
 const int cMessageIDMaxLenght(8);
 const int cDefaultMinConfForBalance(0);
 const int cDefaultUpdatesCheckPeriod(6);
@@ -202,6 +202,7 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
     Q_INVOKABLE static QString fCompressVersion(const QString& lVersion);
     Q_INVOKABLE static QString fExtendVersion(const QString& lVersion);
     Q_INVOKABLE static QString fDefaultDaemon() { return cDefaultDaemon; }
+    Q_INVOKABLE static QString fStatusText(int lStatus);
 
     bool fSaveLog() const { return mSaveLog; }
     int fPanelMaxLines() const { return mPanelMaxLines; }    

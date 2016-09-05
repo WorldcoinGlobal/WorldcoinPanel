@@ -2,6 +2,7 @@
 #define IXCRYPTOCONNECTOR_H
 
 #include <QString>
+#include <QStringList>
 #include <QtPlugin>
 
 #include "CXDefinitions.h"
@@ -19,6 +20,18 @@ class IXCryptoConnector
     virtual const QString fLabel() const = 0;
     virtual const QString fName() const = 0;
     virtual const QString fTestConnectionCommand() const = 0;
+    virtual QStringList fStartupParameters() const = 0;
+    virtual QString fDefaultBalanceMinConfirmations() const = 0;
+    virtual QString fDefaultBinaryName() const = 0;
+    virtual QString fDefaultClientName() const = 0;
+    virtual QString fDefaultDataDirectory() const = 0;
+    virtual QString fDefaultEnabled() const = 0;
+    virtual QString fDefaultLockFile() const = 0;
+    virtual QString fDefaultPassword() const = 0;
+    virtual QString fDefaultPidFile() const = 0;
+    virtual QString fDefaultPort() const = 0;
+    virtual QString fDefaultRpcPort() const = 0;
+    virtual QString fDefaultUser() const = 0;
 
   public slots:    
     virtual bool fEndService() = 0;

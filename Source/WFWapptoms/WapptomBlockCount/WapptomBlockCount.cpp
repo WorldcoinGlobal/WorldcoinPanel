@@ -16,5 +16,5 @@ void WapptomBlockCount::fSetup() {
   mInput = QString("getblockcount");
   mSource = tr("Local Wallet");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+ // tSetConnector(cDefaultDaemon);
 }

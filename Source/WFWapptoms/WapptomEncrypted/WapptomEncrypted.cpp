@@ -19,5 +19,5 @@ void WapptomEncrypted::fSetup() {
   mSource = tr("Local Wallet");
   mResponseStateIsAnswer = true;
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+//  tSetConnector(cDefaultDaemon);
 }

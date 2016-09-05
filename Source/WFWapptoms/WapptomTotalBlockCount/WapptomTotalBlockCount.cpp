@@ -17,11 +17,11 @@ void WapptomTotalBlockCount::fSetup() {
   BXWapptom::fSetup();
   mSource = tr("Network");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+ // tSetConnector(cDefaultDaemon);
 }
 
-/*void WapptomTotalBlockCount::tSetValue(const QString& lValue) {
-  QStringList lValues(lValue.split(","));
+void WapptomTotalBlockCount::tSetValue(const QString& lValue) {
+ /* QStringList lValues(lValue.split(","));
   QMap<quint64, int> lModeMap;
   for(const QString& lVal : lValues) {
     quint64 lCurrent = lVal.section(".",0,0).toLongLong();
@@ -37,6 +37,11 @@ void WapptomTotalBlockCount::fSetup() {
       lCurrentMode = i.value();
       lModeValue.setNum(i.key());
     }
+  }*/
+  QString lTrueValue = lValue.simplified();
+  if(lTrueValue.startsWith("{")) {
+    lTrueValue.remove("}");
+    lTrueValue = lTrueValue.section(":",1,1);
   }
-  BXWapptom::tSetValue(lModeValue);
-}*/
+  BXWapptom::tSetValue(lTrueValue);
+}

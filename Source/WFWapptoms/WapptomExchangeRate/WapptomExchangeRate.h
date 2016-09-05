@@ -13,7 +13,8 @@ class WapptomExchangeRate : public BXWapptom {
   public:
     ~WapptomExchangeRate();
 
-    QString fName() const { return QString("WNExchangeRate"); }
+    BXWapptom* fCreate() { return new WapptomExchangeRate(); }
+    QString fBaseName() const { return QString("WNExchangeRate"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomNetwork; }
 

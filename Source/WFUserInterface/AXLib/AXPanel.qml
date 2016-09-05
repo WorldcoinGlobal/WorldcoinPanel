@@ -12,11 +12,13 @@ GXWindow {
   color: /*"gray" //*/ "transparent"
 
   property string srFontFamily
+  property string srCurrentCoin
   property color coTextColor
-  property bool boFirstTime: true
-  property bool boReady: mCXStatus.mDaemonStatus === CXDefinitions.EServiceReady ? true : false
-  property bool boClosing: mCXStatus.mDaemonStatus === CXDefinitions.EServiceClosing ? true : false
+  property bool boWDCFirstTime: true
+  property bool boBTCFirstTime: true
   property bool boIsMaximized: false
+  property bool boReady
+  property bool boClosing
   property color coTopBorderColor
   property color coBottomBorderColor
   property color coRightBorderColor
@@ -61,6 +63,13 @@ GXWindow {
   signal siCloseRequested
   signal siLogMessageRequest(int inCode, string srParam, string srCustomText)
 
+  Connections {
+    target: mCXConnectorManager
+    onSStatusChanged: {
+      boReady = mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) === CXDefinitions.EServiceReady ? true : false
+      boClosing = mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) === CXDefinitions.EServiceClosing ? true : false
+    }
+  }
   Rectangle {
     id: rcMask
     anchors.fill: parent // omMask
@@ -118,6 +127,7 @@ GXWindow {
         loStatusBar.item.reBorderWidth = reBorderWidth * mCXDefinitions.mZoomFactor
         loStatusBar.item.reMaximumZoom = reMaximumZoom
         loStatusBar.item.reMinimumZoom = reMinimumZoom
+        loStatusBar.item.srCurrentCoin = Qt.binding(function() { return wiRoot.srCurrentCoin })
       }
     }
     Image {
@@ -221,6 +231,7 @@ GXWindow {
       anchors.left: loModulePanel.right
       anchors.right: parent.right
       source: urInfoBar
+      onLoaded: { srCurrentCoin = Qt.binding(function() { return item.srCurrentCoin }) }
     }
     Loader {
       id: loSearchPanel
@@ -260,6 +271,9 @@ GXWindow {
           height = 0
           width = 0
         }
+      }
+      onLoaded: {
+        loWorkspace.item.srCurrentCoin = Qt.binding(function() { return wiRoot.srCurrentCoin })
       }
     }
     Connections {
@@ -304,15 +318,16 @@ GXWindow {
       onSiWindowMoved: {
         wiRoot.x = wiRoot.x + poDelta.x
         wiRoot.y = wiRoot.y + poDelta.y
-        mCXDefinitions.mX = wiRoot.x
+       mCXDefinitions.mX = wiRoot.x
         mCXDefinitions.mY = wiRoot.y
       }
     }
 
     Connections {
-      target: mCXStatus
-      onSDaemonStatusChanged: {
-        if((mCXStatus.mDaemonStatus == CXDefinitions.EServiceReady) && boFirstTime) {
+      target: mCXConnectorManager
+      onSStatusChanged: {
+        if(lName == "WDC" && (mCXConnectorManager.fStatus(lName) == CXDefinitions.EServiceReady) && boWDCFirstTime) {
+          boWDCFirstTime = false;
           WABalance.mPollingTime = inWapptomPollingTime; WABalance.mStartingOffset = 100; WABalance.mActive = true; WABalance.mPrecision = 8;// WABalance.mParams = "\"*\" " + fDaemonSetting(mCXDefinitions.fDefaultDaemon(), "BalanceMinConfirmations")
           WABalanceWithoutConf.mPollingTime = inWapptomPollingTime; WABalanceWithoutConf.mStartingOffset = 200; WABalanceWithoutConf.mActive = true; WABalanceWithoutConf.mPrecision = 8; //WABalanceWithoutConf.mParams = "\"*\""
           WABestBlockHash.mPollingTime = inWapptomPollingTime * 2; WABestBlockHash.mStartingOffset = 300; WABestBlockHash.mActive = true;
@@ -324,6 +339,19 @@ GXWindow {
           WNTotalBlockCount.mPollingTime = inWapptomPollingTime * 4; WNTotalBlockCount.mStartingOffset = 0; WNTotalBlockCount.mActive = true; WNTotalBlockCount.mInput = "https://www.wdcexplorer.com/q/getblockcount"; WNTotalBlockCount.mSource = "www.wdcexplorer.com"
           WNExchangeRate.mPollingTime = inWapptomPollingTime * 4; WNExchangeRate.mStartingOffset = 0; WNExchangeRate.mPrecision = 8; WNExchangeRate.mActive = true; WNExchangeRate.mInput = "https://www.cryptodiggers.eu/api/api.php?a=get_exch_rate&currency_crypto=7&currency=2&public=1"; WNExchangeRate.mSource = "www.cryptodiggers.eu"
           WNPopularity.mPollingTime = inWapptomPollingTime; WNPopularity.mSingleShot = true; WNPopularity.mStartingOffset = 0; WNPopularity.mActive = true; WNPopularity.mInput = "http://cryptocoin.cc/table.php?cryptocoin=worldcoin"; WNPopularity.mSource = "http://www.cryptocoin.cc"
+        }
+        if(lName == "BTC" && (mCXConnectorManager.fStatus(lName) == CXDefinitions.EServiceReady) && boBTCFirstTime) {
+          boBTCFirstTime = false;
+          WABalanceBTC.mPollingTime = inWapptomPollingTime;/* WABalanceBTC.mStartingOffset = 100;*/ WABalanceBTC.mActive = true; WABalanceBTC.mPrecision = 8;
+          WABalanceWithoutConfBTC.mPollingTime = inWapptomPollingTime; WABalanceWithoutConfBTC.mStartingOffset = 200; WABalanceWithoutConfBTC.mActive = true; WABalanceWithoutConfBTC.mPrecision = 8; //WABalanceWithoutConf.mParams = "\"*\""
+          WABestBlockHashBTC.mPollingTime = inWapptomPollingTime * 2; WABestBlockHashBTC.mStartingOffset = 300; WABestBlockHashBTC.mActive = true;
+          WABlockCountBTC.mPollingTime = inWapptomPollingTime; WABlockCountBTC.mStartingOffset = 400; WABlockCountBTC.mActive = true;
+          WAConnectionCountBTC.mPollingTime = inWapptomPollingTime * 3; WAConnectionCountBTC.mStartingOffset = 500; WAConnectionCountBTC.mActive = true;
+          WADifficultyBTC.mPollingTime = inWapptomPollingTime; WADifficultyBTC.mStartingOffset = 600; WADifficultyBTC.mActive = true;
+          WANetworkHashPSBTC.mPollingTime = inWapptomPollingTime; WANetworkHashPSBTC.mStartingOffset = 700; WANetworkHashPSBTC.mActive = true;
+          WAEncryptedBTC.mPollingTime = 0; WAEncryptedBTC.mSingleShot = true; WAEncryptedBTC.mStartingOffset = 0; WAEncryptedBTC.mActive = true;
+          WNTotalBlockCountBTC.mPollingTime = inWapptomPollingTime * 4; WNTotalBlockCountBTC.mStartingOffset = 0; WNTotalBlockCountBTC.mActive = true; WNTotalBlockCountBTC.mInput = "https://blockexplorer.com/api/status?q=getBlockCount"; WNTotalBlockCountBTC.mSource = "blockexplorer.com"
+          WNExchangeRateBTC.mPollingTime = inWapptomPollingTime * 4; WNExchangeRateBTC.mStartingOffset = 0; WNExchangeRateBTC.mPrecision = 8; WNExchangeRateBTC.mActive = true; WNExchangeRateBTC.mInput = "https://www.cryptodiggers.eu/api/api.php?a=get_exch_rate&currency_crypto=6&currency=2&public=1"; WNExchangeRateBTC.mSource = "www.cryptodiggers.eu"
         }
       }
     }
@@ -363,7 +391,8 @@ GXWindow {
       anchors.centerIn: rcCover
       opacity: (!boReady) ? 1 : 0
       reHeightCm: 1.5 * mCXDefinitions.mZoomFactor
-      reWidthCm: 20 * mCXDefinitions.mZoomFactor > ACMeasures.fuToCentimeters(axText.paintedWidth) + reBorderWidth ? 20 * mCXDefinitions.mZoomFactor : ACMeasures.fuToCentimeters(axText.paintedWidth) + reBorderWidth
+     // reWidthCm: 20 * mCXDefinitions.mZoomFactor > ACMeasures.fuToCentimeters(axText.paintedWidth) + reBorderWidth ? 20 * mCXDefinitions.mZoomFactor : ACMeasures.fuToCentimeters(axText.paintedWidth) + reBorderWidth
+      width: parent.width
       radius: ACMeasures.fuToDots(0.2)  * mCXDefinitions.mZoomFactor
       AXText {
         id: axText
@@ -385,6 +414,10 @@ GXWindow {
         }
       }
     }
+ /*   MouseArea {
+      anchors.fill: parent
+      enabled: (!boReady) ? 1 : 0
+    }*/
   }
   Rectangle {
     id: rcBackground
@@ -535,7 +568,8 @@ GXWindow {
     id: ttIcon
     width: ACMeasures.fuToDots(5.5)
     target: loInfoBar.item.vaIconButton
-    text: qsTr("Not implemented yet!\nTemporal placeholder.")
+    text: qsTr("Feature Coming Soon\n\nPlaceholder for future feature.
+")
     backgroundColor: coToolTipBackgroundColor
     textColor: coToolTipTextColor
     radius: ACMeasures.fuToDots(reToolTipRadius)
@@ -546,12 +580,12 @@ GXWindow {
     width: ACMeasures.fuToDots(5.5)
     target: loInfoBar.item.vaUpdatesButton
     text: {
-      var vaText = qsTr("-- Updater Status:\n")
+      var vaText = qsTr("Updater Status\n\n")
       if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeLow) return vaText + qsTr("Low priority update available!")
       if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeMedium) return vaText + qsTr("Medium priority update available!")
       if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeHigh) return vaText + qsTr("High priority update available!")
       if(loInfoBar.item.vaUpdatesButton.vaUpdatePriority == CXDefinitions.EUpgradeCritical) return vaText + qsTr("CRITICAL priority update available!")
-      return vaText + qsTr("No updates available")
+      return vaText + qsTr("No new updates available.")
     }
     backgroundColor: coToolTipBackgroundColor
     textColor: coToolTipTextColor
@@ -563,11 +597,11 @@ GXWindow {
     width: ACMeasures.fuToDots(4)
     target: loInfoBar.item.vaServicesButton
     text: {
-      var vaText = qsTr("-- Cloud services: \n")
-      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceError) return vaText + qsTr("Connection Error!")
-      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceReady) return vaText + qsTr("Connection succesfull!")
-      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceStopped) return vaText + qsTr("Disconnected.")
-      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceProcessing) return vaText + qsTr("Attempting connection ...")
+      var vaText = qsTr("Cloud Connection\n\n")
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceError) return vaText + qsTr("Connecting to cloud services failed. Please check your internet connection and firewall settings.")
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceReady) return vaText + qsTr("Connection to cloud services successfully established.")
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceStopped) return vaText + qsTr("Connection to cloud services is disconnected.")
+      if(mCXPulzarConnector.mConnectionStatus == CXDefinitions.EServiceProcessing) return vaText + qsTr("System is connecting to cloud services. Please wait.")
       return vaText + qsTr("No information available.")
     }
     backgroundColor: coToolTipBackgroundColor
@@ -580,9 +614,12 @@ GXWindow {
     width: ACMeasures.fuToDots(4.5)
     target: loInfoBar.item.vaLockButton
     text: {
-      var vaText = qsTr("-- Encryption Status:\n")
-      if(WAEncrypted.mValue === "1") return vaText + qsTr("Wallet Encrypted!")
-      return vaText + qsTr("Wallet not encrypted!\nPlease encrypt your wallet for enhanced security.")
+      var vaText = qsTr("Wallet Encryption\n\n")
+      var vaValue = WAEncrypted.mValue
+      if(loInfoBar.item.srCurrentCoin === "BTC")
+        vaValue = WAEncryptedBTC.mValue
+      if(vaValue === "1") return vaText + qsTr("Your wallet is encrypted and safe to use.")
+      return vaText + qsTr("Your wallet is currently not encrypted.\nPlease encrypt your wallet in order to improve your security.")
     }
     backgroundColor: coToolTipBackgroundColor
     textColor: coToolTipTextColor
@@ -594,11 +631,24 @@ GXWindow {
     width: ACMeasures.fuToDots(4)
     target: loInfoBar.item.vaSyncButton
     text: {
-      var vaText = qsTr("-- Sync Status:\n")
-      if(Number(WNTotalBlockCount.mDisplayValue) > 0) {
-        var vaPercent = Number(WABlockCount.mDisplayValue) / Number(WNTotalBlockCount.mDisplayValue) * 100
-        if(vaPercent > 100) vaPercent = 100
-        return vaText + qsTr(vaPercent.toString() + "%")
+      var vaText = qsTr("Synchronization Status\n\n")
+      var vaBlockCount = WABlockCount.mDisplayValue
+      var vaTotalBlockCount = WNTotalBlockCount.mDisplayValue
+      if(loInfoBar.item.srCurrentCoin === "BTC") {
+        vaBlockCount = WABlockCountBTC.mDisplayValue
+        vaTotalBlockCount = WNTotalBlockCountBTC.mDisplayValue
+      }
+
+      if(Number(vaTotalBlockCount) > 0) {
+        var vaPercent = Number(vaBlockCount) / Number(vaTotalBlockCount) * 100
+        var vaBody;
+        if(vaPercent >= 100) {
+          vaPercent = 100
+          vaBody = qsTr("Wallet is fully synchronized and ready to use.")
+        }
+        else vaBody = qsTr("Wallet is ") + vaPercent.toFixed(5) + qsTr("% synchronized. Please wait.")
+
+        return vaText + vaBody
       }
       return vaText + qsTr("Information unavailable.")
     }
@@ -612,10 +662,16 @@ GXWindow {
     width: ACMeasures.fuToDots(4)
     target: loInfoBar.item.vaConnectionsButton
     text: {
-      var vaText = qsTr("-- Node connections:\n")
-      if(Number(WAConnectionCount.mValue) <= 0) return vaText + qsTr("No peers available.\nSearching for more...")
-      if((Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8)) return vaText + WAConnectionCount.mDisplayValue + qsTr(" peers available.\nSearching for more...")
-      if(Number(WAConnectionCount.mValue) >= 8) return vaText + WAConnectionCount.mDisplayValue + qsTr(" peers available.\nNo more needed.")
+      var vaConnectionCount = WAConnectionCount.mValue
+      var vaConnectionCountDisplay = WAConnectionCount.mDisplayValue
+      if(loInfoBar.item.srCurrentCoin === "BTC") {
+        vaConnectionCount = WAConnectionCountBTC.mValue
+        vaConnectionCountDisplay = WAConnectionCountBTC.mDisplayValue
+      }
+      var vaText = qsTr("Node Connections\n\n")
+      if(Number(vaConnectionCount) <= 0) return vaText + qsTr("No peers available.\nSearching for more.")
+      if((Number(vaConnectionCount) > 0) && (Number(vaConnectionCount) < 8)) return  vaText + qsTr("You are connected to ") + vaConnectionCountDisplay + qsTr("/8 peers.\nSearching for more.")
+      if(Number(vaConnectionCount) >= 8) return vaText + qsTr("You are connected to ") + vaConnectionCountDisplay + qsTr("/8 peers.\n")
     }
     backgroundColor: coToolTipBackgroundColor
     textColor: coToolTipTextColor
@@ -627,9 +683,11 @@ GXWindow {
     width: ACMeasures.fuToDots(8)
     target: loInfoBar.item.vaPopularity
     text: {
-      var vaText = qsTr("-- Popularity: (" + WNPopularity.mSource + ")\n")
+      var vaText = qsTr("Currency Ranking\n\n")
+    //  qsTr("-- Popularity: (" + WNPopularity.mSource + ")\n")
       if(Number(WNPopularity.mValue) == 0) return vaText + qsTr("No info available")
-      return vaText + WNPopularity.mDisplayValue
+      var vaSource = WNPopularity.mSource
+      return vaText + WNPopularity.mDisplayValue + "\n\nSource: " + vaSource
     }
     backgroundColor: coToolTipBackgroundColor
     textColor: coToolTipTextColor

@@ -38,7 +38,7 @@ QString CXComponentManager::fComponentDirectory(int lComponentCategory) {
   return lDirectory;
 }
 
-void CXComponentManager::fProcessMessage(int lMessageType, int lRequestID, const QString& lInput, const QString& lComponentName, QString lMessage) {
+void CXComponentManager::fProcessMessage(int lMessageType, int lRequestID, const QString& lInput, const QString& lComponentName, QString lMessage, const QString &lConnector) {
   if(!mComponentContent.contains(lComponentName)) {
     emit sLogMessageRequest(5200006, QStringList() << lComponentName, QString());
     return;
@@ -46,10 +46,10 @@ void CXComponentManager::fProcessMessage(int lMessageType, int lRequestID, const
   QString lMessageIDString(QString::number(lRequestID));
   if(cMessageIDMaxLenght > lMessageIDString.length()) lMessageIDString.prepend(QString().fill('0', cMessageIDMaxLenght - lMessageIDString.length()));
 
-  mComponentContent.value(lComponentName)->sMessageArrived(lMessageType, lMessageIDString, lInput,  lMessage);
+  mComponentContent.value(lComponentName)->sMessageArrived(lMessageType, lMessageIDString, lInput,  lMessage, lConnector);
 }
 
-void CXComponentManager::fProcessMessage(int lMessageType, int lRequestID, const QString& lInput, const QString& lComponentName, const QJsonValue& lValue) {
+void CXComponentManager::fProcessMessage(int lMessageType, int lRequestID, const QString& lInput, const QString& lComponentName, const QJsonValue& lValue, const QString &lConnector) {
   if(!mComponentContent.contains(lComponentName)) {
     emit sLogMessageRequest(5200006, QStringList() << lComponentName, QString());
     return;
@@ -57,7 +57,7 @@ void CXComponentManager::fProcessMessage(int lMessageType, int lRequestID, const
   QString lMessageIDString(QString::number(lRequestID));
   if(cMessageIDMaxLenght > lMessageIDString.length()) lMessageIDString.prepend(QString().fill('0', cMessageIDMaxLenght - lMessageIDString.length()));
   QVariantList lList(mComponentContent.value(lComponentName)->fJsonToList(lValue));
-  mComponentContent.value(lComponentName)->sMessageArrivedJson(lMessageType, lMessageIDString, lInput, lList);
+  mComponentContent.value(lComponentName)->sMessageArrivedJson(lMessageType, lMessageIDString, lInput, lList, lConnector);
 }
 
 void CXComponentManager::fScaleComponents() {

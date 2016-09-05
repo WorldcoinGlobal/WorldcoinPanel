@@ -54,7 +54,6 @@ void WapptomPopularity::fSetup() {
   BXWapptom::fSetup();
   mFirstTime = true;
   mSource = tr("Network");
- // mOutput = QString("exch_rate");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+ // tSetConnector(cDefaultDaemon);
 }

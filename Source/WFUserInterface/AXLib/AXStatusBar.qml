@@ -1,7 +1,8 @@
-import QtQuick 2.4
+import QtQuick 2.7
 import ACMeasures.Lib 1.0
 import WFDefinitions.Lib 1.0
 import QtQuick.Controls 1.4
+//import QtQuick.Controls 2.0
 import QtQuick.Controls.Styles 1.4
 
 Rectangle {
@@ -11,6 +12,7 @@ Rectangle {
   property real reTextSize
   property string srText
   property string srTextFontFamily
+  property string srCurrentCoin
   property bool srTextFontBold
   property color coProccesingBackgroundColor
   property color coReadyBackgroundColor
@@ -64,10 +66,10 @@ Rectangle {
     id: rcBackground
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
-    color: {
-      if(mCXStatus.mDaemonStatus == CXDefinitions.EServiceReady) return coReadyBackgroundColor
-      if(mCXStatus.mDaemonStatus == CXDefinitions.EServiceStopped) return coStoppedBackgroundColor
-      if(mCXStatus.mDaemonStatus == CXDefinitions.EServiceError) return coErrorBackgroundColor
+    color: {       
+      if(mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) == CXDefinitions.EServiceReady) return coReadyBackgroundColor
+      if(mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) == CXDefinitions.EServiceStopped) return coStoppedBackgroundColor
+      if(mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) == CXDefinitions.EServiceError) return coErrorBackgroundColor
       return coProccesingBackgroundColor
     }
     clip: true
@@ -82,9 +84,16 @@ Rectangle {
       anchors.bottom: rcBackground.bottom
       anchors.left: rcBackground.left
       width: {
-        if(WNTotalBlockCount.mValue > 0 && mCXStatus.mDaemonStatus == CXDefinitions.EServiceReady) {
-          var vaValue = rcBackground.width * WABlockCount.mValue / WNTotalBlockCount.mValue
-          var vaPercent = 100 * WABlockCount.mValue / WNTotalBlockCount.mValue
+        var vaBlockCount = WABlockCount.mValue
+        var vaTotalBlockCount = WNTotalBlockCount.mValue
+        if(srCurrentCoin == "BTC") {
+          vaBlockCount = WABlockCountBTC.mValue
+          vaTotalBlockCount = WNTotalBlockCountBTC.mValue
+        }
+
+        if(vaTotalBlockCount > 0 && mCXConnectorManager.fStatus(srCurrentCoin) == CXDefinitions.EServiceReady) {
+          var vaValue = rcBackground.width * vaBlockCount / vaTotalBlockCount
+          var vaPercent = 100 * vaBlockCount / vaTotalBlockCount
           if(vaValue >= rcBackground.width) {
             srText = qsTr("Ready!")
             return 0
@@ -96,7 +105,9 @@ Rectangle {
       }
       clip: true
       color: {
-        if(WNTotalBlockCount.mValue > 0 && mCXStatus.mDaemonStatus == CXDefinitions.EServiceReady) return coProccesingBackgroundColor
+        var vaTotalBlockCount = WNTotalBlockCount.mValue
+        if(srCurrentCoin == "BTC") vaTotalBlockCount = WNTotalBlockCountBTC.mValue
+        if(vaTotalBlockCount > 0 && mCXConnectorManager.fStatus(srCurrentCoin) == CXDefinitions.EServiceReady) return coProccesingBackgroundColor
         return "Transparent"
       }
       radius: rcBackground.radius
@@ -223,7 +234,7 @@ Rectangle {
     }
   }
   Connections {
-    target: mCXStatus
+    target: mCXConnectorManager
     onSStatusTextChanged: { if(boMainWindow) srText = lStatusText }
   }
 }

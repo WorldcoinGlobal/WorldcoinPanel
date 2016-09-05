@@ -16,5 +16,5 @@ void WapptomBalanceWithoutConf::fSetup() {
   mInput = QString("getbalance");
   mSource = tr("Local Wallet");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+//  tSetConnector(cDefaultDaemon);
 }

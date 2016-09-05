@@ -13,7 +13,8 @@ class WapptomEncrypted : public BXWapptom {
   public:
     ~WapptomEncrypted();
 
-    QString fName() const { return QString("WAEncrypted"); }
+    BXWapptom* fCreate() { return new WapptomEncrypted(); }
+    QString fBaseName() const { return QString("WAEncrypted"); }
     QString fInput() const { return QString("%1 %2").arg(mInput).arg(mParams); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomWallet; }

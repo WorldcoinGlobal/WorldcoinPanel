@@ -15,8 +15,8 @@ void WapptomExchangeRate::tSetDisplayValue(const QString& lValue) {
 
 void WapptomExchangeRate::fSetup() {
   BXWapptom::fSetup();
-  mSource = tr("Network");
-  mOutput = QString("exch_rate");
+  tSetSource("Network");
+  tSetOutput("exch_rate");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+//  tSetConnector(cDefaultDaemon);
 }

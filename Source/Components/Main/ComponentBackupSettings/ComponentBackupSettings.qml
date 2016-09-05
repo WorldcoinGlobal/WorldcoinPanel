@@ -10,8 +10,7 @@ AXComponent {
   reWidthCm: 8
 
   readonly property string srBaseName: tfBaseName.srValue
-  readonly property string srBackupDirectory: tfBackupDirectory.srValue
-  readonly property string srCoin: "WDC"
+  readonly property string srBackupDirectory: tfBackupDirectory.srValues
   readonly property bool boEncryptionBackup: cbEncryptionBackup.boValue
   readonly property bool boBackupOnSending: cbSendingBackup.boValue
   readonly property bool boBackupOnUpdate: cbUpdateBackup.boValue
@@ -165,6 +164,7 @@ AXComponent {
     cbSendingBackup.fuSave()
     cbEncryptionBackup.fuSave()
     cbUpdateBackup.fuSave()
+    sClose()
   }
   function fuActivate() {
     tfBaseName.fuLoad()

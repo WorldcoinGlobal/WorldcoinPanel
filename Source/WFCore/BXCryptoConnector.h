@@ -19,6 +19,7 @@ class QProcess;
 class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnector {
   Q_INTERFACES(IXCryptoConnector)
   Q_OBJECT
+  Q_PROPERTY(int mStatus READ fStatus NOTIFY sStatusChanged)
 
   public:
     virtual ~BXCryptoConnector();
@@ -27,14 +28,28 @@ class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnecto
     virtual bool fCheckParameters();
     virtual int fKey() const = 0;
     virtual void fSetup();
-    virtual int fStatus() const = 0;
+    //virtual int fStatus() const = 0;
+    virtual int fStatus() const { return mStatus; }
     virtual const QString fConfigFile() const = 0;
     virtual const QString fLabel() const = 0;
     virtual const QString fName() const = 0;
     virtual QString fParseResponse(const QJsonValue& lResult, const QString& lOutput, const QString& lRequestID, int lIndentation = 0);
-    virtual QStringList fParse(const QString& lInput) const;
-    virtual void fSetStatus(int lStatus);
+    virtual QStringList fParse(const QString& lInput) const;    
     virtual const QString fTestConnectionCommand() const = 0;
+    virtual void fSetStatus(int lStatus);
+    virtual QStringList fStartupParameters() const = 0;
+    virtual QString fDefaultBalanceMinConfirmations() const = 0;
+    virtual QString fDefaultBinaryName() const = 0;
+    virtual QString fDefaultClientName() const = 0;
+    virtual QString fDefaultDataDirectory() const = 0;
+    virtual QString fDefaultEnabled() const = 0;
+    virtual QString fDefaultLockFile() const = 0;
+    virtual QString fDefaultPassword() const = 0;
+    virtual QString fDefaultPidFile() const = 0;
+    virtual QString fDefaultPort() const = 0;
+    virtual QString fDefaultRpcPort() const = 0;
+    virtual QString fDefaultUser() const = 0;
+
 
   protected:
     bool mEnabled;
@@ -44,13 +59,14 @@ class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnecto
     QJsonRpcServiceReply* rRpcTestConnectonReply;
     QProcess mDaemon;
     QString mBinaryName;
+    QString mClientName;
     QString mDataDirectory;
-    QString mUser;
+    QString mLockFileName;
     QString mPassword;
+    QString mPidFileName;
     QString mPort;
     QString mRpcPort;
-    QString mPidFileName;
-    QString mLockFileName;
+    QString mUser;
     QTimer mTimer;
 
     virtual bool fCreateDataDir(const QString& lDataDirName);
@@ -68,7 +84,7 @@ class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnecto
     virtual bool fStart();
     virtual bool fStop();
     virtual void fLoadSettings();
-    virtual void fSaveSettings() { }
+    virtual void fSaveSettings();
 
   protected slots:
     virtual void fSendReply();
@@ -77,10 +93,11 @@ class  WFCORE_EXPORT BXCryptoConnector : public QObject, public IXCryptoConnecto
 
   signals:
     void sLogMessageRequest(int lCode, const QStringList& lParameters, const QString& lCustomText, int lLogType);
-    void sStatusChanged(const QString& lConnectorName, int lStatus);
+  //  void sStatusChanged(const QString& lConnectorName, int lStatus);
+    void sStatusChanged();
     void sReply(bool lSuccess, quint64 lRequestID, const QString& lValue);
     void sReplyJson(bool lSuccess, quint64 lRequestID, const QJsonValue& lValue);
-    void sProcessingFinished();
+    void sProcessingFinished();    
 };
 
 #endif // BXCRYPTOCONNECTOR_H

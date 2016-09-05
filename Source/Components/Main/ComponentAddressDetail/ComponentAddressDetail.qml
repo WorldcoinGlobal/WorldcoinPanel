@@ -10,7 +10,6 @@ AXComponent {
   reWidthCm: 13
 
   property real reColumnWidth: 8.5
-  property string srCoin: "WDC"
   property real vaAddressSubtotal
   property real vaChangeSubtotal
   property bool boUseReceiveByAddress // listaddressgrouping doesn't work for new wallets
@@ -169,9 +168,52 @@ AXComponent {
     anchors.fill: parent
     color: SStyleSheet.coComponentDetailBackgroundColor
   }
+  AXFrame {
+    id: rcTitle
+    color: SStyleSheet.coComponentHorizontalHeaderColor
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
+    property alias imImage: imCrypto.source
+    property alias srText: txText.text
+    Image {
+      id: imCrypto
+      source: {
+        if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+        return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
+      }
+      fillMode: Image.Stretch
+      anchors.left: parent.left
+      anchors.leftMargin: parent.width / 3
+      anchors.top: parent.top
+      anchors.topMargin: parent.height / 10
+      anchors.bottomMargin: parent.height / 10
+      anchors.bottom: parent.bottom
+      sourceSize.height: mCXDefinitions.ESizeSmall
+      sourceSize.width: mCXDefinitions.ESizeSmall
+      width: height
+    }
+    Text {
+      id: txText
+      anchors.left: imCrypto.right
+      anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentDetailLeftMargin)
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      horizontalAlignment: "AlignLeft"
+      verticalAlignment: "AlignVCenter"
+      text: mCurrentCoin
+      color: SStyleSheet.coComponentHorizontalHeaderTextColor
+      font.bold: true
+      font.italic: true
+      font.family: SStyleSheet.srComponentFont
+    }
+  }
   ScrollView {    
     id: scView
     anchors.fill: rcRoot
+    anchors.topMargin: rcTitle.height
     horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
     Rectangle {
       id: rcView
@@ -268,13 +310,27 @@ AXComponent {
     }
   }
   ListModel { id: lmAddressModel }
+  ListModel { id: lmAddressModelBTC }
   ListModel { id: lmChangeAddressModel }
+  ListModel { id: lmChangeAddressModelBTC }
 
   onReTotalChanged: { fuActivate() }
   onSrNewAddressChanged: { fuActivate() }
+  onMCurrentCoinChanged: {
+    if(mCurrentCoin === "WDC") {
+      lvAddress.model = lmAddressModel
+      lvChangeAddress.model = lmChangeAddressModel
+    }
+    if(mCurrentCoin === "BTC") {
+      lvAddress.model = lmAddressModelBTC
+      lvChangeAddress.model = lmChangeAddressModelBTC
+    }
+    fuActivate()
+  }
+
   function fuActivate() {
     boUseReceiveByAddress = 0
-    fRawCallRequested(srCoin, "listaddressgroupings", 0)
+    fRawCallRequested(mCurrentCoin, "listaddressgroupings", 0)
   }  
   function fuSetup() { }
   Connections {
@@ -282,17 +338,24 @@ AXComponent {
     onSMessageArrivedJson: {
       if(boUseReceiveByAddress) {
         var vaAddress = lList[0]['address']
-        lmAddressModel.append({"miAddress": vaAddress, "miAmount": 0, "miAccount": ""})
+        if(lConnector === "WDC") lmAddressModel.append({"miAddress": vaAddress, "miAmount": 0, "miAccount": ""})
+        if(lConnector === "BTC") lmAddressModelBTC.append({"miAddress": vaAddress, "miAmount": 0, "miAccount": ""})
         boUseReceiveByAddress = 0
       }
       else {
-        lmAddressModel.clear()
-        lmChangeAddressModel.clear()
+        if(lConnector === "WDC") {
+          lmAddressModel.clear()
+          lmChangeAddressModel.clear()
+        }
+        if(lConnector === "BTC") {
+          lmAddressModelBTC.clear()
+          lmChangeAddressModelBTC.clear()
+        }
         vaAddressSubtotal = 0
         vaChangeSubtotal = 0
         if(lList.length === 0) {
           boUseReceiveByAddress = 1
-          fRawCallRequested(srCoin, "listreceivedbyaddress 1 1", 0)
+          fRawCallRequested(mCurrentCoin, "listreceivedbyaddress 1 1", 0)
         }
         else {
           for(var h = 0; h < lList.length; h++) {
@@ -303,11 +366,17 @@ AXComponent {
               if(vaList.length === 3) {
                 var vaAccount = vaList[2]
                 if(vaAccount === "") vaAccount = qsTr("-- Default")
-                lmAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
+                if(lConnector === "WDC") lmAddressModelB.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
+                if(lConnector === "BTC") lmAddressModelBTC.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
                 vaAddressSubtotal += parseFloat(vaAmount)
               }
               else {
-                if(vaAmount > 0) lmChangeAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": "" })
+                if(lConnector === "WDC") {
+                  if(vaAmount > 0) lmChangeAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": "" })
+                }
+                if(lConnector === "BTC") {
+                  if(vaAmount > 0) lmChangeAddressModelBTC.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": "" })
+                }
                 vaChangeSubtotal += parseFloat(vaAmount)
               }
             }

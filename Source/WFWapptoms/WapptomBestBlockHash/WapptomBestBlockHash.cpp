@@ -11,5 +11,5 @@ void WapptomBestBlockHash::fSetup() {
   mInput = QString("getbestblockhash");
   mSource = tr("Local Wallet");
   tSetPollingTime(cDefaultSampleTime);
-  tSetConnector(cDefaultDaemon);
+//  tSetConnector(cDefaultDaemon);
 }

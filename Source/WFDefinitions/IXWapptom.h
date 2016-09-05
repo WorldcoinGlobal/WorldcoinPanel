@@ -8,6 +8,7 @@ class IXWapptom {
   public:
     virtual ~IXWapptom() { }
 
+    virtual QString fBaseName() const = 0;
     virtual QString fName() const = 0;
     virtual QString fInput() const = 0;
     virtual QString fOutput() const = 0;

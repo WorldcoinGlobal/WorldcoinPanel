@@ -30,8 +30,8 @@ AXStatusBar {
   reSliderHandleWidth: SStyleSheet.reSliderHandleWidth
   reSliderHandleHeight: SStyleSheet.reSliderHandleHeight
   reSliderHandleRadius: SStyleSheet.reSliderHandleRadius
-  urZoomIn: "../Images/StatusBar_IMZoomIn.svg"
-  urZoomOut: "../Images/StatusBar_IMZoomOut.svg"
+  urZoomIn: "../Images/StatusBar_IMZoomIn.png"
+  urZoomOut: "../Images/StatusBar_IMZoomOut.png"
 
   boMainWindow: true
 }

@@ -1,18 +1,25 @@
-import QtQuick 2.4
+import QtQuick 2.7
 import QtGraphicalEffects 1.0
 import ACMeasures.Lib 1.0
 import WFDefinitions.Lib 1.0
+import QtQuick.Controls 2.0
+import SStyleSheet.Lib 1.0
 
 Rectangle {
   id: rcRoot
   property alias coBottomBorderColor: rcBottomBorder.color
   property color coTextColor
+  property color coVersionTextColor
   property color coSeparatorColor
   property real reSeparatorWidth
   property real reSpacing
   property real reHeightCm
   property real reBorderWidth
   property real reDefaultHeight
+  property url urIconDaemonOff_BTC
+  property url urIconDaemonReady_BTC
+  property url urIconDaemonProcessing_BTC
+  property url urIconDaemonError_BTC
   property url urIconDaemonOff
   property url urIconDaemonReady
   property url urIconDaemonProcessing
@@ -50,6 +57,7 @@ Rectangle {
   readonly property alias vaLockButton: tbLock
   readonly property alias vaSyncButton: tbSync
   readonly property alias vaPopularity: rcPopularity
+  readonly property alias srCurrentCoin: cbCoins.displayText
 
   signal siOpenUrl(string srUrl)
   signal siComponentActivation(string srComponentName)
@@ -75,31 +83,199 @@ Rectangle {
     horizontalAlignment: "AlignLeft"
     verticalAlignment: "AlignVCenter"
     text: qsTr("WorldcoinBC - " + mCXDefinitions.mCurrentVersion + "\n" + mCXDefinitions.mCurrentVersionName)
-    color: coTextColor
+    color: coVersionTextColor
     font.bold: true
     font.italic: false
     font.family: srFontFamily
     font.pixelSize: parent.height * 0.3
   }
   AXToolButton {
-    id: tbDaemon
+    id: tbBTCDaemon
+    visible: false
+    width: 0
     property var vaStatus
+    property string vaName: "BTC"
+    anchors.right: tbDaemon.left
+  }
+  AXToolButton {
+    id: tbDaemon
+    visible: false
+    width: 0
+    property var vaStatus
+    property string vaName: "WDC"
+    anchors.right: cbCoins.left
+  }
+  ComboBox {
+    id: cbCoins
+    width: ACMeasures.fuToDots(5.5) * mCXDefinitions.mZoomFactor
     anchors.top: parent.top
-    anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    anchors.topMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
     anchors.right: parent.right
-    anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    anchors.rightMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
-    anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    function fuClicked() {
-      siComponentActivation("ComponentDaemonSettings")
-      siHighlightComponentObject("ComponentDaemonSettings", "DaemonSettingsInfo")
+    anchors.bottomMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
+    model: [tbDaemon.vaName, tbBTCDaemon.vaName]
+    delegate:
+      ItemDelegate {
+        width: cbCoins.width
+        text: modelData + " - " + mCXDefinitions.fStatusText(cbCoins.fuStatus(modelData))
+        font.weight: cbCoins.currentIndex === index ? Font.DemiBold : Font.Normal
+        highlighted: cbCoins.highlightedIndex == index
+      }
+    background: Rectangle {
+      radius: ACMeasures.fuToDots(SStyleSheet.reComboBoxRadius)
     }
+    indicator: Canvas {
+        x: cbCoins.width - width - cbCoins.rightPadding
+        y: cbCoins.topPadding + (cbCoins.availableHeight - height) / 2
+        width: height
+        height: parent.height * 0.3
+        contextType: "2d"
+        Connections {
+            target: cbCoins
+            onPressedChanged: cbCoins.indicator.requestPaint()
+        }
+        onPaint: {
+            context.reset();
+            context.moveTo(0, 0);
+            context.lineTo(width, 0);
+            context.lineTo(width / 2, height);
+            context.closePath();
+            context.fillStyle = cbCoins.pressed ? SStyleSheet.coComboBoxIndicatorActiveColor : SStyleSheet.coComboBoxIndicatorInactiveColor;
+            context.fill();
+        }
+    }
+    contentItem: Rectangle {
+      id: rcEnabled
+      radius: ACMeasures.fuToDots(SStyleSheet.reComboBoxRadius)
+      anchors.topMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
+      anchors.leftMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
+      anchors.bottomMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      width: cbCoins.width - cbCoins.indicator.width - cbCoins.spacing - ACMeasures.fuToDots(reBorderWidth)
+      CheckBox {
+        id: cbEnabled
+        property bool boChangingState: false
+        enabled: true
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        width: height
+        indicator: Rectangle {
+            x: cbEnabled.leftPadding
+            y: parent.height / 2 - height / 2
+            color: SStyleSheet.coCheckBoxBackgroundColor
+            implicitWidth: ACMeasures.fuToDots(SStyleSheet.reCheckBoxWidth)
+            implicitHeight: ACMeasures.fuToDots(SStyleSheet.reCheckBoxHeight)
+            radius: ACMeasures.fuToDots( SStyleSheet.reCheckBoxRadius)
+            border.color: cbEnabled.activeFocus ? SStyleSheet.coCheckBoxActiveBorderFocus : SStyleSheet.coCheckBoxInactiveBorderFocus
+            border.width: 1
+            Rectangle {
+              visible: cbEnabled.checked
+              color: cbEnabled.enabled ? SStyleSheet.coCheckBoxActiveColor : SStyleSheet.coCheckBoxInactiveColor
+              border.color: SStyleSheet.coCheckBoxActiveColor
+              radius: SStyleSheet.reCheckBoxRadius
+              anchors.margins: ACMeasures.fuToDots(SStyleSheet.reCheckBoxHeight) * 0.2
+              anchors.fill: parent
+            }
+        }
+        onCheckedChanged: {
+          if(boChangingState) {
+            boChangingState = false
+            return
+          }
+          boChangingState = true
+          var vaSuccess = true;
+          if(cbEnabled.checked) {
+            vaSuccess = mCXConnectorManager.fStartDaemon(cbCoins.displayText)
+            if(!vaSuccess) cbEnabled.checked = false;
+          }
+          else {
+            vaSuccess = mCXConnectorManager.fStopDaemon(cbCoins.displayText)
+            if(!vaSuccess) cbEnabled.checked = true;
+          }
+          boChangingState = false
+        }
+        function fuChangeState(boState) {
+          boChangingState = true
+          cbEnabled.checked = boState
+          boChangingState = false
+        }
+      }
+      AXToolButton {
+        id: tbCurrentDaemon
+        property var vaStatus
+
+        anchors.left: cbEnabled.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width:height
+        function fuClicked() {
+          siComponentActivation("ComponentDaemonSettings")
+          siHighlightComponentObject("ComponentDaemonSettings", "DaemonSettingsInfo")
+        }
+      }
+      AXText {
+        anchors.left: tbCurrentDaemon.right
+        anchors.leftMargin: 15 // * mCXDefinitions.mZoomFactor //ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        width: { console.log(cbCoins.displayText + " - " + mCXDefinitions.fStatusText(cbCoins.fuStatus(cbCoins.displayText))); return (cbCoins.width - cbEnabled.width - tbCurrentDaemon.width - 10 )}
+     //   leftPadding: 0
+        text: cbCoins.displayText + " - " + mCXDefinitions.fStatusText(cbCoins.fuStatus(cbCoins.displayText))
+        font: cbCoins.font
+     //   font.pixelSize: parent.height * 0.6
+        color: SStyleSheet.coComboBoxTextColor
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignVCenter
+        elide: Text.ElideRight
+      }
+    }
+    onActivated: {
+      if(cbCoins.displayText === "WDC") {
+        cbEnabled.enabled = false
+        tbCurrentDaemon.urIcon = tbDaemon.urIcon
+        tbCurrentDaemon.vaStatus = tbDaemon.vaStatus
+        tbLock.urIcon = WAEncrypted.mValue === "1" ? urIconLockOn : urIconLockOff
+      }
+      else {
+        if(mCXConnectorManager.fStatus(cbCoins.displayText) === CXDefinitions.EServiceProcessing) cbEnabled.enabled = false
+        else cbEnabled.enabled = true
+      }
+      if(cbCoins.displayText === "BTC") {
+        tbCurrentDaemon.urIcon = tbBTCDaemon.urIcon
+        tbCurrentDaemon.vaStatus = tbBTCDaemon.vaStatus
+        tbLock.urIcon = WAEncryptedBTC.mValue === "1" ? urIconLockOn : urIconLockOff
+      }
+      var vaStatus = mCXConnectorManager.fStatus(cbCoins.displayText)
+      if((vaStatus === mCXDefinitions.EServiceError) || (vaStatus === CXDefinitions.EServiceStopped)) cbEnabled.fuChangeState(false);
+      else cbEnabled.fuChangeState(true);
+    }
+    Component.onCompleted: { currentIndex = 0; onActivated(currentIndex) }
+    function fuStatus(srCoin) {
+      var vaStatus;
+      if(srCoin === "WDC") vaStatus = tbDaemon.vaStatus
+      if(srCoin === "BTC") vaStatus = tbBTCDaemon.vaStatus
+      return vaStatus
+    }
+  }
+  MouseArea {
+    anchors.left: cbCoins.left
+    anchors.top: cbCoins.top
+    anchors.topMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
+    anchors.leftMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor + tbCurrentDaemon.width
+    width: tbCurrentDaemon.width
+    height: tbCurrentDaemon.height
+    onClicked: tbCurrentDaemon.fuClicked()
   }
   AXToolButton {
     id: tbSync
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: tbDaemon.left
+    anchors.right: rcSeparator3.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
@@ -139,7 +315,7 @@ Rectangle {
     id: tbServices
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: tbConnections.left
+    anchors.right: rcSeparator2.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
@@ -159,7 +335,6 @@ Rectangle {
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     urIcon: urIconUpdatesOff
-   // onSiClicked: { fuClicked() }
     function fuClicked() {
       siComponentActivation("ComponentUpdater")
       siHighlightComponentObject("ComponentUpdater", "UpgradeInfo")
@@ -182,29 +357,30 @@ Rectangle {
     color: "Transparent"
     anchors.top: parent.top
     anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
-    anchors.right: rcSeparator2.left
+    anchors.right: tbIcon.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: rcRoot.bottom
+    anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
    // anchors.bottomMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     width: height
     AXToolButton {
       id: tbPopularity
       anchors.fill: parent
-      anchors.bottomMargin: parent.height * 0.30
+   //   anchors.bottomMargin: parent.height * 0.30
       urIcon: urIconPopularityOff
     }
     Text {
       //clip: true
-      anchors.top: tbPopularity.bottom
+      anchors.top: parent.top
 //        anchors.topMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
       anchors.right: parent.right
       anchors.left: parent.left
       anchors.bottom: parent.bottom
       horizontalAlignment: Text.AlignHCenter
-      verticalAlignment: Text.AlignBottom
+      verticalAlignment: Text.AlignVCenter
       color: coTextColor
       fontSizeMode: Text.Fit
-      font.pixelSize: height * 1.2
+      font.pixelSize: height * 0.5
       text: {
         if(Number(WNPopularity.mValue) == 0) return "--"
         return WNPopularity.mValue
@@ -224,20 +400,19 @@ Rectangle {
     anchors.bottom: parent.bottom
     anchors.right: parent.right
     anchors.left: parent.left
-
     height: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
-    MouseArea {
-      anchors.fill: parent
-      cursorShape: Qt.SizeVerCursor
-      onPressed: { poClickPos = Qt.point(mouse.x,mouse.y) }
-      onPositionChanged: {
-        var newH = rcRoot.height + Qt.point(mouse.x - poClickPos.x, mouse.y - poClickPos.y).y
-        if(newH <= 2 * rcBottomBorder.height) {
-          newH = 2 * rcBottomBorder.height
-        }
-        rcRoot.height = newH
-        reDefaultHeight = ACMeasures.fuToCentimeters(rcRoot.height)
+  }
+  MouseArea {
+    anchors.fill: rcBottomBorder
+    cursorShape: Qt.SizeVerCursor
+    onPressed: { poClickPos = Qt.point(mouse.x,mouse.y) }
+    onPositionChanged: {
+      var newH = rcRoot.height + Qt.point(mouse.x - poClickPos.x, mouse.y - poClickPos.y).y
+      if(newH <= 2 * rcBottomBorder.height) {
+        newH = 2 * rcBottomBorder.height
       }
+      rcRoot.height = newH
+      reDefaultHeight = ACMeasures.fuToCentimeters(rcRoot.height)
     }
   }
   Rectangle {
@@ -254,12 +429,24 @@ Rectangle {
     z: 2
     id: rcSeparator2
     anchors.top: parent.top
-    anchors.right: tbIcon.left
+    anchors.right: tbConnections.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: rcRoot.bottom
     width: ACMeasures.fuToDots(reSeparatorWidth) * mCXDefinitions.mZoomFactor
     color: coSeparatorColor
   }
+  Rectangle {
+    z: 2
+    id: rcSeparator3
+    visible: false
+    anchors.top: parent.top
+    anchors.right: tbBTCDaemon.left
+    anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
+    anchors.bottom: rcRoot.bottom
+    width: ACMeasures.fuToDots(reSeparatorWidth) * mCXDefinitions.mZoomFactor
+    color: coSeparatorColor
+  }
+
   Connections {
     target: mCXPulzarConnector
     onSConnectionStatusChanged: {
@@ -270,26 +457,8 @@ Rectangle {
     }
   }
   Connections {
-    target: mCXStatus
-    onSDaemonStatusChanged: {
-      if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceStopped) {
-        tbDaemon.urIcon = urIconDaemonOff
-        tbDaemon.vaStatus = CXDefinitions.EServiceStopped
-      }
-      if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceReady) {
-        tbDaemon.urIcon = urIconDaemonReady
-        tbDaemon.vaStatus = CXDefinitions.EServiceReady
-        if(boServiceClosing) mCXStatus.mDaemonStatus = CXDefinitions.EServiceClosing
-      }
-      if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceProcessing) {
-        tbDaemon.urIcon = urIconDaemonProcessing
-        tbDaemon.vaStatus = CXDefinitions.EServiceProcessing
-      }
-      if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceError) {
-        tbDaemon.urIcon = urIconDaemonError
-        tbDaemon.vaStatus = CXDefinitions.EServiceError
-      }
-    }
+    target: mCXConnectorManager
+    onSStatusChanged: { fuCheckStatus(lName) }
   }
   Connections {
     target: mCXPulzarConnector
@@ -302,7 +471,7 @@ Rectangle {
         tmTiltTimer.start()
         boTiltFlag = true
         if(vaUpdatePriority == CXDefinitions.EUpgradeCritical) {
-          if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceReady) mCXStatus.mDaemonStatus = CXDefinitions.EServiceClosing
+          if(mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) === CXDefinitions.EServiceReady) mCXConnectorManager.fSetStatus(mCXDefinitions.fDefaultDaemon(), CXDefinitions.EServiceClosing)
           else boServiceClosing = true
         }
       }
@@ -315,21 +484,52 @@ Rectangle {
   }
   Connections {
     target: WAEncrypted
-    onMValueChanged: { tbLock.urIcon = WAEncrypted.mValue === "1" ? urIconLockOn : urIconLockOff }
+    onMValueChanged: {
+      if(cbCoins.displayText != "WDC") return;
+      tbLock.urIcon = WAEncrypted.mValue === "1" ? urIconLockOn : urIconLockOff
+    }
   }
+  Connections {
+    target: WAEncryptedBTC
+    onMValueChanged: {
+      if(cbCoins.displayText != "BTC") return;
+      tbLock.urIcon = WAEncryptedBTC.mValue === "1" ? urIconLockOn : urIconLockOff
+    }
+  }
+
   Connections {
     target: WAConnectionCount
     onMValueChanged: {
+      if(cbCoins.displayText != "WDC") return;
       if(Number(WAConnectionCount.mValue) <= 0)  tbConnections.urIcon = urIconConnectionsOff
       if((Number(WAConnectionCount.mValue) > 0) && (Number(WAConnectionCount.mValue) < 8))  tbConnections.urIcon = urIconConnectionsProcessing
       if(Number(WAConnectionCount.mValue) >= 8)  tbConnections.urIcon = urIconConnectionsMax
     }
   }
   Connections {
+    target: WAConnectionCountBTC
+    onMValueChanged: {
+      if(cbCoins.displayText != "BTC") return;
+      if(Number(WAConnectionCountBTC.mValue) <= 0)  tbConnections.urIcon = urIconConnectionsOff
+      if((Number(WAConnectionCountBTC.mValue) > 0) && (Number(WAConnectionCountBTC.mValue) < 8))  tbConnections.urIcon = urIconConnectionsProcessing
+      if(Number(WAConnectionCountBTC.mValue) >= 8)  tbConnections.urIcon = urIconConnectionsMax
+    }
+  }
+  Connections {
     target: WABlockCount
     onMValueChanged: {
+      if(cbCoins.displayText != "WDC") return;
       if(Number(WABlockCount.mDisplayValue) === 0) { tbSync.urIcon = urIconSyncOff; return }
       if(Number(WABlockCount.mDisplayValue) < Number(WNTotalBlockCount.mDisplayValue)) { tbSync.urIcon = urIconSyncOn; return }
+      tbSync.urIcon = urIconSyncFinished; return
+    }
+  }
+  Connections {
+    target: WABlockCountBTC
+    onMValueChanged: {
+      if(cbCoins.displayText != "BTC") return;
+      if(Number(WABlockCountBTC.mDisplayValue) === 0) { tbSync.urIcon = urIconSyncOff; return }
+      if(Number(WABlockCountBTC.mDisplayValue) < Number(WNTotalBlockCountBTC.mDisplayValue)) { tbSync.urIcon = urIconSyncOn; return }
       tbSync.urIcon = urIconSyncFinished; return
     }
   }
@@ -342,11 +542,70 @@ Rectangle {
   }
   Component.onCompleted: {
     fuScale();
-    tbDaemon.urIcon = urIconDaemonOff
-    tbDaemon.vaStatus = CXDefinitions.EServiceStopped
     tbLock.urIcon = urIconLockOff
     tbSync.urIcon = urIconSyncOff
     boServiceClosing = false
+    tbCurrentDaemon.urIcon = urIconDaemonOff_BTC
+    fuCheckStatus("WDC")
+    fuCheckStatus("BTC")
+  }
+  function fuCheckStatus(lName) {
+    if(lName === "WDC") {
+      if(mCXConnectorManager.fStatus("WDC") === CXDefinitions.EServiceStopped) {
+        tbDaemon.urIcon = urIconDaemonOff
+        tbDaemon.vaStatus = CXDefinitions.EServiceStopped
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("WDC") === CXDefinitions.EServiceReady) {
+        tbDaemon.urIcon = urIconDaemonReady
+        tbDaemon.vaStatus = CXDefinitions.EServiceReady
+        if(boServiceClosing) mCXConnectorManager.fSetStatus(lName, CXDefinitions.EServiceClosing)
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("WDC") === CXDefinitions.EServiceProcessing) {
+        tbDaemon.urIcon = urIconDaemonProcessing
+        tbDaemon.vaStatus = CXDefinitions.EServiceProcessing
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("WDC") === CXDefinitions.EServiceError) {
+        tbDaemon.urIcon = urIconDaemonError
+        tbDaemon.vaStatus = CXDefinitions.EServiceError
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+    }
+    if(lName === "BTC") {
+      if(mCXConnectorManager.fStatus("BTC") === CXDefinitions.EServiceStopped) {
+        tbBTCDaemon.urIcon = urIconDaemonOff_BTC
+        tbBTCDaemon.vaStatus = CXDefinitions.EServiceStopped
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("BTC") === CXDefinitions.EServiceReady) {
+        tbBTCDaemon.urIcon = urIconDaemonReady_BTC
+        tbBTCDaemon.vaStatus = CXDefinitions.EServiceReady
+        if(boServiceClosing) mCXConnectorManager.fSetStatus(lName, CXDefinitions.EServiceClosing)
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("BTC") === CXDefinitions.EServiceProcessing) {
+        tbBTCDaemon.urIcon = urIconDaemonProcessing_BTC
+        tbBTCDaemon.vaStatus = CXDefinitions.EServiceProcessing
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("BTC") === CXDefinitions.EServiceError) {
+        tbBTCDaemon.urIcon = urIconDaemonError_BTC
+        tbBTCDaemon.vaStatus = CXDefinitions.EServiceError
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+    }
+    if(mCXConnectorManager.fStatus("WDC") === CXDefinitions.EServiceReady) cbCoins.enabled = true
+    else cbCoins.enabled = false
   }
 
   function fuResizeView() {

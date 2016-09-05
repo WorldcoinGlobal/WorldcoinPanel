@@ -13,7 +13,8 @@ class WapptomBestBlockHash : public BXWapptom {
   public:
     ~WapptomBestBlockHash();
 
-    QString fName() const { return QString("WABestBlockHash"); }
+    BXWapptom* fCreate() { return new WapptomBestBlockHash(); }
+    QString fBaseName() const { return QString("WABestBlockHash"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomWallet; }
 };

@@ -27,8 +27,8 @@ class WFCORE_EXPORT CXComponentManager : public QObject {
    // Q_INVOKABLE void fMoveRightBorder();
     Q_INVOKABLE GXSubWindow* fComponent(const QString& lComponentName);
     Q_INVOKABLE GXComponent* fComponentContent(const QString& lComponentName);
-    void fProcessMessage(int lMessageType, int lRequestID, const QString& lInput, const QString& lComponentName, QString lMessage);
-    void fProcessMessage(int lMessageType, int lRequestID, const QString& lInput, const QString& lComponentName, const QJsonValue& lValue);
+    void fProcessMessage(int lMessageType, int lRequestID, const QString& lInput, const QString& lComponentName, QString lMessage, const QString& lConnector);
+    void fProcessMessage(int lMessageType, int lRequestID, const QString& lInput, const QString& lComponentName, const QJsonValue& lValue, const QString& lConnector);
 
   protected:
     QMap<QString, GXSubWindow* > mComponents;

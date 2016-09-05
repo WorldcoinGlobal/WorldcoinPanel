@@ -13,7 +13,8 @@ class WapptomPopularity : public BXWapptom {
   public:
     ~WapptomPopularity();
 
-    QString fName() const { return QString("WNPopularity"); }
+    BXWapptom* fCreate() { return new WapptomPopularity(); }
+    QString fBaseName() const { return QString("WNPopularity"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomNetwork; }
 

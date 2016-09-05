@@ -46,8 +46,13 @@ Rectangle {
 
   signal siComponentSelected(string srComponentName, string srComponentLabel, int inComponentCategory, int inComponentType, int boShow)
 
-  enabled: mCXStatus.mDaemonStatus === CXDefinitions.EServiceReady ? true : false
   color: "transparent"
+  Connections {
+    target: mCXConnectorManager
+    onSStatusChanged: {
+      enabled = mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) === CXDefinitions.EServiceReady ? true : false
+    }
+  }
   Rectangle {
     id: rcTitle
     anchors.top: parent.top
@@ -222,7 +227,7 @@ Rectangle {
   function fuScale() { width = ACMeasures.fuToDots(reDefaultWidth) * mCXDefinitions.mZoomFactor; }
   function fuActivateComponent(srComponentName) {
     var vaIndex = cmModulePanel.fComponentRow(srComponentName)
-    if(mCXStatus.mDaemonStatus === CXDefinitions.EServiceReady && (vaIndex >= 0)) {
+    if(mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) === CXDefinitions.EServiceReady && (vaIndex >= 0)) {
       lvModulePanel.currentIndex = vaIndex
       var vaDependencies = cmModulePanel.fComponentDependencies(srComponentName)
       for (var i = 0; i < vaDependencies.length; i++) {

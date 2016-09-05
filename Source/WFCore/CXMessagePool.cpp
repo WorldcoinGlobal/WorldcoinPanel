@@ -49,11 +49,14 @@ const CXMessage CXMessagePool::fMessage(int lCode, const QStringList& lParameter
     case 3200022: lMessage.fSetText(tr("Network request error! Object: '%1'. Request ID: '%2'. Request: '%3'. Error: '%4'").arg(lParameters.at(0)).arg(lParameters.at(1)).arg(lParameters.at(2)).arg(lParameters.at(3))); break;
     case 3200023: lMessage.fSetText(tr("Unable to connect to Pulzar Services. Error: '%1'").arg(lParameters.at(0))); break;
     case 3200024: lMessage.fSetText(tr("Unable to start daemon '%1'").arg(lParameters.at(0))); break;
+    case 3200025: lMessage.fSetText(tr("Unable to stop daemon '%1'").arg(lParameters.at(0))); break;
     case 4200001: lMessage.fSetText(tr("Starting the application ... wait a few more seconds until daemon is up and ready. Connector: '%1'").arg(lParameters.at(0))); break;
     case 4200002: lMessage.fSetText(tr("Command not found in definitions! Type 'help' for a list of known commands. Connector: '%1'. Command '%2'").arg(lParameters.at(0)).arg(lParameters.at(1))); break;
     case 4200003: lMessage.fSetText(tr("Incorrect number of params! Type 'help %2' for more information. Connector: '%1'. Command '%2'").arg(lParameters.at(0)).arg(lParameters.at(1))); break;
     case 4200004: lMessage.fSetText(tr("Incorrect param type! Type 'help %2' for more information. Connector: '%1'. Command '%2'. Parameter '%3'").arg(lParameters.at(0)).arg(lParameters.at(1)).arg(lParameters.at(2))); break;
     case 4200005: lMessage.fSetText(tr("Disconnected from Pulzar Services")); break;
+    case 4200006: lMessage.fSetText(tr("Daemon '%1' already started").arg(lParameters.at(0))); break;
+    case 4200007: lMessage.fSetText(tr("Daemon '%1' already stopped").arg(lParameters.at(0))); break;
     case 5200001: lMessage.fSetText(tr("Wapptoms tried to invoke inexistent connector ! Wapptom : '%1'. Connector: '%2'").arg(lParameters.at(0)).arg(lParameters.at(1))); break;
     case 5200002: lMessage.fSetText(tr("Connector not found in mConnectors table ! Connector: '%1'").arg(lParameters.at(0))); break;
     case 5200003: lMessage.fSetText(tr("Wapptom not found in mWapptoms table ! Wapptom: '%1'").arg(lParameters.at(0))); break;

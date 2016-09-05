@@ -19,4 +19,3 @@ DynamicLibrary {
   Depends { name: "cpp" }
   Depends { name: "Qt"; submodules: ["core", "gui", "quick", "websockets","widgets"]}
 }
-

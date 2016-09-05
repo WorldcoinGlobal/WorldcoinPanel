@@ -13,7 +13,8 @@ class WapptomNetworkHashPS : public BXWapptom {
   public:
     ~WapptomNetworkHashPS();
 
-    QString fName() const { return QString("WANetworkHashPS"); }
+    BXWapptom* fCreate() { return new WapptomNetworkHashPS(); }
+    QString fBaseName() const { return QString("WANetworkHashPS"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomWallet; }
 

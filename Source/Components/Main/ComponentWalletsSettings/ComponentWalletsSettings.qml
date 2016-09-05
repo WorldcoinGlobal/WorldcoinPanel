@@ -228,6 +228,7 @@ AXComponent {
     mCXDefinitions.mUpdateCheckPeriod = String(cbUpdatePeriod.currentIndex + 1)
     mCXDefinitions.mUpdateChannel = String(cbUpdateChannel.currentIndex + 1)
     mCXDefinitions.fSaveSettings()
+    sClose()
   }
   function fuActivate() {
     var boMinimizeOnTray = "0"

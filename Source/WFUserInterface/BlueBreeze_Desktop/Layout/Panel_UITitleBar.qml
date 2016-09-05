@@ -15,9 +15,9 @@ AXTitleBar {
   srTitleFontFamily: SStyleSheet.srFontFamily
   srTitleFontBold: true
   reButtonSpace: SStyleSheet.reMainTitleBarButtonSpace
-  urButtonMaximizeImage: "../Images/Panel_IMMaximize.svg"
-  urButtonMinimizeImage: "../Images/Panel_IMMinimize.svg"
-  urButtonRestoreImage: "../Images/Panel_IMRestore.svg"
-  urButtonCloseImage: "../Images/Panel_IMClose.svg"
+  urButtonMaximizeImage: "../Images/Panel_IMMaximize.png"
+  urButtonMinimizeImage: "../Images/Panel_IMMinimize.png"
+  urButtonRestoreImage: "../Images/Panel_IMRestore.png"
+  urButtonCloseImage: "../Images/Panel_IMClose.png"
 }
 

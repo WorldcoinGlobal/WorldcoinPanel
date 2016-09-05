@@ -13,7 +13,8 @@ class WapptomConnectionCount : public BXWapptom {
   public:
     ~WapptomConnectionCount();
 
-    QString fName() const { return QString("WAConnectionCount"); }
+    BXWapptom* fCreate() { return new WapptomConnectionCount(); }
+    QString fBaseName() const { return QString("WAConnectionCount"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomWallet; }
 

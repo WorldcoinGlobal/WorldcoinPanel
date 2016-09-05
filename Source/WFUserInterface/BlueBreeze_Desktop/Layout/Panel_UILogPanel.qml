@@ -32,15 +32,15 @@ AXLogPanel {
   srTitleTextFontBold: false
   srTitleTextFontItalic: true
 
-  urKeyTypeIcon: "../Images/Table_IMKeyTypeIcon.svg"
-  urDateTypeIcon: "../Images/Table_IMDateTypeIcon.svg"
-  urTimeTypeIcon: "../Images/Table_IMTimeTypeIcon.svg"
+  urKeyTypeIcon: "../Images/Table_IMKeyTypeIcon.png"
+  urDateTypeIcon: "../Images/Table_IMDateTypeIcon.png"
+  urTimeTypeIcon: "../Images/Table_IMTimeTypeIcon.png"
   urTextTypeIcon: "../Images/Table_IMTextTypeIcon.png"
 
-  urSuccessMessageIcon: "../Images/Table_IMSuccessMessageIcon.svg"
-  urInfoMessageIcon: "../Images/Table_IMInfoMessageIcon.svg"
+  urSuccessMessageIcon: "../Images/Table_IMSuccessMessageIcon.png"
+  urInfoMessageIcon: "../Images/Table_IMInfoMessageIcon.png"
   urErrorMessageIcon: "../Images/Table_IMErrorMessageIcon.png"
-  urWarningMessageIcon: "../Images/Table_IMWarningMessageIcon.svg"
-  urBugMessageIcon: "../Images/Table_IMBugMessageIcon.svg"
+  urWarningMessageIcon: "../Images/Table_IMWarningMessageIcon.png"
+  urBugMessageIcon: "../Images/Table_IMBugMessageIcon.png"
 }
 

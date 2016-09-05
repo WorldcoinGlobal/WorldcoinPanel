@@ -10,7 +10,6 @@ AXComponent {
   reHeightCm: 6
   reWidthCm: 12
 
-  readonly property string srCoin: "WDC"
   property real reColumnWidth: 7
   property string srAmountToTransfer
 
@@ -25,11 +24,32 @@ AXComponent {
     anchors.left: parent.left
     anchors.right: parent.right
     reHeightCm: SStyleSheet.reComponentHorizontalHeaderRowHeight
+    Image {
+      id: imCrypto
+      source: {
+        if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false);
+        return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
+      }
+      fillMode: Image.Stretch
+      anchors.left: parent.left
+      anchors.leftMargin: parent.width / 3
+      anchors.top: parent.top
+      anchors.topMargin: parent.height / 10
+      anchors.bottomMargin: parent.height / 10
+      anchors.bottom: parent.bottom
+      sourceSize.height: mCXDefinitions.ESizeSmall
+      sourceSize.width: mCXDefinitions.ESizeSmall
+      width: height
+    }
     Text {
-      anchors.fill: parent
-      horizontalAlignment: "AlignHCenter"
+      anchors.left: imCrypto.right
+      anchors.leftMargin: ACMeasures.fuToDots(SStyleSheet.reComponentDetailLeftMargin)
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      anchors.right: parent.right
+      horizontalAlignment: "AlignLeft"
       verticalAlignment: "AlignVCenter"
-      text: qsTr("Details")
+      text: mCurrentCoin
       color: SStyleSheet.coComponentHorizontalHeaderTextColor
       font.bold: true
       font.italic: true
@@ -38,6 +58,7 @@ AXComponent {
   }
   FXTextField {
     id: tfAddress
+    property alias reRegExp: vlRegValidator.regExp
     anchors.top: rcSendTitle.bottom
     anchors.topMargin: ACMeasures.fuToDots(SStyleSheet.reComponentItemSpace)
     anchors.left: parent.left
@@ -48,7 +69,7 @@ AXComponent {
     reHeightCm: SStyleSheet.reComponentRowHeight
     srLabelText: qsTr("Address:")
     srFontFamily: SStyleSheet.srFontFamily
-    vlValidator: RegExpValidator { regExp: /^W{1}[1-9A-HJ-NP-Za-km-z]{33}$/ }
+    vlValidator: vlRegValidator
     srSetting: "TargetAddress"
     srDefaultValue: ""
     stStyle: SXTextField {
@@ -58,6 +79,10 @@ AXComponent {
       font.family: SStyleSheet.srFontFamily
       font.pixelSize: tfAddress.height * 0.6
       textColor: SStyleSheet.coComponentInputTextColor
+    }
+    RegExpValidator {
+      id: vlRegValidator
+      regExp: /^W{1}[1-9A-HJ-NP-Za-km-z]{33}$/
     }
   }
   FXTextField {
@@ -235,25 +260,30 @@ AXComponent {
     id: tmSend
     interval: 400;
     repeat: false
-    onTriggered: fRawCallRequested(srCoin, "sendtoaddress " + tfAddress.srValue + " " + srAmountToTransfer, 1)
+    onTriggered: fRawCallRequested(mCurrentCoin, "sendtoaddress " + tfAddress.srValue + " " + srAmountToTransfer, 1)
   }
+  onMCurrentCoinChanged: {
+    if(mCurrentCoin === "WDC") tfAddress.reRegExp = /^W{1}[1-9A-HJ-NP-Za-km-z]{33}$/
+    if(mCurrentCoin === "BTC") tfAddress.reRegExp = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/
+  }
+
   Connections {
     target: rcRoot
     onSMessageArrived: {
       rcDisabled.opacity = 0
-      if(lMessageType == CXDefinitions.ESuccessMessage)  {
+      if(lMessageType == CXDefinitions.ESuccessMessage && lConnector == mCurrentCoin)  {
         frTxID.srText = qsTr("Last Tx:" + lMessage)
         tfAddress.srValue = tfAddress.srDefaultValue
         tfAmount.srValue = tfAmount.srDefaultValue
         if(ComponentBackupSettings.boBackupOnSending) ComponentBackupWallet.fuAccept()        
       }
-      tfAmount.srValue = "0"
+      if(lConnector == mCurrentCoin) tfAmount.srValue = "0"
       sComponentProcessing(0)
     }
   }
   function fuAccept() {
     srAmountToTransfer = tfAmount.srValue
-    if(ComponentWalletsSummary.srEncrypted === "True") fRawCallRequested(srCoin, "walletpassphrase " + tfPassphrase.srValue + " " + " 2", 0, CXDefinitions.ELogNone)
+    if(ComponentWalletsSummary.srEncrypted === "True") fRawCallRequested(mCurrentCoin, "walletpassphrase " + tfPassphrase.srValue + " " + " 2", 0, CXDefinitions.ELogNone)
     sComponentProcessing(1)
     tmSend.running = true
     rcDisabled.opacity = 0.3    
