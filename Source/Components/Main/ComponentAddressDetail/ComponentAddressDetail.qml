@@ -366,7 +366,7 @@ AXComponent {
               if(vaList.length === 3) {
                 var vaAccount = vaList[2]
                 if(vaAccount === "") vaAccount = qsTr("-- Default")
-                if(lConnector === "WDC") lmAddressModelB.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
+                if(lConnector === "WDC") lmAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
                 if(lConnector === "BTC") lmAddressModelBTC.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
                 vaAddressSubtotal += parseFloat(vaAmount)
               }
