@@ -1,0 +1,15 @@
+Compiling Instructions:
+
+1] Download and install Qt 5.7.0 from qt.io (Previous versions were not tested)
+2] Download QJsonRpc https://bitbucket.org/devonit/qjsonrpc
+Compile it using Static linkage
+3] Download and compile WDC Daemon, source code at https://github.com/WorldcoinGlobal/WorldcoinDaemon
+Instructions inside folder 'Documents'
+4] Download WorldcoinPanel, source code at https://github.com/WorldcoinGlobal/WorldcoinPanel
+5] Repeat previous step for bitcoin daemon. Read documentation from official website (We only need bitcoin-cli and bitcoind executables)
+6] Edit WorldcoinPanel.qbs file and edit directories accordingly
+7] Execute Qt Creator 4.x.x and open project WorldcoinPanel.qbs
+8] Compile
+9] If you are in Windows, please remove *.lib, *.exp from directories Wapptoms and Connectors
+10] Enjoy!
+
