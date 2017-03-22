@@ -1,6 +1,6 @@
 Compiling Instructions:
 
-1] Download and install Qt 5.7.0 from qt.io (Previous versions were not tested)
+1] Download and install Qt 5.8.0 from qt.io (Previous versions were not tested)
 2] Download QJsonRpc https://bitbucket.org/devonit/qjsonrpc
 Compile it using Static linkage
 3] Download and compile WDC Daemon, source code at https://github.com/WorldcoinGlobal/WorldcoinDaemon

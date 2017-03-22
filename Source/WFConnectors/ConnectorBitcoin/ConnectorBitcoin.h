@@ -1,6 +1,7 @@
 #ifndef CONNECTORBITCOIN_H
 #define CONNECTORBITCOIN_H
 
+#include <QDir>
 #include <QObject>
 #include <QString>
 #include <BXCryptoConnector.h>
@@ -26,7 +27,7 @@ class ConnectorBitcoin : public BXCryptoConnector {
     QString fDefaultClientName() const { return "bitcoin-cli"; }
     QString fDefaultDataDirectory() const {
       if(CXDefinitions::fCurrentOS() == CXDefinitions::EWindowsOS) return "C:/Blockchain/BitcoinChain";
-      else return "~/Blockchain/BitcoinChain";
+      else return QString("%1/Blockchain/BitcoinChain").arg(QDir::homePath());
     }
     QString fDefaultEnabled() const { return "0"; }
     QString fDefaultLockFile() const { return ".lock"; }

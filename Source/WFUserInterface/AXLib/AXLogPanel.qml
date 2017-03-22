@@ -50,7 +50,7 @@ Rectangle {
     id: rcTitle
     anchors.top: parent.top
     anchors.right: parent.right
-    anchors.rightMargin: rcRightBorder.width
+    /** anchors.rightMargin:  rcRightBorder.width **/
     anchors.left: parent.left
     height: ACMeasures.fuToDots(reTitleHeight) * mCXDefinitions.mZoomFactor
     AXText {

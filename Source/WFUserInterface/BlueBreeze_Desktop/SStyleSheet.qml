@@ -13,7 +13,7 @@ Item {
 
 /***** Main Panel *****/
   property real reZoomDelta: 0.03
-  property real reCornerRadiusCm: 0.5
+  property real reCornerRadiusCm: 0 //0.5
   property color coMainInfoBackgroundColor: "#2a579a" 
   property color coMainInfoTextColor: "White"
   property color coMainCriticalBackgroundColor: "Red"
@@ -62,7 +62,7 @@ Item {
   property real reSliderHandleRadius: 0.1
 
     /***** Module Panel *****/
-  property real reModulePanelBorderWidth: 0.1
+  property real reModulePanelBorderWidth: 0.03
   property real reModulePanelDefaultWidth: 6
   property real reModulePanelTitleHeight: 0.58
   property real reModulePanelAreaRadius: 0

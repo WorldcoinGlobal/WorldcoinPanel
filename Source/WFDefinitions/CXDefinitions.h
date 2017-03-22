@@ -85,7 +85,7 @@ class WFDEFINITIONS_EXPORT CXDefinitions : public QObject {
 
   public:
     explicit CXDefinitions(QObject* pParent = 0);
-    ~CXDefinitions();
+    virtual ~CXDefinitions();
 
     enum eRole {
       EDisplayRole = Qt::UserRole,

@@ -181,6 +181,8 @@ AXComponent {
       id: imCrypto
       source: {
         if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+        if(mCurrentCoin === "LTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_LTC.png"), false)
+        if(mCurrentCoin === "DOGE") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_DOGE.png"), false)
         return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
       }
       fillMode: Image.Stretch
@@ -311,8 +313,12 @@ AXComponent {
   }
   ListModel { id: lmAddressModel }
   ListModel { id: lmAddressModelBTC }
+  ListModel { id: lmAddressModelLTC }
+  ListModel { id: lmAddressModelDOGE }
   ListModel { id: lmChangeAddressModel }
   ListModel { id: lmChangeAddressModelBTC }
+  ListModel { id: lmChangeAddressModelLTC }
+  ListModel { id: lmChangeAddressModelDOGE }
 
   onReTotalChanged: { fuActivate() }
   onSrNewAddressChanged: { fuActivate() }
@@ -325,6 +331,15 @@ AXComponent {
       lvAddress.model = lmAddressModelBTC
       lvChangeAddress.model = lmChangeAddressModelBTC
     }
+    if(mCurrentCoin === "LTC") {
+      lvAddress.model = lmAddressModelLTC
+      lvChangeAddress.model = lmChangeAddressModelLTC
+    }
+    if(mCurrentCoin === "DOGE") {
+      lvAddress.model = lmAddressModelDOGE
+      lvChangeAddress.model = lmChangeAddressModelDOGE
+    }
+
     fuActivate()
   }
 
@@ -340,6 +355,8 @@ AXComponent {
         var vaAddress = lList[0]['address']
         if(lConnector === "WDC") lmAddressModel.append({"miAddress": vaAddress, "miAmount": 0, "miAccount": ""})
         if(lConnector === "BTC") lmAddressModelBTC.append({"miAddress": vaAddress, "miAmount": 0, "miAccount": ""})
+        if(lConnector === "LTC") lmAddressModelLTC.append({"miAddress": vaAddress, "miAmount": 0, "miAccount": ""})
+        if(lConnector === "DOGE") lmAddressModelDOGE.append({"miAddress": vaAddress, "miAmount": 0, "miAccount": ""})
         boUseReceiveByAddress = 0
       }
       else {
@@ -351,6 +368,15 @@ AXComponent {
           lmAddressModelBTC.clear()
           lmChangeAddressModelBTC.clear()
         }
+        if(lConnector === "LTC") {
+          lmAddressModelLTC.clear()
+          lmChangeAddressModelLTC.clear()
+        }
+        if(lConnector === "DOGE") {
+          lmAddressModelDOGE.clear()
+          lmChangeAddressModelDOGE.clear()
+        }
+
         vaAddressSubtotal = 0
         vaChangeSubtotal = 0
         if(lList.length === 0) {
@@ -368,6 +394,8 @@ AXComponent {
                 if(vaAccount === "") vaAccount = qsTr("-- Default")
                 if(lConnector === "WDC") lmAddressModel.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
                 if(lConnector === "BTC") lmAddressModelBTC.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
+                if(lConnector === "LTC") lmAddressModelLTC.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
+                if(lConnector === "DOGE") lmAddressModelDOGE.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": vaAccount})
                 vaAddressSubtotal += parseFloat(vaAmount)
               }
               else {
@@ -377,6 +405,13 @@ AXComponent {
                 if(lConnector === "BTC") {
                   if(vaAmount > 0) lmChangeAddressModelBTC.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": "" })
                 }
+                if(lConnector === "LTC") {
+                  if(vaAmount > 0) lmChangeAddressModelLTC.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": "" })
+                }
+                if(lConnector === "DOGE") {
+                  if(vaAmount > 0) lmChangeAddressModelDOGE.append({"miAddress": vaAddress, "miAmount": vaAmount, "miAccount": "" })
+                }
+
                 vaChangeSubtotal += parseFloat(vaAmount)
               }
             }

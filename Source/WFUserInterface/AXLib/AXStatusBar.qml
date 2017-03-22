@@ -90,6 +90,14 @@ Rectangle {
           vaBlockCount = WABlockCountBTC.mValue
           vaTotalBlockCount = WNTotalBlockCountBTC.mValue
         }
+        if(srCurrentCoin == "LTC") {
+          vaBlockCount = WABlockCountLTC.mValue
+          vaTotalBlockCount = WNTotalBlockCountLTC.mValue
+        }
+        if(srCurrentCoin == "DOGE") {
+          vaBlockCount = WABlockCountDOGE.mValue
+          vaTotalBlockCount = WNTotalBlockCountDOGE.mValue
+        }
 
         if(vaTotalBlockCount > 0 && mCXConnectorManager.fStatus(srCurrentCoin) == CXDefinitions.EServiceReady) {
           var vaValue = rcBackground.width * vaBlockCount / vaTotalBlockCount
@@ -107,9 +115,12 @@ Rectangle {
       color: {
         var vaTotalBlockCount = WNTotalBlockCount.mValue
         if(srCurrentCoin == "BTC") vaTotalBlockCount = WNTotalBlockCountBTC.mValue
+        if(srCurrentCoin == "LTC") vaTotalBlockCount = WNTotalBlockCountLTC.mValue
+        if(srCurrentCoin == "DOGE") vaTotalBlockCount = WNTotalBlockCountDOGE.mValue
         if(vaTotalBlockCount > 0 && mCXConnectorManager.fStatus(srCurrentCoin) == CXDefinitions.EServiceReady) return coProccesingBackgroundColor
         return "Transparent"
       }
+
       radius: rcBackground.radius
     }
     Text  {

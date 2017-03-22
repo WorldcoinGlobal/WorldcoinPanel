@@ -312,6 +312,8 @@ AXComponent {
       cbDaemonEnabled.enabled = true
     }
     if(mCurrentCoin === "BTC") rcValueTitle.imImage =  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+    if(mCurrentCoin === "LTC") rcValueTitle.imImage =  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_LTC.png"), false)
+    if(mCurrentCoin === "DOGE") rcValueTitle.imImage =  mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_DOGE.png"), false)
     rcValueTitle.srText = mCurrentCoin
     cbDaemonEnabled.srConnector = mCurrentCoin
     tfBinaryName.srConnector = mCurrentCoin

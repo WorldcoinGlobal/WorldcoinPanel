@@ -17,6 +17,7 @@ class WapptomExchangeRate : public BXWapptom {
     QString fBaseName() const { return QString("WNExchangeRate"); }
     void fSetup();
     int fType() const { return CXDefinitions::EWapptomNetwork; }
+    QString fPreProcess(const QString& lOriginalAnswer);
 
   public slots:
     void tSetDisplayValue(const QString& lValue);

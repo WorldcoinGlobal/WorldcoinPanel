@@ -8,14 +8,15 @@ import WFDefinitions.Lib 1.0
 
 GXWindow {
   id: wiRoot
-  flags: Qt.FramelessWindowHint | Qt.WindowMinimizeButtonHint | Qt.Window
-  color: /*"gray" //*/ "transparent"
+  color: "gray"
 
   property string srFontFamily
   property string srCurrentCoin
   property color coTextColor
   property bool boWDCFirstTime: true
   property bool boBTCFirstTime: true
+  property bool boLTCFirstTime: true
+  property bool boDOGEFirstTime: true
   property bool boIsMaximized: false
   property bool boReady
   property bool boClosing
@@ -70,13 +71,6 @@ GXWindow {
       boClosing = mCXConnectorManager.fStatus(mCXDefinitions.fDefaultDaemon()) === CXDefinitions.EServiceClosing ? true : false
     }
   }
-  Rectangle {
-    id: rcMask
-    anchors.fill: parent // omMask
-    color: "white"
-    radius: ACMeasures.fuToDots(reCornerRadiusCm) * mCXDefinitions.mZoomFactor
-    visible: false
-  }
   MouseArea {
     id: maRoot
     anchors.fill: parent
@@ -88,30 +82,6 @@ GXWindow {
       }
     }
   }
-  OpacityMask {
-    id: omMask
-    source: rcBackground
-    maskSource: rcMask
-    visible: true
-    anchors.fill: parent
-    focus: true
-    Loader {
-      id: loTitleBar
-      anchors.top: parent.top
-      anchors.leftMargin: ACMeasures.fuToDots(reCornerRadiusCm) * mCXDefinitions.mZoomFactor
-      anchors.left: parent.left
-      anchors.rightMargin: ACMeasures.fuToDots(reCornerRadiusCm) * mCXDefinitions.mZoomFactor
-      anchors.right: parent.right
-      source: urTitleBar
-      onLoaded: {
-        rcTitleBarBackground.color = item.color
-        rcMask.color = item.color
-        rcTitleBarBackground.height = ACMeasures.fuToDots(reTitleBarHeight) * mCXDefinitions.mZoomFactor
-        height = ACMeasures.fuToDots(reTitleBarHeight) * mCXDefinitions.mZoomFactor
-        loTitleBar.item.reBorderWidth = reBorderWidth * mCXDefinitions.mZoomFactor
-        loTitleBar.item.boMainWindowMaximized = Qt.binding(function() { return wiRoot.boIsMaximized })
-      }
-    }
     Loader {
       id: loStatusBar
       anchors.leftMargin: ACMeasures.fuToDots(reCornerRadiusCm)
@@ -130,104 +100,16 @@ GXWindow {
         loStatusBar.item.srCurrentCoin = Qt.binding(function() { return wiRoot.srCurrentCoin })
       }
     }
-    Image {
-      id: rcResizeHandlerTopLeft
-      anchors.top: loTitleBar.top
-      anchors.bottom: loTitleBar.bottom
-      anchors.left: omMask.left
-      width: height
-      source: urResizeHandlerImage
-      fillMode: Image.Pad
-      clip: true
-      MouseArea {
-        id: maResizeHandlerTopLeft
-        anchors.fill: parent
-        cursorShape: Qt.SizeFDiagCursor
-        preventStealing: true
-        onPressed: { poResizeClickPos = Qt.point(mouse.x,mouse.y) }
-        onPositionChanged: {
-          var vaDelta = Qt.point(mouse.x - poResizeClickPos.x, mouse.y - poResizeClickPos.y)
-          rcTopBorder.fuResizeTop()
-          rcLeftBorder.fuResizeLeft()
-        }
-      }
-    }
-    Image {
-      id: rcResizeHandlerBottomLeft
-      anchors.top: loStatusBar.top
-      anchors.bottom: loStatusBar.bottom
-      anchors.left: omMask.left
-      width: height
-      source: urResizeHandlerImage
-      fillMode: Image.Pad
-      clip: true
-      MouseArea {
-        id: maResizeHandlerBottomLeft
-        anchors.fill: parent
-        cursorShape: Qt.SizeBDiagCursor
-        preventStealing: true
-        onPressed: { poResizeClickPos = Qt.point(mouse.x,mouse.y) }
-        onPositionChanged: {
-          var vaDelta = Qt.point(mouse.x - poResizeClickPos.x, mouse.y - poResizeClickPos.y)
-          rcBottomBorder.fuResizeBottom()
-          rcLeftBorder.fuResizeLeft()
-        }
-      }
-    }
-    Image {
-      id: rcResizeHandlerTopRight
-      anchors.top: loTitleBar.top
-      anchors.bottom: loTitleBar.bottom
-      anchors.right: omMask.right
-      width: height
-      source: urResizeHandlerImage
-      fillMode: Image.Pad
-      clip: true
-      MouseArea {
-        id: maResizeHandlerTopRight
-        anchors.fill: parent
-        cursorShape: Qt.SizeBDiagCursor
-        preventStealing: true
-        onPressed: { poResizeClickPos = Qt.point(mouse.x,mouse.y) }
-        onPositionChanged: {
-          var vaDelta = Qt.point(mouse.x - poResizeClickPos.x, mouse.y - poResizeClickPos.y)
-          rcTopBorder.fuResizeTop()
-          rcRightBorder.fuResizeRight()
-        }
-      }
-    }
-    Image {
-      id: rcResizeHandlerBottomRight
-      anchors.top: loStatusBar.top
-      anchors.bottom: loStatusBar.bottom
-      anchors.right: omMask.right
-      width: height
-      source: urResizeHandlerImage
-      fillMode: Image.Pad
-      clip: true
-      MouseArea {
-        id: maResizeHandlerRight
-        anchors.fill: parent
-        cursorShape: Qt.SizeFDiagCursor
-        preventStealing: true
-        onPressed: { poResizeClickPos = Qt.point(mouse.x,mouse.y) }
-        onPositionChanged: {
-          var vaDelta = Qt.point(mouse.x - poResizeClickPos.x, mouse.y - poResizeClickPos.y)
-          rcBottomBorder.fuResizeBottom()
-          rcRightBorder.fuResizeRight()
-        }
-      }
-    }
     Loader {
       id: loModulePanel
-      anchors.top: loTitleBar.bottom
+      anchors.top: parent.top //loTitleBar.bottom
       anchors.left: parent.left
       anchors.bottom: loStatusBar.top
       source: urModulePanel
     }
     Loader {
       id: loInfoBar
-      anchors.top: loTitleBar.bottom
+      anchors.top: parent.top//loTitleBar.bottom
       anchors.left: loModulePanel.right
       anchors.right: parent.right
       source: urInfoBar
@@ -283,30 +165,6 @@ GXWindow {
       onSiHighlightComponentObject: { loWorkspace.item.fuHighlightObject(srComponentName, srObjectName) }
     }
     Connections {
-      target: loTitleBar.item
-      onSiCloseButtonClicked: {
-        if(mCXDefinitions.mMinimizeOnClose == "0") {
-          maRoot.propagateComposedEvents = false;
-          maRoot.z = 10000;
-          maRoot.enabled = false;
-          loTitleBar.item.boMouseEnabled = false;
-          wiRoot.siCloseRequested();
-        }
-        else wiRoot.hide()
-      }
-      onSiMinimizeButtonClicked: {
-        if(mCXDefinitions.mMinimizeToTray == "0") wiRoot.showMinimized()
-        else wiRoot.hide()
-      }
-      onSiMaximizeButtonClicked: { fuShowMaximized() }      
-      onSiWindowMoved: {
-        wiRoot.x = wiRoot.x + poDelta.x
-        wiRoot.y = wiRoot.y + poDelta.y
-        mCXDefinitions.mX = wiRoot.x
-        mCXDefinitions.mY = wiRoot.y
-      }
-    }
-    Connections {
       target: loModulePanel.item
       onSiComponentSelected: {
         loWorkspace.item.fuActivateComponent(srComponentName, srComponentLabel, inComponentCategory, inComponentType, boShow)
@@ -337,8 +195,8 @@ GXWindow {
           WANetworkHashPS.mPollingTime = inWapptomPollingTime; WANetworkHashPS.mStartingOffset = 700; WANetworkHashPS.mActive = true;
           WAEncrypted.mPollingTime = 0; WAEncrypted.mSingleShot = true; WAEncrypted.mStartingOffset = 0; WAEncrypted.mActive = true;
           WNTotalBlockCount.mPollingTime = inWapptomPollingTime * 4; WNTotalBlockCount.mStartingOffset = 0; WNTotalBlockCount.mActive = true; WNTotalBlockCount.mInput = "https://www.wdcexplorer.com/q/getblockcount"; WNTotalBlockCount.mSource = "www.wdcexplorer.com"
-          WNExchangeRate.mPollingTime = inWapptomPollingTime * 4; WNExchangeRate.mStartingOffset = 0; WNExchangeRate.mPrecision = 8; WNExchangeRate.mActive = true; WNExchangeRate.mInput = "https://www.cryptodiggers.eu/api/api.php?a=get_exch_rate&currency_crypto=7&currency=2&public=1"; WNExchangeRate.mSource = "www.cryptodiggers.eu"
-          WNPopularity.mPollingTime = inWapptomPollingTime; WNPopularity.mSingleShot = true; WNPopularity.mStartingOffset = 0; WNPopularity.mActive = true; WNPopularity.mInput = "http://cryptocoin.cc/table.php?cryptocoin=worldcoin"; WNPopularity.mSource = "http://www.cryptocoin.cc"
+          WNExchangeRate.mPollingTime = inWapptomPollingTime * 4; WNExchangeRate.mStartingOffset = 0; WNExchangeRate.mPrecision = 8; WNExchangeRate.mActive = true; WNExchangeRate.mInput = "https://api.cryptonator.com/api/ticker/wdc-usd"; WNExchangeRate.mSource = "www.cryptonator.com"
+          WNPopularity.mPollingTime = inWapptomPollingTime * 10; WNPopularity.mSingleShot = false; WNPopularity.mStartingOffset = 0; WNPopularity.mActive = true; WNPopularity.mInput = "http://cryptocoin.cc/table.php?cryptocoin=worldcoin"; WNPopularity.mSource = "http://www.cryptocoin.cc"
         }
         if(lName == "BTC" && (mCXConnectorManager.fStatus(lName) == CXDefinitions.EServiceReady) && boBTCFirstTime) {
           boBTCFirstTime = false;
@@ -351,14 +209,40 @@ GXWindow {
           WANetworkHashPSBTC.mPollingTime = inWapptomPollingTime; WANetworkHashPSBTC.mStartingOffset = 700; WANetworkHashPSBTC.mActive = true;
           WAEncryptedBTC.mPollingTime = 0; WAEncryptedBTC.mSingleShot = true; WAEncryptedBTC.mStartingOffset = 0; WAEncryptedBTC.mActive = true;
           WNTotalBlockCountBTC.mPollingTime = inWapptomPollingTime * 4; WNTotalBlockCountBTC.mStartingOffset = 0; WNTotalBlockCountBTC.mActive = true; WNTotalBlockCountBTC.mInput = "https://blockexplorer.com/api/status?q=getBlockCount"; WNTotalBlockCountBTC.mSource = "blockexplorer.com"
-          WNExchangeRateBTC.mPollingTime = inWapptomPollingTime * 4; WNExchangeRateBTC.mStartingOffset = 0; WNExchangeRateBTC.mPrecision = 8; WNExchangeRateBTC.mActive = true; WNExchangeRateBTC.mInput = "https://www.cryptodiggers.eu/api/api.php?a=get_exch_rate&currency_crypto=6&currency=2&public=1"; WNExchangeRateBTC.mSource = "www.cryptodiggers.eu"
+          WNExchangeRateBTC.mPollingTime = inWapptomPollingTime * 4; WNExchangeRateBTC.mStartingOffset = 0; WNExchangeRateBTC.mPrecision = 8; WNExchangeRateBTC.mActive = true; WNExchangeRateBTC.mInput = "https://api.cryptonator.com/api/ticker/btc-usd"; WNExchangeRateBTC.mSource = "www.cryptonator.com"
+        }
+        if(lName == "LTC" && (mCXConnectorManager.fStatus(lName) == CXDefinitions.EServiceReady) && boLTCFirstTime) {
+          boLTCFirstTime = false;
+          WABalanceLTC.mPollingTime = inWapptomPollingTime;/* WABalanceLTC.mStartingOffset = 100;*/ WABalanceLTC.mActive = true; WABalanceLTC.mPrecision = 8;
+          WABalanceWithoutConfLTC.mPollingTime = inWapptomPollingTime; WABalanceWithoutConfLTC.mStartingOffset = 200; WABalanceWithoutConfLTC.mActive = true; WABalanceWithoutConfLTC.mPrecision = 8; //WABalanceWithoutConf.mParams = "\"*\""
+          WABestBlockHashLTC.mPollingTime = inWapptomPollingTime * 2; WABestBlockHashLTC.mStartingOffset = 300; WABestBlockHashLTC.mActive = true;
+          WABlockCountLTC.mPollingTime = inWapptomPollingTime; WABlockCountLTC.mStartingOffset = 400; WABlockCountLTC.mActive = true;
+          WAConnectionCountLTC.mPollingTime = inWapptomPollingTime * 3; WAConnectionCountLTC.mStartingOffset = 500; WAConnectionCountLTC.mActive = true;
+          WADifficultyLTC.mPollingTime = inWapptomPollingTime; WADifficultyLTC.mStartingOffset = 600; WADifficultyLTC.mActive = true;
+          WANetworkHashPSLTC.mPollingTime = inWapptomPollingTime; WANetworkHashPSLTC.mStartingOffset = 700; WANetworkHashPSLTC.mActive = true;
+          WAEncryptedLTC.mPollingTime = 0; WAEncryptedLTC.mSingleShot = true; WAEncryptedLTC.mStartingOffset = 0; WAEncryptedLTC.mActive = true;
+          WNTotalBlockCountLTC.mPollingTime = inWapptomPollingTime * 4; WNTotalBlockCountLTC.mStartingOffset = 0; WNTotalBlockCountLTC.mActive = true; WNTotalBlockCountLTC.mInput = "http://chainz.cryptoid.info/ltc/api.dws?q=getblockcount"; WNTotalBlockCountLTC.mSource = "chainz.cryptoid.info"
+          WNExchangeRateLTC.mPollingTime = inWapptomPollingTime * 4; WNExchangeRateLTC.mStartingOffset = 0; WNExchangeRateLTC.mPrecision = 8; WNExchangeRateLTC.mActive = true; WNExchangeRateLTC.mInput = "https://api.cryptonator.com/api/ticker/ltc-usd"; WNExchangeRateLTC.mSource = "www.cryptonator.com"
+        }
+        if(lName == "DOGE" && (mCXConnectorManager.fStatus(lName) == CXDefinitions.EServiceReady) && boDOGEFirstTime) {
+          boDOGEFirstTime = false;
+          WABalanceDOGE.mPollingTime = inWapptomPollingTime;/* WABalanceDOGE.mStartingOffset = 100;*/ WABalanceDOGE.mActive = true; WABalanceDOGE.mPrecision = 8;
+          WABalanceWithoutConfDOGE.mPollingTime = inWapptomPollingTime; WABalanceWithoutConfDOGE.mStartingOffset = 200; WABalanceWithoutConfDOGE.mActive = true; WABalanceWithoutConfDOGE.mPrecision = 8; //WABalanceWithoutConf.mParams = "\"*\""
+          WABestBlockHashDOGE.mPollingTime = inWapptomPollingTime * 2; WABestBlockHashDOGE.mStartingOffset = 300; WABestBlockHashDOGE.mActive = true;
+          WABlockCountDOGE.mPollingTime = inWapptomPollingTime; WABlockCountDOGE.mStartingOffset = 400; WABlockCountDOGE.mActive = true;
+          WAConnectionCountDOGE.mPollingTime = inWapptomPollingTime * 3; WAConnectionCountDOGE.mStartingOffset = 500; WAConnectionCountDOGE.mActive = true;
+          WADifficultyDOGE.mPollingTime = inWapptomPollingTime; WADifficultyDOGE.mStartingOffset = 600; WADifficultyDOGE.mActive = true;
+          WANetworkHashPSDOGE.mPollingTime = inWapptomPollingTime; WANetworkHashPSDOGE.mStartingOffset = 700; WANetworkHashPSDOGE.mActive = true;
+          WAEncryptedDOGE.mPollingTime = 0; WAEncryptedDOGE.mSingleShot = true; WAEncryptedDOGE.mStartingOffset = 0; WAEncryptedDOGE.mActive = true;
+          WNTotalBlockCountDOGE.mPollingTime = inWapptomPollingTime * 4; WNTotalBlockCountDOGE.mStartingOffset = 0; WNTotalBlockCountDOGE.mActive = true; WNTotalBlockCountDOGE.mInput = "https://dogechain.info/chain/Dogecoin/q/getblockcount"; WNTotalBlockCountDOGE.mSource = "dogechain.info"
+          WNExchangeRateDOGE.mPollingTime = inWapptomPollingTime * 100; WNExchangeRateDOGE.mStartingOffset = 0; WNExchangeRateDOGE.mPrecision = 8; WNExchangeRateDOGE.mActive = true; WNExchangeRateDOGE.mInput = "https://api.cryptonator.com/api/ticker/doge-usd"; WNExchangeRateDOGE.mSource = "www.cryptonator.com"
         }
       }
     }
 
     Component.onCompleted: {
-      wiRoot.height = ACMeasures.fuToDots(wiRoot.reHeightCm) //* mCXDefinitions.mZoomFactor
-      wiRoot.width = ACMeasures.fuToDots(wiRoot.reWidthCm) //* mCXDefinitions.mZoomFactor
+      wiRoot.height = ACMeasures.fuToDots(wiRoot.reHeightCm)
+      wiRoot.width = ACMeasures.fuToDots(wiRoot.reWidthCm)
       var vaX = 0
       if(mCXDefinitions.mX < 0) vaX = (Screen.width - wiRoot.width) / 2
       else vaX = mCXDefinitions.mX
@@ -367,7 +251,6 @@ GXWindow {
       if(mCXDefinitions.mY < 0) vaY = (Screen.height - wiRoot.height) / 2
       else vaY = mCXDefinitions.mY
       wiRoot.y = vaY
-      loTitleBar.height = ACMeasures.fuToDots(reTitleBarHeight) * mCXDefinitions.mZoomFactor
       rcTitleBarBackground.height = ACMeasures.fuToDots(reTitleBarHeight) * mCXDefinitions.mZoomFactor
       reOriginalZoom = mCXDefinitions.mZoomFactor      
     }
@@ -413,7 +296,7 @@ GXWindow {
           easing.type: Easing.Linear
         }
       }
-    }
+
  /*   MouseArea {
       anchors.fill: parent
       enabled: (!boReady) ? 1 : 0
@@ -421,7 +304,7 @@ GXWindow {
   }
   Rectangle {
     id: rcBackground
-    anchors.fill: omMask
+    anchors.fill:  parent // omMask
     visible: false
     AXImage {
       fillMode: Image.Stretch
@@ -441,111 +324,6 @@ GXWindow {
       anchors.right: parent.right
     }
 
-  }
-  Rectangle {
-    id: rcTopBorder
-    anchors.top: parent.top
-    anchors.right: parent.right
-    anchors.rightMargin: ACMeasures.fuToDots(reCornerRadiusCm)
-    anchors.left: parent.left
-    anchors.leftMargin: ACMeasures.fuToDots(reCornerRadiusCm)
-    color: coTopBorderColor
-    height: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
-    MouseArea {
-      anchors.fill: parent
-      cursorShape: Qt.SizeVerCursor
-      onPositionChanged: { parent.fuResizeTop() }
-    }
-    function fuResizeTop() {
-      var newY = fMouseGlobalPosition().y
-      var newH = wiRoot.y - newY  + wiRoot.height
-        //if(newY > wiRoot.y) loWorkspace.item.fuMoveBottomBorder()
-      if(newH >= ACMeasures.fuToDots(reMinimumHeightCm)) {
-        fSetGeometry(wiRoot.x, newY, wiRoot.width, newH)
-        reHeightCm = ACMeasures.fuToCentimeters(newH)
-        mCXDefinitions.mHeight = ACMeasures.fuToCentimeters(newH)
-        mCXDefinitions.mY = newY
-        boIsMaximized = false
-      }
-    }
-
-  }
-  Rectangle {
-    id: rcBottomBorder
-    anchors.bottom: parent.bottom
-    anchors.right: parent.right
-    anchors.rightMargin: ACMeasures.fuToDots(reCornerRadiusCm)
-    anchors.left: parent.left
-    anchors.leftMargin: ACMeasures.fuToDots(reCornerRadiusCm)
-    color: coBottomBorderColor
-    height: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
-    MouseArea {
-      anchors.fill: parent
-      cursorShape: Qt.SizeVerCursor
-      onPositionChanged: { parent.fuResizeBottom() }
-    }
-    function fuResizeBottom() {
-      var newY = fMouseGlobalPosition().y
-      var newH = newY - wiRoot.y
-      if(newH >= ACMeasures.fuToDots(reMinimumHeightCm)) {
-        wiRoot.height = newH
-        reHeightCm = ACMeasures.fuToCentimeters(newH)
-        mCXDefinitions.mHeight = ACMeasures.fuToCentimeters(newH)
-        boIsMaximized = false
-      }
-    }
-  }
-  Rectangle {
-    id: rcRightBorder
-    anchors.top: parent.top
-    anchors.topMargin: ACMeasures.fuToDots(reCornerRadiusCm)
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: ACMeasures.fuToDots(reStatusBarHeight) * mCXDefinitions.mZoomFactor
-    anchors.right: parent.right
-    color: coRightBorderColor
-    width: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
-    MouseArea {
-      anchors.fill: parent
-      cursorShape: Qt.SizeHorCursor
-      onPositionChanged: { parent.fuResizeRight() }
-    }
-    function fuResizeRight() {
-      var newX = fMouseGlobalPosition().x
-      var newW = newX - wiRoot.x
-      if(newW >= ACMeasures.fuToDots(reMinimumWidthCm)) {
-        wiRoot.width = newW
-        reWidthCm = ACMeasures.fuToCentimeters(newW)
-        mCXDefinitions.mWidth = ACMeasures.fuToCentimeters(newW)
-        boIsMaximized = false
-      }
-    }
-  }
-  Rectangle {
-    id: rcLeftBorder
-    anchors.top: parent.top
-    anchors.topMargin: ACMeasures.fuToDots(reCornerRadiusCm)
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: ACMeasures.fuToDots(reStatusBarHeight) * mCXDefinitions.mZoomFactor
-    anchors.left: parent.left
-    color: coLeftBorderColor
-    width: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
-    MouseArea {
-      anchors.fill: parent
-      cursorShape: Qt.SizeHorCursor
-      onPositionChanged: { parent.fuResizeLeft() }
-    }
-    function fuResizeLeft() {
-      var newX = fMouseGlobalPosition().x
-      var newW = wiRoot.x - newX  + wiRoot.width
-      if(newW >= ACMeasures.fuToDots(reMinimumWidthCm)) {
-        wiRoot.x = newX
-        wiRoot.width = newW
-        reWidthCm = ACMeasures.fuToCentimeters(newW)
-        mCXDefinitions.mWidth = ACMeasures.fuToCentimeters(newW)
-        mCXDefinitions.mX = newX
-        boIsMaximized = false
-      }
-    }
   }
   FXToolTip {
     id: ttDaemon
@@ -618,6 +396,10 @@ GXWindow {
       var vaValue = WAEncrypted.mValue
       if(loInfoBar.item.srCurrentCoin === "BTC")
         vaValue = WAEncryptedBTC.mValue
+      if(loInfoBar.item.srCurrentCoin === "LTC")
+        vaValue = WAEncryptedLTC.mValue
+      if(loInfoBar.item.srCurrentCoin === "DOGE")
+        vaValue = WAEncryptedDOGE.mValue
       if(vaValue === "1") return vaText + qsTr("Your wallet is encrypted and safe to use.")
       return vaText + qsTr("Your wallet is currently not encrypted.\nPlease encrypt your wallet in order to improve your security.")
     }
@@ -637,6 +419,14 @@ GXWindow {
       if(loInfoBar.item.srCurrentCoin === "BTC") {
         vaBlockCount = WABlockCountBTC.mDisplayValue
         vaTotalBlockCount = WNTotalBlockCountBTC.mDisplayValue
+      }
+      if(loInfoBar.item.srCurrentCoin === "LTC") {
+        vaBlockCount = WABlockCountLTC.mDisplayValue
+        vaTotalBlockCount = WNTotalBlockCountLTC.mDisplayValue
+      }
+      if(loInfoBar.item.srCurrentCoin === "DOGE") {
+        vaBlockCount = WABlockCountDOGE.mDisplayValue
+        vaTotalBlockCount = WNTotalBlockCountDOGE.mDisplayValue
       }
 
       if(Number(vaTotalBlockCount) > 0) {
@@ -668,6 +458,15 @@ GXWindow {
         vaConnectionCount = WAConnectionCountBTC.mValue
         vaConnectionCountDisplay = WAConnectionCountBTC.mDisplayValue
       }
+      if(loInfoBar.item.srCurrentCoin === "LTC") {
+        vaConnectionCount = WAConnectionCountLTC.mValue
+        vaConnectionCountDisplay = WAConnectionCountLTC.mDisplayValue
+      }
+      if(loInfoBar.item.srCurrentCoin === "DOGE") {
+        vaConnectionCount = WAConnectionCountDOGE.mValue
+        vaConnectionCountDisplay = WAConnectionCountDOGE.mDisplayValue
+      }
+
       var vaText = qsTr("Node Connections\n\n")
       if(Number(vaConnectionCount) <= 0) return vaText + qsTr("No peers available.\nSearching for more.")
       if((Number(vaConnectionCount) > 0) && (Number(vaConnectionCount) < 8)) return  vaText + qsTr("You are connected to ") + vaConnectionCountDisplay + qsTr("/8 peers.\nSearching for more.")
@@ -748,7 +547,6 @@ GXWindow {
       reHeightCm = mCXDefinitions.mHeight
       reWidthCm = mCXDefinitions.mWidth
 
-      loTitleBar.height = ACMeasures.fuToDots(reTitleBarHeight) * mCXDefinitions.mZoomFactor
       loStatusBar.height = ACMeasures.fuToDots(reStatusBarHeight) * mCXDefinitions.mZoomFactor
       loModulePanel.item.fuScale()
       loInfoBar.item.fuScale()
@@ -763,8 +561,6 @@ GXWindow {
     var vaCurrentHeight = wiRoot.height
     var vaCurrentX = wiRoot.x
     var vaCurrentY = wiRoot.y
-//    wiRoot.height =  ACMeasures.fuToDots(wiRoot.reHeightCm) * reZoomValue
-//    wiRoot.width =  ACMeasures.fuToDots(wiRoot.reWidthCm) * reZoomValue
 
     if((wiRoot.x < 0) || (wiRoot.y < 0) /*|| (wiRoot.height < ACMeasures.fuToDots(reMinimumHeightCm))  || (wiRoot.width < ACMeasures.fuToDots(reMinimumWidthCm))*/) {
         wiRoot.height = vaCurrentHeight
@@ -783,7 +579,7 @@ GXWindow {
       reHeightCm = mCXDefinitions.mHeight
       reWidthCm = mCXDefinitions.mWidth
 
-      loTitleBar.height = ACMeasures.fuToDots(reTitleBarHeight) * mCXDefinitions.mZoomFactor
+ /**     loTitleBar.height = ACMeasures.fuToDots(reTitleBarHeight) * mCXDefinitions.mZoomFactor  **/
       loStatusBar.height = ACMeasures.fuToDots(reStatusBarHeight) * mCXDefinitions.mZoomFactor
       loModulePanel.item.fuScale()
       loInfoBar.item.fuScale()

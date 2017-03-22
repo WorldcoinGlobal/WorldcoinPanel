@@ -19,6 +19,8 @@ AXComponent {
 
   ListModel { id: lmConsole }
   ListModel { id: lmConsoleBTC }
+  ListModel { id: lmConsoleLTC }
+  ListModel { id: lmConsoleDOGE }
   AXFrame {
     id: rcTitle
     color: SStyleSheet.coComponentHorizontalHeaderColor
@@ -32,6 +34,8 @@ AXComponent {
       id: imCrypto
       source: {
         if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+        if(mCurrentCoin === "LTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_LTC.png"), false)
+        if(mCurrentCoin === "DOGE") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_DOGE.png"), false)
         return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
       }
       fillMode: Image.Stretch
@@ -171,11 +175,15 @@ AXComponent {
       if(lMessageType == CXDefinitions.ESuccessMessage) vaBold = false;
       if(lConnector === "WDC") lmConsole.append({"vaMetadata" : qsTr("Request[") + lRequestID + "]\n   --  " + mCXDefinitions.fCurrentDate() + "  --", "vaData" : "   --  " + lInput + "  --\n" + lMessage + "\n", "vaBold" : vaBold})
       if(lConnector === "BTC") lmConsoleBTC.append({"vaMetadata" : qsTr("Request[") + lRequestID + "]\n   --  " + mCXDefinitions.fCurrentDate() + "  --", "vaData" : "   --  " + lInput + "  --\n" + lMessage + "\n", "vaBold" : vaBold})
+      if(lConnector === "LTC") lmConsoleLTC.append({"vaMetadata" : qsTr("Request[") + lRequestID + "]\n   --  " + mCXDefinitions.fCurrentDate() + "  --", "vaData" : "   --  " + lInput + "  --\n" + lMessage + "\n", "vaBold" : vaBold})
+      if(lConnector === "DOGE") lmConsoleDOGE.append({"vaMetadata" : qsTr("Request[") + lRequestID + "]\n   --  " + mCXDefinitions.fCurrentDate() + "  --", "vaData" : "   --  " + lInput + "  --\n" + lMessage + "\n", "vaBold" : vaBold})
     }
   }
   onSCurrentCoinChanged: {
     if(srCurrentCoin === "WDC") taConsole.model = lmConsole
     if(srCurrentCoin === "BTC") taConsole.model = lmConsoleBTC
+    if(srCurrentCoin === "LTC") taConsole.model = lmConsoleLTC
+    if(srCurrentCoin === "DOGE") taConsole.model = lmConsoleDOGE
   }
 
   function fuActivate() { }

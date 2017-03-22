@@ -16,7 +16,15 @@ void WapptomExchangeRate::tSetDisplayValue(const QString& lValue) {
 void WapptomExchangeRate::fSetup() {
   BXWapptom::fSetup();
   tSetSource("Network");
-  tSetOutput("exch_rate");
+  tSetOutput("price");
   tSetPollingTime(cDefaultSampleTime);
 //  tSetConnector(cDefaultDaemon);
+}
+
+QString WapptomExchangeRate::fPreProcess(const QString& lOriginalAnswer) {
+   QString lResp = lOriginalAnswer;
+   lResp.remove("\"ticker\":{");
+   lResp.remove("}");
+   lResp += "}";
+   return lResp;
 }

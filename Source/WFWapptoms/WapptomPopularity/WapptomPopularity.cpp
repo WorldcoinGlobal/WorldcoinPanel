@@ -36,7 +36,7 @@ void WapptomPopularity::tSetValue(const QString& lValue) {
     lPopularityStripped = lPopularityString.split(",");
     for(int i = 0; i < lPopularityStripped.size(); i++) {
       lPopularityStripped[i] = lPopularityStripped.at(i).section(":",1,1).simplified();
-      switch(i) {
+      switch(i) { 
         case 0: lPopularityDisplay += tr("Period: 12 Months, Position: %1, Average hits: %2").arg(lPopularityStripped[i].section(" ",0,0)).arg(lPopularityStripped[i].section(" ",1,1)); break;
         case 1: lPopularityDisplay += tr("\nPeriod: 6 Months, Position: %1, Average hits: %2").arg(lPopularityStripped[i].section(" ",0,0)).arg(lPopularityStripped[i].section(" ",1,1)); break;
         case 2: lPopularityDisplay += tr("\nPeriod: 3 Months, Position: %1, Average hits: %2").arg(lPopularityStripped[i].section(" ",0,0)).arg(lPopularityStripped[i].section(" ",1,1)); break;
@@ -44,9 +44,10 @@ void WapptomPopularity::tSetValue(const QString& lValue) {
         case 4: lPopularityDisplay += tr("\nPeriod: 1 Week, Position: %1, Average hits: %2").arg(lPopularityStripped[i].section(" ",0,0)).arg(lPopularityStripped[i].section(" ",1,1)); break;
       }
     }
+qDebug(QString("1 | %1 | %2").arg(lPopularityStripped.join(" - ")).arg(lPopularityDisplay).toLatin1());
     mValue = lPopularityStripped.last().section(" ",0,0);
-    emit sValueChanged();
     tSetDisplayValue(lPopularityDisplay);
+    emit sValueChanged();
   }
 }
 

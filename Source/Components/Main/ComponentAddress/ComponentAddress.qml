@@ -49,6 +49,8 @@ AXComponent {
       id: imCrypto
       source: {
         if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false);
+        if(mCurrentCoin === "LTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_LTC.png"), false);
+        if(mCurrentCoin === "DOGE") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_DOGE.png"), false);
         return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
       }
       fillMode: Image.Stretch
@@ -147,6 +149,8 @@ AXComponent {
   }
   ListModel { id: lmAccountModel }
   ListModel { id: lmAccountModelBTC }
+  ListModel { id: lmAccountModelLTC }
+  ListModel { id: lmAccountModelDOGE }
   AXFrame {
     id: frAddressCreated
     color: SStyleSheet.coComponentHorizontalHeaderColor
@@ -188,6 +192,8 @@ AXComponent {
   }
   onSCurrentCoinChanged: {
     if(mCurrentCoin === "BTC") cbAccount.model = lmAccountModelBTC
+    if(mCurrentCoin === "LTC") cbAccount.model = lmAccountModelLTC
+    if(mCurrentCoin === "DOGE") cbAccount.model = lmAccountModelDOGE
     if(mCurrentCoin === "WDC") cbAccount.model = lmAccountModel
     fuActivate()
   }
@@ -203,6 +209,8 @@ AXComponent {
            if(vaAccount.length > 0) {
              if(lConnector === "WDC") lmAccountModel.append({"miAccount": vaAccount[0]})
              if(lConnector === "BTC") lmAccountModel.append({"miAccount": vaAccount[0]})
+             if(lConnector === "LTC") lmAccountModel.append({"miAccount": vaAccount[0]})
+             if(lConnector === "DOGE") lmAccountModel.append({"miAccount": vaAccount[0]})
            }
         }
       }

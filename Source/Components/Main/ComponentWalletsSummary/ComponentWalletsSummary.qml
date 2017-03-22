@@ -45,6 +45,8 @@ AXComponent {
       id: imCrypto
       source: {
        if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+       if(mCurrentCoin === "LTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_LTC.png"), false)
+       if(mCurrentCoin === "DOGE") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_DOGE.png"), false)
        return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
       }
       fillMode: Image.Stretch
@@ -256,6 +258,15 @@ AXComponent {
           vaTotSource = WNTotalBlockCountBTC.mSource
           vaExchangeRate = WNExchangeRateBTC.mSource
         }
+        if(mCurrentCoin === "LTC") {
+          vaTotSource = WNTotalBlockCountLTC.mSource
+          vaExchangeRate = WNExchangeRateLTC.mSource
+        }
+        if(mCurrentCoin === "DOGE") {
+          vaTotSource = WNTotalBlockCountDOGE.mSource
+          vaExchangeRate = WNExchangeRateDOGE.mSource
+        }
+
         return ("*   Source: " + vaTotSource + "\n**  Source: " + vaExchangeRate)
       }
       color: SStyleSheet.coComponentHorizontalHeaderTextColor
@@ -288,6 +299,30 @@ AXComponent {
       srExchangeRate = Qt.binding(function() { return WNExchangeRateBTC.mDisplayValue })
       srBestBlockHash = Qt.binding(function() { return WABestBlockHashBTC.mDisplayValue })
       srBalanceWithoutConf = Qt.binding(function() { return WABalanceWithoutConfBTC.mDisplayValue })
+    }
+    if(mCurrentCoin === "LTC") {
+      srBalance = Qt.binding(function() { return WABalanceLTC.mDisplayValue })
+      srEncrypted = Qt.binding(function() { return WAEncryptedLTC.mDisplayValue })
+      srTotalBlockCount = Qt.binding(function() { return WNTotalBlockCountLTC.mDisplayValue })
+      srBlockCount = Qt.binding(function() { return WABlockCountLTC.mDisplayValue })
+      srConnections = Qt.binding(function() { return WAConnectionCountLTC.mDisplayValue })
+      srDifficulty = Qt.binding(function() { return WADifficultyLTC.mDisplayValue })
+      srNetworkHashPS = Qt.binding(function() { return WANetworkHashPSLTC.mDisplayValue })
+      srExchangeRate = Qt.binding(function() { return WNExchangeRateLTC.mDisplayValue })
+      srBestBlockHash = Qt.binding(function() { return WABestBlockHashLTC.mDisplayValue })
+      srBalanceWithoutConf = Qt.binding(function() { return WABalanceWithoutConfLTC.mDisplayValue })
+    }
+    if(mCurrentCoin === "DOGE") {
+      srBalance = Qt.binding(function() { return WABalanceDOGE.mDisplayValue })
+      srEncrypted = Qt.binding(function() { return WAEncryptedDOGE.mDisplayValue })
+      srTotalBlockCount = Qt.binding(function() { return WNTotalBlockCountDOGE.mDisplayValue })
+      srBlockCount = Qt.binding(function() { return WABlockCountDOGE.mDisplayValue })
+      srConnections = Qt.binding(function() { return WAConnectionCountDOGE.mDisplayValue })
+      srDifficulty = Qt.binding(function() { return WADifficultyDOGE.mDisplayValue })
+      srNetworkHashPS = Qt.binding(function() { return WANetworkHashPSDOGE.mDisplayValue })
+      srExchangeRate = Qt.binding(function() { return WNExchangeRateDOGE.mDisplayValue })
+      srBestBlockHash = Qt.binding(function() { return WABestBlockHashDOGE.mDisplayValue })
+      srBalanceWithoutConf = Qt.binding(function() { return WABalanceWithoutConfDOGE.mDisplayValue })
     }
   }
 

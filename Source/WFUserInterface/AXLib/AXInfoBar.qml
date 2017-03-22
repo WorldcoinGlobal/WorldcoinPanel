@@ -20,6 +20,14 @@ Rectangle {
   property url urIconDaemonReady_BTC
   property url urIconDaemonProcessing_BTC
   property url urIconDaemonError_BTC
+  property url urIconDaemonOff_LTC
+  property url urIconDaemonReady_LTC
+  property url urIconDaemonProcessing_LTC
+  property url urIconDaemonError_LTC
+  property url urIconDaemonOff_DOGE
+  property url urIconDaemonReady_DOGE
+  property url urIconDaemonProcessing_DOGE
+  property url urIconDaemonError_DOGE
   property url urIconDaemonOff
   property url urIconDaemonReady
   property url urIconDaemonProcessing
@@ -90,6 +98,22 @@ Rectangle {
     font.pixelSize: parent.height * 0.3
   }
   AXToolButton {
+    id: tbDOGEDaemon
+    visible: false
+    width: 0
+    property var vaStatus
+    property string vaName: "DOGE"
+    anchors.right: tbLTCDaemon.left
+  }
+  AXToolButton {
+    id: tbLTCDaemon
+    visible: false
+    width: 0
+    property var vaStatus
+    property string vaName: "LTC"
+    anchors.right: tbBTCDaemon.left
+  }
+  AXToolButton {
     id: tbBTCDaemon
     visible: false
     width: 0
@@ -114,7 +138,7 @@ Rectangle {
     anchors.rightMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
     anchors.bottom: parent.bottom
     anchors.bottomMargin: ACMeasures.fuToDots(reBorderWidth) * mCXDefinitions.mZoomFactor
-    model: [tbDaemon.vaName, tbBTCDaemon.vaName]
+    model: [tbDaemon.vaName, tbBTCDaemon.vaName, tbLTCDaemon.vaName, tbDOGEDaemon.vaName]
     delegate:
       ItemDelegate {
         width: cbCoins.width
@@ -223,7 +247,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        width: { console.log(cbCoins.displayText + " - " + mCXDefinitions.fStatusText(cbCoins.fuStatus(cbCoins.displayText))); return (cbCoins.width - cbEnabled.width - tbCurrentDaemon.width - 10 )}
+        width: {/* console.log(cbCoins.displayText + " - " + mCXDefinitions.fStatusText(cbCoins.fuStatus(cbCoins.displayText)));*/ return (cbCoins.width - cbEnabled.width - tbCurrentDaemon.width - 10 )}
      //   leftPadding: 0
         text: cbCoins.displayText + " - " + mCXDefinitions.fStatusText(cbCoins.fuStatus(cbCoins.displayText))
         font: cbCoins.font
@@ -250,6 +274,19 @@ Rectangle {
         tbCurrentDaemon.vaStatus = tbBTCDaemon.vaStatus
         tbLock.urIcon = WAEncryptedBTC.mValue === "1" ? urIconLockOn : urIconLockOff
       }
+      if(cbCoins.displayText === "LTC") {
+        tbCurrentDaemon.urIcon = tbLTCDaemon.urIcon
+        tbCurrentDaemon.vaStatus = tbLTCDaemon.vaStatus
+        tbLock.urIcon = WAEncryptedLTC.mValue === "1" ? urIconLockOn : urIconLockOff
+    /// console.log()
+      }
+      if(cbCoins.displayText === "DOGE") {
+        tbCurrentDaemon.urIcon = tbDOGEDaemon.urIcon
+        tbCurrentDaemon.vaStatus = tbDOGEDaemon.vaStatus
+        tbLock.urIcon = WAEncryptedDOGE.mValue === "1" ? urIconLockOn : urIconLockOff
+      }
+
+
       var vaStatus = mCXConnectorManager.fStatus(cbCoins.displayText)
       if((vaStatus === mCXDefinitions.EServiceError) || (vaStatus === CXDefinitions.EServiceStopped)) cbEnabled.fuChangeState(false);
       else cbEnabled.fuChangeState(true);
@@ -259,6 +296,8 @@ Rectangle {
       var vaStatus;
       if(srCoin === "WDC") vaStatus = tbDaemon.vaStatus
       if(srCoin === "BTC") vaStatus = tbBTCDaemon.vaStatus
+      if(srCoin === "LTC") vaStatus = tbLTCDaemon.vaStatus
+      if(srCoin === "DOGE") vaStatus = tbDOGEDaemon.vaStatus
       return vaStatus
     }
   }
@@ -440,7 +479,7 @@ Rectangle {
     id: rcSeparator3
     visible: false
     anchors.top: parent.top
-    anchors.right: tbBTCDaemon.left
+    anchors.right: tbDOGEDaemon.left
     anchors.rightMargin: ACMeasures.fuToDots(reSpacing) * mCXDefinitions.mZoomFactor
     anchors.bottom: rcRoot.bottom
     width: ACMeasures.fuToDots(reSeparatorWidth) * mCXDefinitions.mZoomFactor
@@ -496,6 +535,20 @@ Rectangle {
       tbLock.urIcon = WAEncryptedBTC.mValue === "1" ? urIconLockOn : urIconLockOff
     }
   }
+  Connections {
+    target: WAEncryptedLTC
+    onMValueChanged: {
+      if(cbCoins.displayText != "LTC") return;
+      tbLock.urIcon = WAEncryptedLTC.mValue === "1" ? urIconLockOn : urIconLockOff
+    }
+  }
+  Connections {
+    target: WAEncryptedDOGE
+    onMValueChanged: {
+      if(cbCoins.displayText != "DOGE") return;
+      tbLock.urIcon = WAEncryptedDOGE.mValue === "1" ? urIconLockOn : urIconLockOff
+    }
+  }
 
   Connections {
     target: WAConnectionCount
@@ -513,6 +566,24 @@ Rectangle {
       if(Number(WAConnectionCountBTC.mValue) <= 0)  tbConnections.urIcon = urIconConnectionsOff
       if((Number(WAConnectionCountBTC.mValue) > 0) && (Number(WAConnectionCountBTC.mValue) < 8))  tbConnections.urIcon = urIconConnectionsProcessing
       if(Number(WAConnectionCountBTC.mValue) >= 8)  tbConnections.urIcon = urIconConnectionsMax
+    }
+  }
+  Connections {
+    target: WAConnectionCountLTC
+    onMValueChanged: {
+      if(cbCoins.displayText != "LTC") return;
+      if(Number(WAConnectionCountLTC.mValue) <= 0)  tbConnections.urIcon = urIconConnectionsOff
+      if((Number(WAConnectionCountLTC.mValue) > 0) && (Number(WAConnectionCountLTC.mValue) < 8))  tbConnections.urIcon = urIconConnectionsProcessing
+      if(Number(WAConnectionCountLTC.mValue) >= 8)  tbConnections.urIcon = urIconConnectionsMax
+    }
+  }
+  Connections {
+    target: WAConnectionCountDOGE
+    onMValueChanged: {
+      if(cbCoins.displayText != "DOGE") return;
+      if(Number(WAConnectionCountDOGE.mValue) <= 0)  tbConnections.urIcon = urIconConnectionsOff
+      if((Number(WAConnectionCountDOGE.mValue) > 0) && (Number(WAConnectionCountDOGE.mValue) < 8))  tbConnections.urIcon = urIconConnectionsProcessing
+      if(Number(WAConnectionCountDOGE.mValue) >= 8)  tbConnections.urIcon = urIconConnectionsMax
     }
   }
   Connections {
@@ -534,6 +605,24 @@ Rectangle {
     }
   }
   Connections {
+    target: WABlockCountLTC
+    onMValueChanged: {
+      if(cbCoins.displayText != "LTC") return;
+      if(Number(WABlockCountLTC.mDisplayValue) === 0) { tbSync.urIcon = urIconSyncOff; return }
+      if(Number(WABlockCountLTC.mDisplayValue) < Number(WNTotalBlockCountLTC.mDisplayValue)) { tbSync.urIcon = urIconSyncOn; return }
+      tbSync.urIcon = urIconSyncFinished; return
+    }
+  }
+  Connections {
+    target: WABlockCountDOGE
+    onMValueChanged: {
+      if(cbCoins.displayText != "DOGE") return;
+      if(Number(WABlockCountDOGE.mDisplayValue) === 0) { tbSync.urIcon = urIconSyncOff; return }
+      if(Number(WABlockCountDOGE.mDisplayValue) < Number(WNTotalBlockCountDOGE.mDisplayValue)) { tbSync.urIcon = urIconSyncOn; return }
+      tbSync.urIcon = urIconSyncFinished; return
+    }
+  }
+  Connections {
     target: WNPopularity
     onMValueChanged: {
       if(Number(WNPopularity.mValue) == 0)  tbPopularity.urIcon = urIconPopularityOff
@@ -545,9 +634,12 @@ Rectangle {
     tbLock.urIcon = urIconLockOff
     tbSync.urIcon = urIconSyncOff
     boServiceClosing = false
-    tbCurrentDaemon.urIcon = urIconDaemonOff_BTC
+ //   tbCurrentDaemon.urIcon = urIconDaemonOff_BTC
+    tbCurrentDaemon.urIcon = urIconDaemonOff
     fuCheckStatus("WDC")
     fuCheckStatus("BTC")
+    fuCheckStatus("LTC")
+    fuCheckStatus("DOGE")
   }
   function fuCheckStatus(lName) {
     if(lName === "WDC") {
@@ -600,6 +692,60 @@ Rectangle {
       if(mCXConnectorManager.fStatus("BTC") === CXDefinitions.EServiceError) {
         tbBTCDaemon.urIcon = urIconDaemonError_BTC
         tbBTCDaemon.vaStatus = CXDefinitions.EServiceError
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+    }
+    if(lName === "LTC") {
+      if(mCXConnectorManager.fStatus("LTC") === CXDefinitions.EServiceStopped) {
+        tbLTCDaemon.urIcon = urIconDaemonOff_LTC
+        tbLTCDaemon.vaStatus = CXDefinitions.EServiceStopped
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("LTC") === CXDefinitions.EServiceReady) {
+        tbLTCDaemon.urIcon = urIconDaemonReady_LTC
+        tbLTCDaemon.vaStatus = CXDefinitions.EServiceReady
+        if(boServiceClosing) mCXConnectorManager.fSetStatus(lName, CXDefinitions.EServiceClosing)
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("LTC") === CXDefinitions.EServiceProcessing) {
+        tbLTCDaemon.urIcon = urIconDaemonProcessing_LTC
+        tbLTCDaemon.vaStatus = CXDefinitions.EServiceProcessing
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("LTC") === CXDefinitions.EServiceError) {
+        tbLTCDaemon.urIcon = urIconDaemonError_LTC
+        tbLTCDaemon.vaStatus = CXDefinitions.EServiceError
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+    }
+    if(lName === "DOGE") {
+      if(mCXConnectorManager.fStatus("DOGE") === CXDefinitions.EServiceStopped) {
+        tbDOGEDaemon.urIcon = urIconDaemonOff_DOGE
+        tbDOGEDaemon.vaStatus = CXDefinitions.EServiceStopped
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("DOGE") === CXDefinitions.EServiceReady) {
+        tbDOGEDaemon.urIcon = urIconDaemonReady_DOGE
+        tbDOGEDaemon.vaStatus = CXDefinitions.EServiceReady
+        if(boServiceClosing) mCXConnectorManager.fSetStatus(lName, CXDefinitions.EServiceClosing)
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("DOGE") === CXDefinitions.EServiceProcessing) {
+        tbDOGEDaemon.urIcon = urIconDaemonProcessing_DOGE
+        tbDOGEDaemon.vaStatus = CXDefinitions.EServiceProcessing
+        cbCoins.onActivated(cbCoins.currentIndex)
+        return
+      }
+      if(mCXConnectorManager.fStatus("DOGE") === CXDefinitions.EServiceError) {
+        tbDOGEDaemon.urIcon = urIconDaemonError_DOGE
+        tbDOGEDaemon.vaStatus = CXDefinitions.EServiceError
         cbCoins.onActivated(cbCoins.currentIndex)
         return
       }

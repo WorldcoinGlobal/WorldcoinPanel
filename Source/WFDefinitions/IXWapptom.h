@@ -26,6 +26,7 @@ class IXWapptom {
     virtual QString fValue() const = 0;
     virtual QString fParams() const = 0;
     virtual QString fDisplayValue() const = 0;
+    virtual QString fPreProcess(const QString& lOriginalAnswer) = 0;
 
   public slots:
     virtual void tSetActive(bool lActive) = 0;

@@ -229,7 +229,7 @@ AXComponent {
         anchors.right: parent.right
         anchors.rightMargin: rcView.width - scView.viewport.width
         clip: true
-        height: headerItem.height + count * ACMeasures.fuToDots(SStyleSheet.reComponentRowHeight) * 2
+        height:  headerItem.height + count * ACMeasures.fuToDots(SStyleSheet.reComponentRowHeight) * 2
         header: coCategory
         model: lmPreviousVersions
         delegate: coVersionElement

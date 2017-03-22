@@ -91,9 +91,9 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.leftMargin: {
-          if(EComponentTypeRole === CXDefinitions.EArea) return rcLeftBorder.width
+          if(EComponentTypeRole === CXDefinitions.EArea) return 0 /**rcLeftBorder.width**/
           if(EComponentTypeRole === CXDefinitions.EModule) return parent.width * 1/4
-          return rcLeftBorder.width
+          return 0 /**rcLeftBorder.width **/
         }
         anchors.rightMargin: {
           if(EComponentTypeRole === CXDefinitions.EArea) return 0

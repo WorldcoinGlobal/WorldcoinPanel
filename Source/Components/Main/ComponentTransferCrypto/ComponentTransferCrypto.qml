@@ -28,6 +28,8 @@ AXComponent {
       id: imCrypto
       source: {
         if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false);
+        if(mCurrentCoin === "LTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_LTC.png"), false);
+        if(mCurrentCoin === "DOGE") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_DOGE.png"), false);
         return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
       }
       fillMode: Image.Stretch
@@ -265,6 +267,8 @@ AXComponent {
   onMCurrentCoinChanged: {
     if(mCurrentCoin === "WDC") tfAddress.reRegExp = /^W{1}[1-9A-HJ-NP-Za-km-z]{33}$/
     if(mCurrentCoin === "BTC") tfAddress.reRegExp = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/
+    if(mCurrentCoin === "LTC") tfAddress.reRegExp = /^L[a-km-zA-HJ-NP-Z1-9]{26,33}$/
+    if(mCurrentCoin === "DOGE") tfAddress.reRegExp = /^D{1}[5-9A-HJ-NP-U]{1}[1-9A-HJ-NP-Za-km-z]{32}$/
   }
 
   Connections {

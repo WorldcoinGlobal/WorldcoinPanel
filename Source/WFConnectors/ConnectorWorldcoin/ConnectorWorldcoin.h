@@ -26,7 +26,7 @@ class ConnectorWorldcoin : public BXCryptoConnector {
     QString fDefaultClientName() const { return "WorldcoinDaemon"; }
     QString fDefaultDataDirectory() const {
       if(CXDefinitions::fCurrentOS() == CXDefinitions::EWindowsOS) return "C:/Blockchain/WorldcoinChain";
-      else return "~/Blockchain/WorldcoinChain";
+      else return QString("%1/Blockchain/WorldcoinChain").arg(QDir::homePath());
     }
     QString fDefaultEnabled() const { return "1"; }
     QString fDefaultLockFile() const { return ".lock"; }

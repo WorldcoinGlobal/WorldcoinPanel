@@ -89,6 +89,8 @@ AXComponent {
       id: imCrypto
       source: {
         if(mCurrentCoin === "BTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_BTC.png"), false)
+        if(mCurrentCoin === "LTC") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_LTC.png"), false)
+        if(mCurrentCoin === "DOGE") return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady_DOGE.png"), false)
         return mCXDefinitions.fCanonicalPath(fImageFile("InfoBar_IMDaemonReady.png"), false)
       }
       fillMode: Image.Stretch
@@ -189,6 +191,8 @@ AXComponent {
   }
   ListModel { id: lmTransactions }
   ListModel { id: lmTransactionsBTC }
+  ListModel { id: lmTransactionsLTC }
+  ListModel { id: lmTransactionsDOGE }
   TableView {
     id: tvTransactions
     alternatingRowColors: true
@@ -244,6 +248,8 @@ AXComponent {
   onMCurrentCoinChanged: {
     if(mCurrentCoin === "WDC") tvTransactions.model = lmTransactions
     if(mCurrentCoin === "BTC") tvTransactions.model = lmTransactionsBTC
+    if(mCurrentCoin === "LTC") tvTransactions.model = lmTransactionsLTC
+    if(mCurrentCoin === "DOGE") tvTransactions.model = lmTransactionsDOGE
   }
 
   Connections {
@@ -251,6 +257,8 @@ AXComponent {
     onSMessageArrivedJson: {
       if(lConnector === "WDC") lmTransactions.clear()
       if(lConnector === "BTC") lmTransactionsBTC.clear()
+      if(lConnector === "LTC") lmTransactionsLTC.clear()
+      if(lConnector === "DOGE") lmTransactionsDOGE.clear()
       for(var i = 0; i < lList.length; i++) {
         var vaTransaction = lList[i]
         var vaType = vaTransaction.category == "send" ? qsTr("Sent") : qsTr("Received")
@@ -261,6 +269,8 @@ AXComponent {
         vaDate.setUTCSeconds(vaTransaction.time);
         var vaTxID = vaTransaction.txid
         if(mCurrentCoin === "BTC") lmTransactionsBTC.append({"miTransactionType": vaType, "miAddress": vaAddress, "miAmount": vaAmount, "miConfirmations": vaConfirmations, "miDate": vaDate.toString(), "miTxID": vaTxID })
+        if(mCurrentCoin === "LTC") lmTransactionsLTC.append({"miTransactionType": vaType, "miAddress": vaAddress, "miAmount": vaAmount, "miConfirmations": vaConfirmations, "miDate": vaDate.toString(), "miTxID": vaTxID })
+        if(mCurrentCoin === "DOGE") lmTransactionsDOGE.append({"miTransactionType": vaType, "miAddress": vaAddress, "miAmount": vaAmount, "miConfirmations": vaConfirmations, "miDate": vaDate.toString(), "miTxID": vaTxID })
         if(mCurrentCoin === "WDC") lmTransactions.append({"miTransactionType": vaType, "miAddress": vaAddress, "miAmount": vaAmount, "miConfirmations": vaConfirmations, "miDate": vaDate.toString(), "miTxID": vaTxID })
       }
     }

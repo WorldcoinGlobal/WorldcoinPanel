@@ -1,7 +1,8 @@
 import qbs
 
 Project {
-  property string version: "3.0.0"
+  property string version: "3.1.0"
+    minimumQbsVersion: "1.7"
   Properties {
     condition: qbs.targetOS.contains("linux")
     property string QJsonRpcIncludePath: "/home/Berzeck/Data/Development/Libraries/QJsonRpc/include/qjsonrpc"

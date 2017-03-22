@@ -304,6 +304,30 @@ bool GXGuiApplication::fLoadWapptoms(const QString& lDirName) {
         mEngine.rootContext()->setContextProperty(lWapptomBTC->fName(), lWapptomBTC.data());
       }
       //###
+
+      //### LTC
+      QSharedPointer<BXWapptom> lWapptomLTC(lWapptom.data()->fCreate());
+      if(lWapptomLTC) {
+        lWapptomLTC->fSetName(lWapptom->fBaseName() + "LTC");
+        mWapptoms.insert(lWapptomLTC->fName(), lWapptomLTC);
+        lWapptomLTC->fSetup();
+        lWapptomLTC->tSetConnector("LTC");
+        connect(lWapptomLTC.data(), &BXWapptom::sUpdateValue, this, &GXGuiApplication::fRequestUpdateWapptomValue);
+        mEngine.rootContext()->setContextProperty(lWapptomLTC->fName(), lWapptomLTC.data());
+      }
+      //###
+
+      //### DOGE
+      QSharedPointer<BXWapptom> lWapptomDOGE(lWapptom.data()->fCreate());
+      if(lWapptomDOGE) {
+        lWapptomDOGE->fSetName(lWapptom->fBaseName() + "DOGE");
+        mWapptoms.insert(lWapptomDOGE->fName(), lWapptomDOGE);
+        lWapptomDOGE->fSetup();
+        lWapptomDOGE->tSetConnector("DOGE");
+        connect(lWapptomDOGE.data(), &BXWapptom::sUpdateValue, this, &GXGuiApplication::fRequestUpdateWapptomValue);
+        mEngine.rootContext()->setContextProperty(lWapptomDOGE->fName(), lWapptomDOGE.data());
+      }
+      //###
     }
     else {
       lMessageParams << lFile.fileName() << lLoader.errorString();
@@ -468,6 +492,7 @@ void GXGuiApplication::fProcessNetworkRequest() {
     if(pWapptom->fOutput().isEmpty()) pWapptom->tSetValue(QString(pReply->readAll()));
     else {
       QString lResponse(QString(pReply->readAll()));
+      lResponse = pWapptom->fPreProcess(lResponse);
       lResponse.remove(0,1);
       lResponse.remove(lResponse.size() - 1,1);
       lResponse.remove("\"");
@@ -479,7 +504,7 @@ void GXGuiApplication::fProcessNetworkRequest() {
            break;
          }
       }
-  fLogMessage(2200010, QStringList() <<QString("/// %1").arg(lResponse), QString(), CXDefinitions::ELogDisk);
+      fLogMessage(2200010, QStringList() <<QString("/// %1").arg(lResponse), QString(), CXDefinitions::ELogDisk);
       pWapptom->tSetValue(lResponse);
     }
   }
@@ -517,6 +542,20 @@ void GXGuiApplication::fUpdateValue(bool lSuccess, quint64 lRequestID, const QSt
       double lTotal = lCurrent - lPrevious;
       if(lTotal > 0) rTrayIcon->showMessage(tr("BTC Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
       if(lTotal < 0) rTrayIcon->showMessage(tr("BTC Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+    }
+    if(rTrayIcon && (lRequest.lName == "WABalanceLTC") && lInitialized) {
+      double lPrevious = mWapptoms.value(lRequest.lName)->fPreviousValue().toDouble();
+      double lCurrent = mWapptoms.value(lRequest.lName)->fValue().toDouble();
+      double lTotal = lCurrent - lPrevious;
+      if(lTotal > 0) rTrayIcon->showMessage(tr("LTC Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+      if(lTotal < 0) rTrayIcon->showMessage(tr("LTC Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+    }
+    if(rTrayIcon && (lRequest.lName == "WABalanceDOGE") && lInitialized) {
+      double lPrevious = mWapptoms.value(lRequest.lName)->fPreviousValue().toDouble();
+      double lCurrent = mWapptoms.value(lRequest.lName)->fValue().toDouble();
+      double lTotal = lCurrent - lPrevious;
+      if(lTotal > 0) rTrayIcon->showMessage(tr("DOGE Coins arrived!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
+      if(lTotal < 0) rTrayIcon->showMessage(tr("DOGE Coins sent!"), tr("Amount: %1\nNew balance: %2").arg(QString::number(lTotal, 'f', 8)).arg(QString::number(lCurrent, 'f', 8)), QSystemTrayIcon::Information);
     }
   }
 //fLogMessage(2200010, QStringList() << "void GXGuiApplication::fUpdateValue -- 54", QString(), CXDefinitions::ELogDisk);

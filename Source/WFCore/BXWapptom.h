@@ -52,6 +52,7 @@ class  WFCORE_EXPORT BXWapptom : public QObject, public IXWapptom {
     QString fParams() const { return mParams; }
     virtual QString fDisplayValue() const { return mDisplayValue; }
     void fSetName(const QString& fName) { mName = fName; }
+    virtual QString fPreProcess(const QString& lOriginalAnswer) { return lOriginalAnswer; }
 
   protected:
     bool mActive;
